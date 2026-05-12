@@ -578,10 +578,10 @@ public class PluginSettingItem : ObservableObject
     public string Type { get; }
 
     private string _rawValue;
-    private static readonly List<VirtualKeyOption> _availableKeys = GetAvailableKeys();
+    private static readonly ObservableCollection<VirtualKeyOption> _availableKeys = new ObservableCollection<VirtualKeyOption>(GetAvailableKeys());
     private bool _useKeyListInput;
 
-    public List<VirtualKeyOption> AvailableKeys => _availableKeys;
+    public ObservableCollection<VirtualKeyOption> AvailableKeys => _availableKeys;
     
     private static List<VirtualKeyOption> GetAvailableKeys()
     {
