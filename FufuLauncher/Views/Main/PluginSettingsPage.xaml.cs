@@ -6,6 +6,9 @@ using FufuLauncher.ViewModels;
 using CommunityToolkit.Mvvm.Messaging;
 using FufuLauncher.Messages;
 using Windows.System;
+using System.Runtime.InteropServices;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Processing;
 
 namespace FufuLauncher.Views;
 
@@ -16,8 +19,13 @@ public sealed partial class PluginSettingsPage : Page
     public ControlPanelModel ControlPanelVM { get; }
     private FeedbackWindow _feedbackWindow;
     private Window _prWindow;
+    private Windows.Foundation.Point _cropPointerPosition;
+    private bool _isCropDragging = false;
     
     private bool _hasShownFpsWarning = false;
+
+    [DllImport("user32.dll")]
+    private static extern IntPtr GetActiveWindow();
 
     public PluginSettingsPage()
     {
@@ -29,6 +37,54 @@ public sealed partial class PluginSettingsPage : Page
         Loaded += PluginSettingsPage_Loaded;
         
         ViewModel.PropertyChanged += ViewModel_PropertyChanged;
+    }
+    private void CropScrollViewer_PointerPressed(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
+    {
+        var point = e.GetCurrentPoint(CropScrollViewer);
+        if (point.Properties.IsLeftButtonPressed)
+        {
+            _isCropDragging = true;
+            _cropPointerPosition = point.Position;
+            CropScrollViewer.CapturePointer(e.Pointer);
+        }
+    }
+
+    private void CropScrollViewer_PointerMoved(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
+    {
+        if (_isCropDragging)
+        {
+            var point = e.GetCurrentPoint(CropScrollViewer);
+            var deltaX = point.Position.X - _cropPointerPosition.X;
+            var deltaY = point.Position.Y - _cropPointerPosition.Y;
+        
+            CropScrollViewer.ChangeView(
+                CropScrollViewer.HorizontalOffset - deltaX,
+                CropScrollViewer.VerticalOffset - deltaY,
+                null);
+            
+            _cropPointerPosition = point.Position;
+        }
+    }
+
+    private void CropScrollViewer_PointerReleased(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
+    {
+        if (_isCropDragging)
+        {
+            _isCropDragging = false;
+            CropScrollViewer.ReleasePointerCapture(e.Pointer);
+        }
+    }
+
+    private void CropScrollViewer_PointerWheelChanged(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
+    {
+        var delta = e.GetCurrentPoint(CropScrollViewer).Properties.MouseWheelDelta;
+        if (delta == 0) return;
+
+        double newZoom = CropScrollViewer.ZoomFactor + (delta > 0 ? 0.2 : -0.2);
+        newZoom = Math.Max(CropScrollViewer.MinZoomFactor, Math.Min(newZoom, CropScrollViewer.MaxZoomFactor));
+    
+        CropScrollViewer.ChangeView(null, null, (float)newZoom);
+        e.Handled = true;
     }
     
     private async void PluginSettingsPage_Loaded(object sender, RoutedEventArgs e)
@@ -57,75 +113,75 @@ public sealed partial class PluginSettingsPage : Page
         }
     }
     
-private async void ViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-{
-    if (e.PropertyName == nameof(ViewModel.SettingsOverlayVisibility))
+    private async void ViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
     {
-        if (ViewModel.SettingsOverlayVisibility == Visibility.Visible)
+        if (e.PropertyName == nameof(ViewModel.SettingsOverlayVisibility))
         {
-            SettingsOverlay.Visibility = Visibility.Visible;
-            OverlayFadeIn.Begin();
-        }
-        else
-        {
-            if (SettingsOverlay.Visibility == Visibility.Visible)
+            if (ViewModel.SettingsOverlayVisibility == Visibility.Visible)
             {
-                OverlayFadeOut.Begin();
+                SettingsOverlay.Visibility = Visibility.Visible;
+                OverlayFadeIn.Begin();
             }
-        }
-    }
-    else if (e.PropertyName == nameof(ViewModel.SelectedPluginIndex))
-    {
-        if (ViewModel.SelectedPluginIndex == 1 && !_hasShownFpsWarning)
-        {
-            _hasShownFpsWarning = true;
-            
-            var localSettings = App.GetService<FufuLauncher.Contracts.Services.ILocalSettingsService>();
-            if (localSettings != null)
+            else
             {
-                var hasDismissedObj = await localSettings.ReadSettingAsync("HasDismissedFpsWarning");
-                bool hasDismissed = hasDismissedObj != null && Convert.ToBoolean(hasDismissedObj);
-                
-                if (hasDismissed)
+                if (SettingsOverlay.Visibility == Visibility.Visible)
                 {
-                    return;
-                }
-                
-                var dialog = new ContentDialog
-                {
-                    Title = "兼容性警告",
-                    Content = "如果开启了NVIDIA RTX40系及以上显卡的AI插帧，或者使用了类似于RTSS、微星小飞机等帧数显示软件，都可能会导致游戏画面卡死或者游戏无法正常启动",
-                    PrimaryButtonText = "我知道了",
-                    DefaultButton = ContentDialogButton.Primary,
-                    XamlRoot = XamlRoot
-                };
-                
-                var checkBox = new CheckBox
-                {
-                    Content = "不再显示此警告",
-                    Margin = new Thickness(0, 16, 0, 0)
-                };
-                
-                var stackPanel = new StackPanel();
-                stackPanel.Children.Add(new TextBlock 
-                { 
-                    Text = dialog.Content.ToString(), 
-                    TextWrapping = TextWrapping.Wrap 
-                });
-                stackPanel.Children.Add(checkBox);
-                
-                dialog.Content = stackPanel;
-                
-                await dialog.ShowAsync();
-                
-                if (checkBox.IsChecked == true)
-                {
-                    await localSettings.SaveSettingAsync("HasDismissedFpsWarning", true);
+                    OverlayFadeOut.Begin();
                 }
             }
         }
+        else if (e.PropertyName == nameof(ViewModel.SelectedPluginIndex))
+        {
+            if (ViewModel.SelectedPluginIndex == 1 && !_hasShownFpsWarning)
+            {
+                _hasShownFpsWarning = true;
+                
+                var localSettings = App.GetService<FufuLauncher.Contracts.Services.ILocalSettingsService>();
+                if (localSettings != null)
+                {
+                    var hasDismissedObj = await localSettings.ReadSettingAsync("HasDismissedFpsWarning");
+                    bool hasDismissed = hasDismissedObj != null && Convert.ToBoolean(hasDismissedObj);
+                    
+                    if (hasDismissed)
+                    {
+                        return;
+                    }
+                    
+                    var dialog = new ContentDialog
+                    {
+                        Title = "兼容性警告",
+                        Content = "如果开启了NVIDIA RTX40系及以上显卡的AI插帧，或者使用了类似于RTSS、微星小飞机等帧数显示软件，都可能会导致游戏画面卡死或者游戏无法正常启动",
+                        PrimaryButtonText = "我知道了",
+                        DefaultButton = ContentDialogButton.Primary,
+                        XamlRoot = XamlRoot
+                    };
+                    
+                    var checkBox = new CheckBox
+                    {
+                        Content = "不再显示此警告",
+                        Margin = new Thickness(0, 16, 0, 0)
+                    };
+                    
+                    var stackPanel = new StackPanel();
+                    stackPanel.Children.Add(new TextBlock 
+                    { 
+                        Text = dialog.Content.ToString(), 
+                        TextWrapping = TextWrapping.Wrap 
+                    });
+                    stackPanel.Children.Add(checkBox);
+                    
+                    dialog.Content = stackPanel;
+                    
+                    await dialog.ShowAsync();
+                    
+                    if (checkBox.IsChecked == true)
+                    {
+                        await localSettings.SaveSettingAsync("HasDismissedFpsWarning", true);
+                    }
+                }
+            }
+        }
     }
-}
 
     private void OverlayFadeOut_Completed(object sender, object e)
     {
@@ -293,74 +349,74 @@ private async void ViewModel_PropertyChanged(object sender, System.ComponentMode
         }
     }
     
-private void OnPullRequestsClick(object sender, RoutedEventArgs e)
-{
-    if (_prWindow == null)
+    private void OnPullRequestsClick(object sender, RoutedEventArgs e)
     {
-        _prWindow = new Window();
-        _prWindow.Title = "Pull Request";
-        _prWindow.Closed += (s, args) => _prWindow = null;
-
-        _prWindow.SystemBackdrop = new Microsoft.UI.Xaml.Media.MicaBackdrop();
-        _prWindow.ExtendsContentIntoTitleBar = true;
-
-        IntPtr hWnd = WinRT.Interop.WindowNative.GetWindowHandle(_prWindow);
-        Microsoft.UI.WindowId windowId = Microsoft.UI.Win32Interop.GetWindowIdFromWindow(hWnd);
-        Microsoft.UI.Windowing.AppWindow appWindow = Microsoft.UI.Windowing.AppWindow.GetFromWindowId(windowId);
-        appWindow.Resize(new Windows.Graphics.SizeInt32(600, 450));
-        
-        var titleBarGrid = new Grid { Height = 32 };
-        var titleText = new TextBlock
+        if (_prWindow == null)
         {
-            Text = "Pull Request",
-            VerticalAlignment = VerticalAlignment.Center,
-            Margin = new Thickness(16, 0, 0, 0),
-            FontSize = 12
-        };
-        titleBarGrid.Children.Add(titleText);
-        
-        var contentStackPanel = new StackPanel 
-        { 
-            Padding = new Thickness(24, 16, 24, 24),
-            Spacing = 16 
-        };
+            _prWindow = new Window();
+            _prWindow.Title = "Pull Request";
+            _prWindow.Closed += (s, args) => _prWindow = null;
 
-        var textBlock = new TextBlock
-        {
-            Text = "本项目目前由个人开发者(CodeCubist)独立维护\n我们坚持并积极落实以玩家痛点为核心的开发方向，开放透明和高效的推动更新\n提交Pull Requests是让拥有代码开发编写能力的用户可以协助推进开发进度、优化结构及分摊项目维护压力的核心途径\n如可提供帮助，请通过下方按钮前往代码仓库提交你的贡献",
-            TextWrapping = TextWrapping.Wrap
-        };
+            _prWindow.SystemBackdrop = new Microsoft.UI.Xaml.Media.MicaBackdrop();
+            _prWindow.ExtendsContentIntoTitleBar = true;
 
-        var openLinkBtn = new Button 
-        { 
-            Content = "访问GitHub仓库提交Pull Request", 
-            HorizontalAlignment = HorizontalAlignment.Left 
-        };
+            IntPtr hWnd = WinRT.Interop.WindowNative.GetWindowHandle(_prWindow);
+            Microsoft.UI.WindowId windowId = Microsoft.UI.Win32Interop.GetWindowIdFromWindow(hWnd);
+            Microsoft.UI.Windowing.AppWindow appWindow = Microsoft.UI.Windowing.AppWindow.GetFromWindowId(windowId);
+            appWindow.Resize(new Windows.Graphics.SizeInt32(600, 450));
+            
+            var titleBarGrid = new Grid { Height = 32 };
+            var titleText = new TextBlock
+            {
+                Text = "Pull Request",
+                VerticalAlignment = VerticalAlignment.Center,
+                Margin = new Thickness(16, 0, 0, 0),
+                FontSize = 12
+            };
+            titleBarGrid.Children.Add(titleText);
+            
+            var contentStackPanel = new StackPanel 
+            { 
+                Padding = new Thickness(24, 16, 24, 24),
+                Spacing = 16 
+            };
 
-        openLinkBtn.Click += async (s, args) => 
-        { 
-            await Launcher.LaunchUriAsync(new Uri("https://github.com/FufuLauncher/FufuLauncher/pulls")); 
-        };
+            var textBlock = new TextBlock
+            {
+                Text = "本项目目前由个人开发者(CodeCubist)独立维护\n我们坚持并积极落实以玩家痛点为核心的开发方向，开放透明和高效的推动更新\n提交Pull Requests是让拥有代码开发编写能力的用户可以协助推进开发进度、优化结构及分摊项目维护压力的核心途径\n如可提供帮助，请通过下方按钮前往代码仓库提交你的贡献",
+                TextWrapping = TextWrapping.Wrap
+            };
 
-        contentStackPanel.Children.Add(textBlock);
-        contentStackPanel.Children.Add(openLinkBtn);
-        
-        var rootGrid = new Grid();
-        rootGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Auto) });
-        rootGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
+            var openLinkBtn = new Button 
+            { 
+                Content = "访问GitHub仓库提交Pull Request", 
+                HorizontalAlignment = HorizontalAlignment.Left 
+            };
 
-        Grid.SetRow(titleBarGrid, 0);
-        Grid.SetRow(contentStackPanel, 1);
+            openLinkBtn.Click += async (s, args) => 
+            { 
+                await Launcher.LaunchUriAsync(new Uri("https://github.com/FufuLauncher/FufuLauncher/pulls")); 
+            };
 
-        rootGrid.Children.Add(titleBarGrid);
-        rootGrid.Children.Add(contentStackPanel);
+            contentStackPanel.Children.Add(textBlock);
+            contentStackPanel.Children.Add(openLinkBtn);
+            
+            var rootGrid = new Grid();
+            rootGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Auto) });
+            rootGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
 
-        _prWindow.Content = rootGrid;
-        
-        _prWindow.SetTitleBar(titleBarGrid);
+            Grid.SetRow(titleBarGrid, 0);
+            Grid.SetRow(contentStackPanel, 1);
+
+            rootGrid.Children.Add(titleBarGrid);
+            rootGrid.Children.Add(contentStackPanel);
+
+            _prWindow.Content = rootGrid;
+            
+            _prWindow.SetTitleBar(titleBarGrid);
+        }
+        _prWindow.Activate();
     }
-    _prWindow.Activate();
-}
 
     private async void OnDeletePresetClick(object sender, RoutedEventArgs e)
     {
@@ -560,4 +616,166 @@ private void OnPullRequestsClick(object sender, RoutedEventArgs e)
         }
         Directory.Delete(sourceDir, true);
     }
+
+    private async void OnImportAvatarClick(object sender, RoutedEventArgs e)
+    {
+        try
+        {
+            var picker = new Windows.Storage.Pickers.FileOpenPicker();
+            WinRT.Interop.InitializeWithWindow.Initialize(picker, GetActiveWindow());
+            picker.ViewMode = Windows.Storage.Pickers.PickerViewMode.Thumbnail;
+            picker.FileTypeFilter.Add(".png");
+            picker.FileTypeFilter.Add(".jpg");
+            picker.FileTypeFilter.Add(".jpeg");
+            picker.FileTypeFilter.Add(".bmp");
+            picker.FileTypeFilter.Add(".webp");
+
+            var file = await picker.PickSingleFileAsync();
+            if (file != null)
+            {
+                string avatarDir = Path.Combine(AppContext.BaseDirectory, "Plugins", "Avatar");
+                if (!Directory.Exists(avatarDir)) Directory.CreateDirectory(avatarDir);
+
+                string originalPath = ViewModel.AvatarOriginalPath;
+                File.Copy(file.Path, originalPath, true);
+
+                await LoadImageToCropperAsync(originalPath);
+            }
+        }
+        catch (Exception ex)
+        {
+            WeakReferenceMessenger.Default.Send(new NotificationMessage("导入失败", ex.Message, NotificationType.Error));
+        }
+    }
+
+    private async void OnEditCurrentAvatarClick(object sender, RoutedEventArgs e)
+    {
+        string targetPath = File.Exists(ViewModel.AvatarOriginalPath) ? ViewModel.AvatarOriginalPath : ViewModel.AvatarPath;
+        if (File.Exists(targetPath))
+        {
+            await LoadImageToCropperAsync(targetPath);
+        }
+        else
+        {
+            WeakReferenceMessenger.Default.Send(new NotificationMessage("提示", "未找到可供编辑的头像", NotificationType.Warning));
+        }
+    }
+
+    private uint _originalImageWidth;
+    private uint _originalImageHeight;
+    private string _editingImagePath;
+
+    private void OnClearAvatarClick(object sender, RoutedEventArgs e)
+    {
+        try
+        {
+            if (File.Exists(ViewModel.AvatarPath))
+            {
+                File.Delete(ViewModel.AvatarPath);
+            }
+        
+            if (File.Exists(ViewModel.AvatarOriginalPath))
+            {
+                File.Delete(ViewModel.AvatarOriginalPath);
+            }
+        
+            ViewModel.UpdateAvatarPreview();
+            WeakReferenceMessenger.Default.Send(new NotificationMessage("成功", "头像已清除，将在下次进入游戏时生效", NotificationType.Success));
+        }
+        catch (Exception ex)
+        {
+            WeakReferenceMessenger.Default.Send(new NotificationMessage("清除失败", ex.Message, NotificationType.Error));
+        }
+    }
+    
+    private async Task LoadImageToCropperAsync(string filePath)
+    {
+        try
+        {
+            _editingImagePath = filePath;
+            var file = await Windows.Storage.StorageFile.GetFileFromPathAsync(filePath);
+            using (var stream = await file.OpenReadAsync())
+            {
+                var decoder = await Windows.Graphics.Imaging.BitmapDecoder.CreateAsync(stream);
+                _originalImageWidth = decoder.OrientedPixelWidth;
+                _originalImageHeight = decoder.OrientedPixelHeight;
+            }
+
+            var bmp = new Microsoft.UI.Xaml.Media.Imaging.BitmapImage();
+            bmp.CreateOptions = Microsoft.UI.Xaml.Media.Imaging.BitmapCreateOptions.IgnoreImageCache;
+            bmp.UriSource = new Uri(filePath);
+        
+            CropTargetImage.Source = bmp;
+
+            double viewSize = 300.0;
+            double scale = Math.Max(viewSize / _originalImageWidth, viewSize / _originalImageHeight);
+        
+            CropTargetImage.Width = _originalImageWidth * scale;
+            CropTargetImage.Height = _originalImageHeight * scale;
+        
+            await Task.Delay(50);
+            CropScrollViewer.ChangeView(0, 0, 1.0f, true);
+        
+            await CropImageDialog.ShowAsync();
+        }
+        catch (Exception ex)
+        {
+            WeakReferenceMessenger.Default.Send(new NotificationMessage("加载失败", ex.Message, NotificationType.Error));
+        }
+    }
+
+private async void OnCropSaveClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
+{
+    var deferral = args.GetDeferral();
+    try
+    {
+        uint targetSize = Radio512.IsChecked == true ? 512u : 256u;
+
+        double viewSize = 300.0;
+        double baseScale = Math.Max(viewSize / _originalImageWidth, viewSize / _originalImageHeight);
+        double finalScale = baseScale * CropScrollViewer.ZoomFactor;
+
+        double cropX = CropScrollViewer.HorizontalOffset / finalScale;
+        double cropY = CropScrollViewer.VerticalOffset / finalScale;
+        double cropSize = viewSize / finalScale;
+        
+        int x = Math.Max(0, (int)Math.Floor(cropX));
+        int y = Math.Max(0, (int)Math.Floor(cropY));
+        int size = (int)Math.Ceiling(cropSize);
+        
+        using (var image = await SixLabors.ImageSharp.Image.LoadAsync(_editingImagePath))
+        {
+            int safeX = Math.Min(x, image.Width - 1);
+            int safeY = Math.Min(y, image.Height - 1);
+            int safeWidth = Math.Min(size, image.Width - safeX);
+            int safeHeight = Math.Min(size, image.Height - safeY);
+            int finalCropSize = Math.Max(1, Math.Min(safeWidth, safeHeight));
+
+            image.Mutate(ctx => ctx
+                .Crop(new Rectangle(safeX, safeY, finalCropSize, finalCropSize))
+                .Resize((int)targetSize, (int)targetSize, KnownResamplers.Bicubic));
+
+            var outputPath = ViewModel.AvatarPath;
+            var directory = Path.GetDirectoryName(outputPath);
+            
+            if (!Directory.Exists(directory))
+            {
+                Directory.CreateDirectory(directory);
+            }
+            
+            await image.SaveAsPngAsync(outputPath);
+        }
+
+        ViewModel.UpdateAvatarPreview();
+        WeakReferenceMessenger.Default.Send(new NotificationMessage("成功", "头像裁切并保存成功", NotificationType.Success));
+    }
+    catch (Exception ex)
+    {
+        WeakReferenceMessenger.Default.Send(new NotificationMessage("保存失败", ex.Message, NotificationType.Error));
+    }
+    finally
+    {
+        deferral.Complete();
+    }
+}
 }

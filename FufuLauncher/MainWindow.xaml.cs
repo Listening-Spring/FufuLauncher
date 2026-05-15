@@ -1,5 +1,4 @@
 using System.Diagnostics;
-using System.Linq;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Numerics;
@@ -17,7 +16,6 @@ using FufuLauncher.Services;
 using FufuLauncher.Services.Background;
 using FufuLauncher.ViewModels;
 using Microsoft.UI;
-using Microsoft.UI.Text;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -452,7 +450,7 @@ public sealed partial class MainWindow : WindowEx
             {
                 dispatcherQueue.TryEnqueue(() =>
                 {
-                    var announcementWindow = new FufuLauncher.Views.AnnouncementWindowL(announcementUrl);
+                    var announcementWindow = new Views.AnnouncementWindowL(announcementUrl);
                     announcementWindow.Activate();
                 });
             }
@@ -1279,7 +1277,7 @@ private async Task CheckRedeemCodesForTodayAsync()
     {
         Activate();
 
-        for (int i = 0; i < 40 && !_isMainUiLoaded; i++)
+        for (var i = 0; i < 40 && !_isMainUiLoaded; i++)
         {
             await Task.Delay(100);
         }
@@ -1297,7 +1295,7 @@ private async Task CheckRedeemCodesForTodayAsync()
             NavigateToPage("FufuLauncher.ViewModels.SettingsViewModel");
         }
 
-        for (int i = 0; i < 40; i++)
+        for (var i = 0; i < 40; i++)
         {
             if (ContentFrame.Content is Views.SettingsPage settingsPage)
             {
@@ -1533,7 +1531,7 @@ private async Task CheckRedeemCodesForTodayAsync()
         storyboard.Children.Add(transformAnim);
         storyboard.Children.Add(opacityAnim);
         
-        bool isLastNotification = NotificationPanel.Children
+        var isLastNotification = NotificationPanel.Children
             .OfType<FrameworkElement>()
             .All(c => c.Tag is string state && state == "Closing");
 

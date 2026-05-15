@@ -86,6 +86,7 @@
                     <ComboBox SelectedIndex="{x:Bind ViewModel.SelectedPluginIndex, Mode=TwoWay}" Width="200">
                         <ComboBoxItem Content="FuFuPlugin (主插件)"/>
                         <ComboBoxItem Content="FPS (帧率插件)"/>
+                        <ComboBoxItem Content="Avatar (千星头像插件)"/>
                     </ComboBox>
                 </StackPanel>
 
@@ -103,10 +104,8 @@
                         <TextBlock Text="{x:Bind ViewModel.PluginName, Mode=OneWay}" FontSize="18" FontWeight="SemiBold" Margin="0,0,0,4"/>
                         <TextBlock Text="{x:Bind ViewModel.PluginDescription, Mode=OneWay}" FontSize="12" Opacity="0.6" TextWrapping="Wrap"/>
                         <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,8,0,0">
-                            <Button Content="有想法或遇到问题？点此反馈" 
-                                    Click="OnFeedbackClick"/>
-                            <Button Content="提交PR" 
-                                    Click="OnPullRequestsClick"/>
+                            <Button Content="有想法或遇到问题？点此反馈" Click="OnFeedbackClick"/>
+                            <Button Content="提交PR" Click="OnPullRequestsClick"/>
                         </StackPanel>
                     </StackPanel>
 
@@ -146,6 +145,14 @@
                                         <StackPanel Orientation="Horizontal" Spacing="8">
                                             <TextBlock Text="FPS插件启用" VerticalAlignment="Center" FontSize="12" FontWeight="SemiBold"/>
                                             <ToggleSwitch IsOn="{x:Bind ViewModel.IsFpsPluginEnabled, Mode=TwoWay}" 
+                                                          OnContent="开" OffContent="关" 
+                                                          CornerRadius="16" 
+                                                          HorizontalAlignment="Right" 
+                                                          MinWidth="0" Margin="0"/>
+                                        </StackPanel>
+                                        <StackPanel Orientation="Horizontal" Spacing="8">
+                                            <TextBlock Text="头像插件启用" VerticalAlignment="Center" FontSize="12" FontWeight="SemiBold"/>
+                                            <ToggleSwitch IsOn="{x:Bind ViewModel.IsAvatarPluginEnabled, Mode=TwoWay}" 
                                                           OnContent="开" OffContent="关" 
                                                           CornerRadius="16" 
                                                           HorizontalAlignment="Right" 
@@ -192,7 +199,7 @@
                                     HorizontalContentAlignment="Stretch" 
                                     VerticalContentAlignment="Stretch">
                         <StackPanel>
-                            <Grid Margin="0,0,0,32">
+                            <Grid Margin="0,0,0,32" Visibility="{x:Bind ViewModel.MainSettingsVisibility, Mode=OneWay}">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto"/>
                                     <ColumnDefinition Width="*"/>
@@ -250,6 +257,7 @@
                             </Grid>
 
                             <GridView ItemsSource="{x:Bind ViewModel.Settings, Mode=OneWay}"
+                                      Visibility="{x:Bind ViewModel.MainSettingsVisibility, Mode=OneWay}"
                                       ItemTemplateSelector="{StaticResource SettingSelector}"
                                       SelectionMode="None"
                                       IsItemClickEnabled="False"
@@ -280,6 +288,24 @@
                                     </ItemsPanelTemplate>
                                 </GridView.ItemsPanel>
                             </GridView>
+                            
+                            <StackPanel Visibility="{x:Bind ViewModel.AvatarSettingsVisibility, Mode=OneWay}" Margin="0,16,0,0">
+                                <TextBlock Text="头像替换设置" FontSize="16" FontWeight="SemiBold" Margin="0,0,0,16"/>
+                                <StackPanel Orientation="Horizontal" Spacing="24">
+                                    <Border Width="128" Height="128" CornerRadius="8" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}">
+                                        <Image Source="{x:Bind ViewModel.CurrentAvatarSource, Mode=OneWay}" Stretch="UniformToFill"/>
+                                    </Border>
+                                    <StackPanel VerticalAlignment="Center" Spacing="12">
+                                        <StackPanel Orientation="Horizontal" Spacing="12">
+                                            <Button Content="导入新图片" Click="OnImportAvatarClick"/>
+                                            <Button Content="重新裁剪当前头像" Click="OnEditCurrentAvatarClick" IsEnabled="{x:Bind ViewModel.HasAvatar, Mode=OneWay}"/>
+                                            <Button Content="清除头像" Click="OnClearAvatarClick" IsEnabled="{x:Bind ViewModel.HasAvatar, Mode=OneWay}"/>
+                                        </StackPanel>
+                                        <TextBlock Text="支持格式: PNG, JPG, BMP, WEBP&#x0A;修改后在下次进游戏时生效" FontSize="12" Opacity="0.6"/>
+                                    </StackPanel>
+                                </StackPanel>
+                            </StackPanel>
+                            
                         </StackPanel>
                     </ContentControl>
                     
@@ -301,7 +327,7 @@
                                                  Storyboard.TargetProperty="Opacity" 
                                                  To="0" 
                                                  Duration="0:0:0.25"/>
-                            </Storyboard>
+                             </Storyboard>
                         </Grid.Resources>
 
                         <Grid.Background>
@@ -311,7 +337,7 @@
                                           FallbackColor="Transparent"/>
                         </Grid.Background>
 
-                        <TextBlock Text="已被禁用，请启用FPS插件才能调试插件配置" 
+                        <TextBlock Text="{x:Bind ViewModel.OverlayWarningText, Mode=OneWay}" 
                                    Foreground="{ThemeResource TextFillColorPrimaryBrush}" 
                                    HorizontalAlignment="Center" 
                                    VerticalAlignment="Center" 
@@ -322,5 +348,37 @@
 
             </StackPanel>
         </ScrollViewer>
+        
+        <ContentDialog x:Name="CropImageDialog" 
+                       Title="调整头像" 
+                       PrimaryButtonText="保存" 
+                       CloseButtonText="取消" 
+                       PrimaryButtonClick="OnCropSaveClick">
+            <StackPanel Spacing="16">
+                <RadioButtons x:Name="ResolutionSelector" Header="输出分辨率">
+                    <RadioButton x:Name="Radio512" Content="512x512 (高清)" IsChecked="True"/>
+                    <RadioButton x:Name="Radio256" Content="256x256 (标准)"/>
+                </RadioButtons>
+                <Border Width="300" Height="300" BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}" BorderThickness="1" CornerRadius="4">
+                    <ScrollViewer x:Name="CropScrollViewer" 
+                                  Width="300" Height="300" 
+                                  HorizontalScrollBarVisibility="Hidden" 
+                                  VerticalScrollBarVisibility="Hidden" 
+                                  HorizontalScrollMode="Enabled"
+                                  VerticalScrollMode="Enabled"
+                                  ZoomMode="Enabled" 
+                                  MinZoomFactor="1" 
+                                  MaxZoomFactor="5"
+                                  PointerPressed="CropScrollViewer_PointerPressed"
+                                  PointerMoved="CropScrollViewer_PointerMoved"
+                                  PointerReleased="CropScrollViewer_PointerReleased"
+                                  PointerWheelChanged="CropScrollViewer_PointerWheelChanged">
+                        <Image x:Name="CropTargetImage" Stretch="Uniform" />
+                    </ScrollViewer>
+                </Border>
+                <TextBlock Text="* 请在方框内拖动或使用鼠标滚轮缩放调整裁切位置" FontSize="12" Opacity="0.6"/>
+            </StackPanel>
+        </ContentDialog>
+        
     </Grid>
 </Page>

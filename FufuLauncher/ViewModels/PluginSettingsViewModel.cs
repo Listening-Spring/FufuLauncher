@@ -24,7 +24,6 @@ public partial class PluginSettingsViewModel : ObservableObject
     
     public bool IsDownloadSupported => SelectedPluginIndex == 0;
     
-
     [ObservableProperty]
     private string pluginName;
 
@@ -43,133 +42,283 @@ public partial class PluginSettingsViewModel : ObservableObject
     [ObservableProperty]
     private PresetModel currentPreset;
 
+    [ObservableProperty]
+    private Microsoft.UI.Xaml.Media.ImageSource currentAvatarSource;
+
+    [ObservableProperty]
+    private bool hasAvatar;
+
     public ObservableCollection<PluginSettingItem> Settings { get; } = new();
+
+    public Microsoft.UI.Xaml.Visibility AvatarSettingsVisibility => 
+        SelectedPluginIndex == 2 ? Microsoft.UI.Xaml.Visibility.Visible : Microsoft.UI.Xaml.Visibility.Collapsed;
+
+    public Microsoft.UI.Xaml.Visibility MainSettingsVisibility => 
+        SelectedPluginIndex != 2 ? Microsoft.UI.Xaml.Visibility.Visible : Microsoft.UI.Xaml.Visibility.Collapsed;
+
+    public string AvatarPath => Path.Combine(AppContext.BaseDirectory, "Plugins", "Avatar", "avatar.png");
+    public string AvatarOriginalPath => Path.Combine(AppContext.BaseDirectory, "Plugins", "Avatar", "avatar_original.png");
+
     partial void OnSelectedPluginIndexChanged(int value)
     {
-        CheckFpsPluginState();
+        CheckPluginStates();
         UpdatePaths();
         LoadConfiguration();
-    
-        OnPropertyChanged(nameof(SettingsOverlayVisibility));
-        OnPropertyChanged(nameof(IsSettingsInteractable));
+        UpdateAvatarPreview();
+        RefreshUIState();
     }
     
     private bool _isFpsPluginEnabled;
-public bool IsFpsPluginEnabled
-{
-    get => _isFpsPluginEnabled;
-    set
+    public bool IsFpsPluginEnabled
     {
-        if (_isFpsPluginEnabled != value)
+        get => _isFpsPluginEnabled;
+        set
         {
-            ChangeFpsPluginState(value);
+            if (_isFpsPluginEnabled != value)
+            {
+                ChangeFpsPluginState(value);
+            }
         }
     }
-}
 
-public Microsoft.UI.Xaml.Visibility SettingsOverlayVisibility => 
-    (!_isFpsPluginEnabled && SelectedPluginIndex == 1) ? Microsoft.UI.Xaml.Visibility.Visible : Microsoft.UI.Xaml.Visibility.Collapsed;
-
-public bool IsSettingsInteractable => SelectedPluginIndex == 0 || (SelectedPluginIndex == 1 && _isFpsPluginEnabled);
-
-private void CheckFpsPluginState()
-{
-    string fpsDir = Path.Combine(AppContext.BaseDirectory, "Plugins", "FPS");
-    string enabledPath = Path.Combine(fpsDir, "FPS.dll");
-    string disabledPath = Path.Combine(fpsDir, "FPS.disabled");
-    
-    if (File.Exists(enabledPath) && File.Exists(disabledPath))
+    private bool _isAvatarPluginEnabled;
+    public bool IsAvatarPluginEnabled
     {
+        get => _isAvatarPluginEnabled;
+        set
+        {
+            if (_isAvatarPluginEnabled != value)
+            {
+                ChangeAvatarPluginState(value);
+            }
+        }
+    }
+
+    public Microsoft.UI.Xaml.Visibility SettingsOverlayVisibility => 
+        (SelectedPluginIndex == 1 && !_isFpsPluginEnabled) || (SelectedPluginIndex == 2 && !_isAvatarPluginEnabled) 
+        ? Microsoft.UI.Xaml.Visibility.Visible : Microsoft.UI.Xaml.Visibility.Collapsed;
+
+    public bool IsSettingsInteractable => SelectedPluginIndex == 0 || (SelectedPluginIndex == 1 && _isFpsPluginEnabled) || (SelectedPluginIndex == 2 && _isAvatarPluginEnabled);
+
+    public string OverlayWarningText
+    {
+        get
+        {
+            if (SelectedPluginIndex == 1) return "已被禁用，请启用FPS插件才能调试插件配置";
+            if (SelectedPluginIndex == 2) return "该插件已被禁用，开启后可替换千星奇域头像";
+            return string.Empty;
+        }
+    }
+
+    private void CheckPluginStates()
+    {
+        string fpsDir = Path.Combine(AppContext.BaseDirectory, "Plugins", "FPS");
+        string fpsEnabledPath = Path.Combine(fpsDir, "FPS.dll");
+        string fpsDisabledPath = Path.Combine(fpsDir, "FPS.disabled");
+        
+        string avatarDir = Path.Combine(AppContext.BaseDirectory, "Plugins", "Avatar");
+        string avatarEnabledPath = Path.Combine(avatarDir, "Avatar.dll");
+        string avatarDisabledPath = Path.Combine(avatarDir, "Avatar.disabled");
+
+        if (File.Exists(fpsEnabledPath) && File.Exists(fpsDisabledPath))
+        {
+            try 
+            { 
+                File.Delete(fpsDisabledPath); 
+            } 
+            catch (Exception ex)
+            {
+                WeakReferenceMessenger.Default.Send(new NotificationMessage(
+                    "状态检查异常",
+                    $"无法删除多余的FPS禁用文件\n详细信息: {ex.Message}",
+                    NotificationType.Error,
+                    6000
+                ));
+            }
+        }
+        
+        if (File.Exists(avatarEnabledPath) && File.Exists(avatarDisabledPath))
+        {
+            try 
+            { 
+                File.Delete(avatarDisabledPath); 
+            } 
+            catch (Exception ex)
+            {
+                WeakReferenceMessenger.Default.Send(new NotificationMessage(
+                    "状态检查异常",
+                    $"无法删除多余的Avatar禁用文件\n详细信息: {ex.Message}",
+                    NotificationType.Error,
+                    6000
+                ));
+            }
+        }
+
+        bool fpsEnabled = File.Exists(fpsEnabledPath);
+        bool avatarEnabled = File.Exists(avatarEnabledPath);
+
+        if (fpsEnabled && avatarEnabled)
+        {
+            try
+            {
+                File.Move(fpsEnabledPath, fpsDisabledPath);
+                File.Move(avatarEnabledPath, avatarDisabledPath);
+            }
+            catch (Exception ex)
+            {
+                WeakReferenceMessenger.Default.Send(new NotificationMessage(
+                    "重命名插件失败",
+                    $"插件冲突，无法禁用插件文件\n详细信息: {ex.Message}",
+                    NotificationType.Error,
+                    6000
+                ));
+            }
+            
+            _isFpsPluginEnabled = false;
+            _isAvatarPluginEnabled = false;
+        }
+        else
+        {
+            _isFpsPluginEnabled = fpsEnabled;
+            _isAvatarPluginEnabled = avatarEnabled;
+        }
+
+        OnPropertyChanged(nameof(IsFpsPluginEnabled));
+        OnPropertyChanged(nameof(IsAvatarPluginEnabled));
+        RefreshUIState();
+    }
+
+    private void ChangeFpsPluginState(bool enable)
+    {
+        if (enable && IsAvatarPluginEnabled)
+        {
+            IsAvatarPluginEnabled = false;
+        }
+
+        string fpsDir = Path.Combine(AppContext.BaseDirectory, "Plugins", "FPS");
+        string enabledPath = Path.Combine(fpsDir, "FPS.dll");
+        string disabledPath = Path.Combine(fpsDir, "FPS.disabled");
+
         try
         {
-            File.Delete(disabledPath);
+            if (enable && File.Exists(disabledPath))
+            {
+                File.Move(disabledPath, enabledPath);
+            }
+            else if (!enable && File.Exists(enabledPath))
+            {
+                File.Move(enabledPath, disabledPath);
+            }
+            
+            SetProperty(ref _isFpsPluginEnabled, enable, nameof(IsFpsPluginEnabled));
+            RefreshUIState();
         }
         catch (Exception ex)
         {
-            System.Diagnostics.Debug.WriteLine($"无法删除冲突的禁用文件: {ex.Message}");
+            WeakReferenceMessenger.Default.Send(new NotificationMessage(
+                "状态切换失败",
+                $"无法修改插件文件后缀名。\n详细信息: {ex.Message}",
+                NotificationType.Error,
+                6000
+            ));
         }
     }
-    
-    if (File.Exists(enabledPath))
-    {
-        _isFpsPluginEnabled = true;
-    }
-    else if (File.Exists(disabledPath))
-    {
-        _isFpsPluginEnabled = false;
-    }
-    else
-    {
-        _isFpsPluginEnabled = false;
-    }
-    
-    OnPropertyChanged(nameof(IsFpsPluginEnabled));
-    OnPropertyChanged(nameof(SettingsOverlayVisibility));
-    OnPropertyChanged(nameof(IsSettingsInteractable));
-}
 
-private void ChangeFpsPluginState(bool enable)
-{
-    string fpsDir = Path.Combine(AppContext.BaseDirectory, "Plugins", "FPS");
-    string enabledPath = Path.Combine(fpsDir, "FPS.dll");
-    string disabledPath = Path.Combine(fpsDir, "FPS.disabled");
-
-    try
+    private void ChangeAvatarPluginState(bool enable)
     {
-        if (enable && File.Exists(disabledPath))
+        if (enable && IsFpsPluginEnabled)
         {
-            File.Move(disabledPath, enabledPath);
+            IsFpsPluginEnabled = false;
         }
-        else if (!enable && File.Exists(enabledPath))
+
+        string avatarDir = Path.Combine(AppContext.BaseDirectory, "Plugins", "Avatar");
+        string enabledPath = Path.Combine(avatarDir, "Avatar.dll");
+        string disabledPath = Path.Combine(avatarDir, "Avatar.disabled");
+
+        if (!Directory.Exists(avatarDir)) Directory.CreateDirectory(avatarDir);
+
+        try
         {
-            File.Move(enabledPath, disabledPath);
+            if (enable && File.Exists(disabledPath))
+            {
+                File.Move(disabledPath, enabledPath);
+            }
+            else if (!enable && File.Exists(enabledPath))
+            {
+                File.Move(enabledPath, disabledPath);
+            }
+            
+            SetProperty(ref _isAvatarPluginEnabled, enable, nameof(IsAvatarPluginEnabled));
+            RefreshUIState();
         }
-        
-        SetProperty(ref _isFpsPluginEnabled, enable, nameof(IsFpsPluginEnabled));
+        catch (Exception ex)
+        {
+            WeakReferenceMessenger.Default.Send(new NotificationMessage(
+                "状态切换失败",
+                $"无法修改插件文件后缀名。\n详细信息: {ex.Message}",
+                NotificationType.Error,
+                6000
+            ));
+        }
+    }
+
+    private void RefreshUIState()
+    {
         OnPropertyChanged(nameof(SettingsOverlayVisibility));
         OnPropertyChanged(nameof(IsSettingsInteractable));
-        
+        OnPropertyChanged(nameof(OverlayWarningText));
+        OnPropertyChanged(nameof(AvatarSettingsVisibility));
+        OnPropertyChanged(nameof(MainSettingsVisibility));
         UpdatePaths();
     }
-    catch (Exception ex)
-    {
-        WeakReferenceMessenger.Default.Send(new NotificationMessage(
-            "状态切换失败",
-            $"无法修改插件文件后缀名。\n详细信息: {ex.Message}",
-            NotificationType.Error,
-            6000
-        ));
-    }
-}
     
-private void UpdatePaths()
-{
-    string subDir = SelectedPluginIndex == 0 ? "FuFuPlugin" : "FPS";
-    _pluginDir = Path.Combine(AppContext.BaseDirectory, "Plugins", subDir);
-    _iniPath = Path.Combine(_pluginDir, "config.ini");
-    
-    if (subDir == "FuFuPlugin")
+    private void UpdatePaths()
     {
-        _dllPath = Path.Combine(_pluginDir, "FufuLauncher.UnlockerIsland.dll");
-    }
-    else
-    {
-        string fpsEnabledPath = Path.Combine(_pluginDir, "FPS.dll");
-        string fpsDisabledPath = Path.Combine(_pluginDir, "FPS.disabled");
-        _dllPath = File.Exists(fpsDisabledPath) ? fpsDisabledPath : fpsEnabledPath;
-    }
-    
-    _presetsDir = Path.Combine(AppContext.BaseDirectory, "Plugins", "Presets", subDir);
-    _iniFile = new IniFile(_iniPath);
+        string subDir = SelectedPluginIndex == 0 ? "FuFuPlugin" : (SelectedPluginIndex == 1 ? "FPS" : "Avatar");
+        _pluginDir = Path.Combine(AppContext.BaseDirectory, "Plugins", subDir);
+        
+        if (SelectedPluginIndex == 2)
+        {
+            _iniPath = string.Empty;
+            string avatarEnabledPath = Path.Combine(_pluginDir, "Avatar.dll");
+            string avatarDisabledPath = Path.Combine(_pluginDir, "Avatar.disabled");
+            _dllPath = File.Exists(avatarDisabledPath) ? avatarDisabledPath : avatarEnabledPath;
+        }
+        else
+        {
+            _iniPath = Path.Combine(_pluginDir, "config.ini");
+            if (subDir == "FuFuPlugin")
+            {
+                _dllPath = Path.Combine(_pluginDir, "FufuLauncher.UnlockerIsland.dll");
+            }
+            else
+            {
+                string fpsEnabledPath = Path.Combine(_pluginDir, "FPS.dll");
+                string fpsDisabledPath = Path.Combine(_pluginDir, "FPS.disabled");
+                _dllPath = File.Exists(fpsDisabledPath) ? fpsDisabledPath : fpsEnabledPath;
+            }
+        }
+        
+        _presetsDir = Path.Combine(AppContext.BaseDirectory, "Plugins", "Presets", subDir);
+        
+        if (!string.IsNullOrEmpty(_iniPath))
+        {
+            _iniFile = new IniFile(_iniPath);
+        }
+        else
+        {
+            _iniFile = null;
+        }
 
-    if (!Directory.Exists(_presetsDir))
-    {
-        Directory.CreateDirectory(_presetsDir);
+        if (!Directory.Exists(_presetsDir))
+        {
+            Directory.CreateDirectory(_presetsDir);
+        }
     }
-}
+
     public PluginSettingsViewModel()
     {
-        CheckFpsPluginState();
+        CheckPluginStates();
         UpdatePaths();
         _pluginDir = Path.Combine(AppContext.BaseDirectory, "Plugins", "FuFuPlugin");
         _iniPath = Path.Combine(_pluginDir, "config.ini");
@@ -208,8 +357,40 @@ private void UpdatePaths()
         }
 
         LoadConfiguration();
+        UpdateAvatarPreview();
     }
     
+    public void UpdateAvatarPreview()
+    {
+        if (SelectedPluginIndex != 2) return;
+        
+        OnPropertyChanged(nameof(AvatarSettingsVisibility));
+        OnPropertyChanged(nameof(MainSettingsVisibility));
+        
+        var path = AvatarPath;
+        if (File.Exists(path))
+        {
+            try
+            {
+                var bmp = new Microsoft.UI.Xaml.Media.Imaging.BitmapImage();
+                bmp.CreateOptions = Microsoft.UI.Xaml.Media.Imaging.BitmapCreateOptions.IgnoreImageCache;
+                bmp.UriSource = new Uri(path);
+                CurrentAvatarSource = bmp;
+                HasAvatar = true;
+            }
+            catch
+            {
+                CurrentAvatarSource = null;
+                HasAvatar = false;
+            }
+        }
+        else
+        {
+            CurrentAvatarSource = null;
+            HasAvatar = false;
+        }
+    }
+
     public bool IsPluginCorrupted()
     {
         if (File.Exists(_dllPath))
@@ -278,10 +459,21 @@ private void UpdatePaths()
     {
         Settings.Clear();
 
+        if (SelectedPluginIndex == 2)
+        {
+            PluginName = "千星奇域头像替换";
+            PluginDescription = "注意：开启此功能会自动禁用FPS插件，两者不可同时开启，替换头像是永久性的";
+            PluginDeveloper = "不可用";
+            LastModifiedDate = "不可用";
+            AvailablePresets.Clear();
+            CurrentPreset = null;
+            return;
+        }
+
         if (!File.Exists(_iniPath))
         {
             PluginName = SelectedPluginIndex == 0 ? "未安装 FuFuPlugin" : "未安装 FPS 插件";
-            PluginDescription = "请确保 Plugins 目录下存在对应的文件夹及 config.ini 文件";
+            PluginDescription = "请确保Plugins目录下存在对应的文件夹及config.ini文件";
             return;
         }
 
@@ -344,7 +536,6 @@ private void UpdatePaths()
             }
             catch
             {
-                // ignored
             }
         }
 

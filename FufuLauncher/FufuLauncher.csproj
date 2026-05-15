@@ -48,6 +48,7 @@
         <PackageReference Include="Microsoft.Xaml.Behaviors.WinUI.Managed" Version="3.0.0" />
         <PackageReference Include="PuppeteerSharp" Version="20.2.5" />
         <PackageReference Include="QRCoder" Version="1.7.0" />
+        <PackageReference Include="SixLabors.ImageSharp" Version="3.1.12" />
         <PackageReference Include="System.Diagnostics.PerformanceCounter" Version="11.0.0-preview.2.26159.112" />
         <PackageReference Include="System.Management" Version="10.0.1" />
         <PackageReference Include="WinUIEx" Version="2.6.0" />
