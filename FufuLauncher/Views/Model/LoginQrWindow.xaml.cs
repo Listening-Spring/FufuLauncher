@@ -1004,7 +1004,9 @@ public sealed partial class LoginQrWindow : Window
                 UpdateStatus("正在清除数据库缓存...", true);
 
                 var localSettingsService = new LocalSettingsService();
+                
                 await localSettingsService.RemoveSettingAsync("AccountConfig");
+                await localSettingsService.RemoveSettingAsync("LabAccountConfig");
 
                 UpdateStatus("清理完成", false, false);
                 await Task.Delay(1000);

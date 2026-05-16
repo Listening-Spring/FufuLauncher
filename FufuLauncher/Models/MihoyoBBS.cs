@@ -485,7 +485,7 @@ namespace MihoyoBBS
                         }
                         else
                         {
-                            LastApiError = $"API错误: {result.Message} (错误码: {result.RetCode})";
+                            LastApiError = $"API错误: {result.Message}";
                         }
                     }
                     else
@@ -553,7 +553,7 @@ namespace MihoyoBBS
                         }
                         else
                         {
-                            LastApiError = $"API错误: {result.Message} (错误码: {result.RetCode})";
+                            LastApiError = $"API错误: {result.Message}";
                         }
                     }
                     else
@@ -744,7 +744,7 @@ public async Task<string> SignAccountAsync(Config config, string targetUid = nul
                         }
                         else
                         {
-                            returnData += $"\n{account.Nickname} 签到失败，API提示: {data.Message} (错误码: {data.RetCode})";
+                            returnData += $"\n{account.Nickname} 签到失败，API提示: {data.Message}";
                             continue;
                         }
                     }
