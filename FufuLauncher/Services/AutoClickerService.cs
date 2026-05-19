@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Runtime.InteropServices;
+using System.Threading;
 using FufuLauncher.Contracts.Services;
 using Windows.System;
 
@@ -35,6 +36,8 @@ namespace FufuLauncher.Services
         private VirtualKey _clickKey = VirtualKey.F;
         
         private readonly object _stateLock = new object();
+
+        private Thread _hookThread;
 
         public event EventHandler<bool> IsAutoClickingChanged;
 
@@ -119,15 +122,17 @@ namespace FufuLauncher.Services
 
         public void Start()
         {
-            if (_hookId != IntPtr.Zero) return;
+            if (_hookThread != null && _hookThread.IsAlive) return;
 
             try
             {
-                using var curProcess = Process.GetCurrentProcess();
-                using var curModule = curProcess.MainModule;
-                var moduleHandle = GetModuleHandle(curModule.ModuleName);
-                _hookId = SetWindowsHookEx(WH_KEYBOARD_LL, _hookCallback, moduleHandle, 0);
-                Debug.WriteLine(_hookId == IntPtr.Zero ? "[连点器] 钩子安装失败" : "[连点器] 钩子安装成功");
+                _hookThread = new Thread(HookThreadProc)
+                {
+                    IsBackground = true,
+                    Name = "AutoClickerHookThread"
+                };
+                _hookThread.Start();
+                Debug.WriteLine("[连点器] 钩子线程启动");
             }
             catch (Exception ex) 
             {
@@ -135,11 +140,46 @@ namespace FufuLauncher.Services
             }
         }
 
+        private void HookThreadProc()
+        {
+            try
+            {
+                using var curProcess = Process.GetCurrentProcess();
+                using var curModule = curProcess.MainModule;
+                var moduleHandle = GetModuleHandle(curModule.ModuleName);
+                _hookId = SetWindowsHookEx(WH_KEYBOARD_LL, _hookCallback, moduleHandle, 0);
+                Debug.WriteLine(_hookId == IntPtr.Zero ? "[连点器] 钩子安装失败" : "[连点器] 钩子安装成功");
+
+                if (_hookId != IntPtr.Zero)
+                {
+                    MSG msg;
+                    while (GetMessage(out msg, IntPtr.Zero, 0, 0) > 0)
+                    {
+                        TranslateMessage(ref msg);
+                        DispatchMessage(ref msg);
+                    }
+
+                    UnhookWindowsHookEx(_hookId);
+                    _hookId = IntPtr.Zero;
+                    Debug.WriteLine("[连点器] 钩子已卸载");
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[连点器] HookThreadProc 异常: {ex.Message}");
+            }
+        }
+
         public void Stop()
         {
             try
             {
-                if (_hookId != IntPtr.Zero) { UnhookWindowsHookEx(_hookId); _hookId = IntPtr.Zero; }
+                if (_hookThread != null && _hookThread.IsAlive)
+                {
+                    // 2. 发送 WM_QUIT (0x0012) 退出消息循环
+                    PostThreadMessage((uint)_hookThread.ManagedThreadId, 0x0012, IntPtr.Zero, IntPtr.Zero);
+                    _hookThread = null;
+                }
                 StopClicking();
                 _isTriggerKeyPressed = false;
             }
@@ -301,6 +341,36 @@ namespace FufuLauncher.Services
         private const uint MAPVK_VK_TO_VSC = 0;
 
         private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
+
+        [StructLayout(LayoutKind.Sequential)]
+        private struct POINT
+        {
+            public int x;
+            public int y;
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        private struct MSG
+        {
+            public IntPtr hwnd;
+            public uint message;
+            public IntPtr wParam;
+            public IntPtr lParam;
+            public uint time;
+            public POINT pt;
+        }
+
+        [DllImport("user32.dll")]
+        private static extern int GetMessage(out MSG lpMsg, IntPtr hWnd, uint wMsgFilterMin, uint wMsgFilterMax);
+
+        [DllImport("user32.dll")]
+        private static extern bool TranslateMessage(ref MSG lpMsg);
+
+        [DllImport("user32.dll")]
+        private static extern IntPtr DispatchMessage(ref MSG lpMsg);
+
+        [DllImport("user32.dll")]
+        private static extern bool PostThreadMessage(uint idThread, uint Msg, IntPtr wParam, IntPtr lParam);
 
         [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         private static extern IntPtr SetWindowsHookEx(int idHook, LowLevelKeyboardProc lpfn, IntPtr hMod, uint dwThreadId);

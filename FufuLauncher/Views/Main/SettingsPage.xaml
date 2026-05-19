@@ -92,6 +92,11 @@
                         <FontIcon Glyph="&#xE771;" FontFamily="Segoe MDL2 Assets"/>
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
+                <NavigationViewItem Content="主页文字样式" Tag="HomeTextItem">
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE790;" FontFamily="Segoe MDL2 Assets"/>
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
                 <NavigationViewItem Content="语言与区域" Tag="LanguageItem">
                     <NavigationViewItem.Icon>
                         <FontIcon Glyph="&#xF2B7;" FontFamily="Segoe MDL2 Assets"/>
@@ -187,6 +192,26 @@
                         </StackPanel>
                         
                         <StackPanel Style="{StaticResource SettingItemStyle}" Margin="0,12,0,0">
+                            <TextBlock Text="主页卡片显示" 
+                                       Style="{ThemeResource BodyStrongTextBlockStyle}"
+                                       FontSize="14"/>
+                            <TextBlock Text="允许隐藏主页的游戏资讯卡片或签到卡片"
+                                       Style="{ThemeResource CaptionTextBlockStyle}"
+                                       Opacity="0.7"
+                                       Margin="0,2,0,12"/>
+                            
+                            <ToggleSwitch Header="隐藏游戏资讯卡片"
+                                          OffContent="显示"
+                                          OnContent="隐藏"
+                                          IsOn="{x:Bind ViewModel.IsHideGameNewsCardEnabled, Mode=TwoWay}"/>
+                                          
+                            <ToggleSwitch Header="隐藏签到卡片"
+                                          OffContent="显示"
+                                          OnContent="隐藏"
+                                          IsOn="{x:Bind ViewModel.IsHideCheckinCardEnabled, Mode=TwoWay}"/>
+                        </StackPanel>
+
+                        <StackPanel Style="{StaticResource SettingItemStyle}" Margin="0,12,0,0">
                             <TextBlock Text="背景遮罩透明度" 
                                        Style="{ThemeResource BodyStrongTextBlockStyle}"
                                        FontSize="14"/>
@@ -243,6 +268,47 @@
                         </StackPanel>
                      </StackPanel>
                  </Border>
+                 
+                <Border x:Name="HomeTextItem" Style="{StaticResource SettingsCardStyle}">
+                    <StackPanel>
+                        <TextBlock Text="主页文字样式" 
+                                   Style="{ThemeResource SubtitleTextBlockStyle}"
+                                   Margin="0,0,0,16"/>
+                        
+                        <TextBlock Text="游戏资讯卡片文字颜色与透明度" 
+                                   Style="{ThemeResource BodyStrongTextBlockStyle}"
+                                   FontSize="14"/>
+                        <StackPanel Style="{StaticResource SettingItemStyle}" Orientation="Horizontal" Spacing="12" Margin="0,8,0,24">
+                            <TextBox Header="颜色 (Hex)" Width="120" Text="{x:Bind ViewModel.GameNewsCardTextColor, Mode=TwoWay}" PlaceholderText="#FFFFFF"/>
+                            <StackPanel VerticalAlignment="Bottom">
+                                <TextBlock Text="透明度" Margin="0,0,0,4"/>
+                                <Slider Width="200" Minimum="0" Maximum="1" StepFrequency="0.05" Value="{x:Bind ViewModel.GameNewsCardTextOpacity, Mode=TwoWay}"/>
+                            </StackPanel>
+                        </StackPanel>
+
+                        <TextBlock Text="启动按钮文字颜色与透明度" 
+                                   Style="{ThemeResource BodyStrongTextBlockStyle}"
+                                   FontSize="14"/>
+                        <StackPanel Style="{StaticResource SettingItemStyle}" Orientation="Horizontal" Spacing="12" Margin="0,8,0,24">
+                            <TextBox Header="颜色 (Hex)" Width="120" Text="{x:Bind ViewModel.LaunchButtonTextColor, Mode=TwoWay}" PlaceholderText="#FFFFFF"/>
+                            <StackPanel VerticalAlignment="Bottom">
+                                <TextBlock Text="透明度" Margin="0,0,0,4"/>
+                                <Slider Width="200" Minimum="0" Maximum="1" StepFrequency="0.05" Value="{x:Bind ViewModel.LaunchButtonTextOpacity, Mode=TwoWay}"/>
+                            </StackPanel>
+                        </StackPanel>
+
+                        <TextBlock Text="游戏签到文字颜色与透明度" 
+                                   Style="{ThemeResource BodyStrongTextBlockStyle}"
+                                   FontSize="14"/>
+                        <StackPanel Style="{StaticResource SettingItemStyle}" Orientation="Horizontal" Spacing="12" Margin="0,8,0,8">
+                            <TextBox Header="颜色 (Hex)" Width="120" Text="{x:Bind ViewModel.GameCheckinTextColor, Mode=TwoWay}" PlaceholderText="#FFFFFF"/>
+                            <StackPanel VerticalAlignment="Bottom">
+                                <TextBlock Text="透明度" Margin="0,0,0,4"/>
+                                <Slider Width="200" Minimum="0" Maximum="1" StepFrequency="0.05" Value="{x:Bind ViewModel.GameCheckinTextOpacity, Mode=TwoWay}"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
                 
                 <Border x:Name="LanguageItem" Style="{StaticResource SettingsCardStyle}">
                     <StackPanel>

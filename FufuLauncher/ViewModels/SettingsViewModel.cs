@@ -1,4 +1,4 @@
-﻿using System.Diagnostics;
+using System.Diagnostics;
 using System.Reflection;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -69,6 +69,16 @@ namespace FufuLauncher.ViewModels
         [ObservableProperty] private bool _isSaveWindowSizeEnabled;
         [ObservableProperty] private double _globalBackgroundImageOpacity = 1.0;
         [ObservableProperty] private bool _isAcrylicOverlayEnabled;
+        
+        [ObservableProperty] private bool _isHideGameNewsCardEnabled;
+        [ObservableProperty] private bool _isHideCheckinCardEnabled;
+
+        [ObservableProperty] private string _gameNewsCardTextColor = "#FFFFFF";
+        [ObservableProperty] private double _gameNewsCardTextOpacity = 1.0;
+        [ObservableProperty] private string _launchButtonTextColor = "#FFFFFF";
+        [ObservableProperty] private double _launchButtonTextOpacity = 1.0;
+        [ObservableProperty] private string _gameCheckinTextColor = "#FFFFFF";
+        [ObservableProperty] private double _gameCheckinTextOpacity = 1.0;
 
         [ObservableProperty] private WindowBackdropType _currentWindowBackdrop;
         [ObservableProperty] private string _webView2CacheSize;
@@ -410,6 +420,8 @@ namespace FufuLauncher.ViewModels
                 OnPropertyChanged(nameof(GlobalBackgroundOverlayOpacity));
                 OnPropertyChanged(nameof(ContentFrameBackgroundOpacity));
                 OnPropertyChanged(nameof(IsSaveWindowSizeEnabled));
+                OnPropertyChanged(nameof(IsHideGameNewsCardEnabled));
+                OnPropertyChanged(nameof(IsHideCheckinCardEnabled));
                 OnPropertyChanged(nameof(IsAcrylicOverlayEnabled));
                 OnPropertyChanged(nameof(IsAutoCheckinEnabled));
             }
@@ -504,9 +516,33 @@ namespace FufuLauncher.ViewModels
             {
                 ContentFrameBackgroundOpacity = 0.5;
             }
+            
+            var gameNewsCardColorJson = await _localSettingsService.ReadSettingAsync("GameNewsCardTextColor");
+            GameNewsCardTextColor = gameNewsCardColorJson?.ToString() ?? "#FFFFFF";
+            
+            var gameNewsCardOpacityJson = await _localSettingsService.ReadSettingAsync("GameNewsCardTextOpacity");
+            GameNewsCardTextOpacity = gameNewsCardOpacityJson != null ? Convert.ToDouble(gameNewsCardOpacityJson) : 1.0;
+
+            var launchBtnColorJson = await _localSettingsService.ReadSettingAsync("LaunchButtonTextColor");
+            LaunchButtonTextColor = launchBtnColorJson?.ToString() ?? "#FFFFFF";
+            
+            var launchBtnOpacityJson = await _localSettingsService.ReadSettingAsync("LaunchButtonTextOpacity");
+            LaunchButtonTextOpacity = launchBtnOpacityJson != null ? Convert.ToDouble(launchBtnOpacityJson) : 1.0;
+
+            var checkinColorJson = await _localSettingsService.ReadSettingAsync("GameCheckinTextColor");
+            GameCheckinTextColor = checkinColorJson?.ToString() ?? "#FFFFFF";
+            
+            var checkinOpacityJson = await _localSettingsService.ReadSettingAsync("GameCheckinTextOpacity");
+            GameCheckinTextOpacity = checkinOpacityJson != null ? Convert.ToDouble(checkinOpacityJson) : 1.0;
 
             var saveWindowSizeJson = await _localSettingsService.ReadSettingAsync("IsSaveWindowSizeEnabled");
             IsSaveWindowSizeEnabled = saveWindowSizeJson != null && Convert.ToBoolean(saveWindowSizeJson);
+
+            var hideNewsCardJson = await _localSettingsService.ReadSettingAsync("IsHideGameNewsCardEnabled");
+            IsHideGameNewsCardEnabled = hideNewsCardJson != null && Convert.ToBoolean(hideNewsCardJson);
+
+            var hideCheckinCardJson = await _localSettingsService.ReadSettingAsync("IsHideCheckinCardEnabled");
+            IsHideCheckinCardEnabled = hideCheckinCardJson != null && Convert.ToBoolean(hideCheckinCardJson);
 
             var panelOpacityJson = await _localSettingsService.ReadSettingAsync("PanelBackgroundOpacity");
             try
@@ -773,6 +809,37 @@ namespace FufuLauncher.ViewModels
             _ = _localSettingsService.SaveSettingAsync("IsBetterGICloseOnExitEnabled", value);
         }
 
+        partial void OnGameNewsCardTextColorChanged(string value)
+        {
+            _ = _localSettingsService.SaveSettingAsync("GameNewsCardTextColor", value);
+            WeakReferenceMessenger.Default.Send(new FufuLauncher.Messages.TextStyleChangedMessage());
+        }
+        partial void OnGameNewsCardTextOpacityChanged(double value)
+        {
+            _ = _localSettingsService.SaveSettingAsync("GameNewsCardTextOpacity", value);
+            WeakReferenceMessenger.Default.Send(new FufuLauncher.Messages.TextStyleChangedMessage());
+        }
+        partial void OnLaunchButtonTextColorChanged(string value)
+        {
+            _ = _localSettingsService.SaveSettingAsync("LaunchButtonTextColor", value);
+            WeakReferenceMessenger.Default.Send(new FufuLauncher.Messages.TextStyleChangedMessage());
+        }
+        partial void OnLaunchButtonTextOpacityChanged(double value)
+        {
+            _ = _localSettingsService.SaveSettingAsync("LaunchButtonTextOpacity", value);
+            WeakReferenceMessenger.Default.Send(new FufuLauncher.Messages.TextStyleChangedMessage());
+        }
+        partial void OnGameCheckinTextColorChanged(string value)
+        {
+            _ = _localSettingsService.SaveSettingAsync("GameCheckinTextColor", value);
+            WeakReferenceMessenger.Default.Send(new FufuLauncher.Messages.TextStyleChangedMessage());
+        }
+        partial void OnGameCheckinTextOpacityChanged(double value)
+        {
+            _ = _localSettingsService.SaveSettingAsync("GameCheckinTextOpacity", value);
+            WeakReferenceMessenger.Default.Send(new FufuLauncher.Messages.TextStyleChangedMessage());
+        }
+
         partial void OnGlobalBackgroundOverlayOpacityChanged(double value)
         {
             var clamped = Math.Clamp(value, 0.0, 1.0);
@@ -805,6 +872,19 @@ namespace FufuLauncher.ViewModels
             Debug.WriteLine($"SettingsViewModel: 保存窗口大小记忆设置 {value}");
             _ = _localSettingsService.SaveSettingAsync("IsSaveWindowSizeEnabled", value);
         }
+
+        partial void OnIsHideGameNewsCardEnabledChanged(bool value)
+        {
+            _ = _localSettingsService.SaveSettingAsync("IsHideGameNewsCardEnabled", value);
+            WeakReferenceMessenger.Default.Send(new CardVisibilityChangedMessage());
+        }
+
+        partial void OnIsHideCheckinCardEnabledChanged(bool value)
+        {
+            _ = _localSettingsService.SaveSettingAsync("IsHideCheckinCardEnabled", value);
+            WeakReferenceMessenger.Default.Send(new CardVisibilityChangedMessage());
+        }
+
         private bool _isLoadingLaunchParams = false;
 
         partial void OnMinimizeToTrayChanged(bool value)

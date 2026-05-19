@@ -10,16 +10,15 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2e6bf6ba-f1a7-4d7b-8b76-8b03b5df7f33" name="更改" comment="">
+    <list default="true" id="2e6bf6ba-f1a7-4d7b-8b76-8b03b5df7f33" name="更改" comment="增加部分个性化功能">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.FufuLauncher/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.FufuLauncher/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FufuLauncher/Plugins/Avatar/Avatar.disabled" beforeDir="false" afterPath="$PROJECT_DIR$/FufuLauncher/Plugins/Avatar/Avatar.disabled" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FufuLauncher/Services/AutoClickerService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/FufuLauncher/Services/AutoClickerService.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/FufuLauncher/Services/TokenRefreshService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/FufuLauncher/Services/TokenRefreshService.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FufuLauncher/ViewModels/PluginSettingsViewModel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/FufuLauncher/ViewModels/PluginSettingsViewModel.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FufuLauncher/ViewModels/MainViewModel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/FufuLauncher/ViewModels/MainViewModel.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FufuLauncher/ViewModels/SettingsViewModel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/FufuLauncher/ViewModels/SettingsViewModel.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FufuLauncher/Views/Main/DataPage.xaml" beforeDir="false" afterPath="$PROJECT_DIR$/FufuLauncher/Views/Main/DataPage.xaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/FufuLauncher/Views/Main/MainPage.xaml" beforeDir="false" afterPath="$PROJECT_DIR$/FufuLauncher/Views/Main/MainPage.xaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FufuLauncher/Views/Main/MainPage.xaml.cs" beforeDir="false" afterPath="$PROJECT_DIR$/FufuLauncher/Views/Main/MainPage.xaml.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FufuLauncher/Views/Main/PluginSettingsPage.xaml" beforeDir="false" afterPath="$PROJECT_DIR$/FufuLauncher/Views/Main/PluginSettingsPage.xaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FufuLauncher/Views/Main/PluginSettingsPage.xaml.cs" beforeDir="false" afterPath="$PROJECT_DIR$/FufuLauncher/Views/Main/PluginSettingsPage.xaml.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/fufulauncher.nsi" beforeDir="false" afterPath="$PROJECT_DIR$/fufulauncher.nsi" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FufuLauncher/Views/Main/SettingsPage.xaml" beforeDir="false" afterPath="$PROJECT_DIR$/FufuLauncher/Views/Main/SettingsPage.xaml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -341,15 +340,7 @@
       <workItem from="1779051051254" duration="4556000" />
       <workItem from="1779079020507" duration="3889000" />
       <workItem from="1779085552573" duration="1267000" />
-      <workItem from="1779104140418" duration="5855000" />
-    </task>
-    <task id="LOCAL-00045" summary="增加问题反馈模板">
-      <option name="closed" value="true" />
-      <created>1775915348905</created>
-      <option name="number" value="00045" />
-      <option name="presentableId" value="LOCAL-00045" />
-      <option name="project" value="LOCAL" />
-      <updated>1775915348905</updated>
+      <workItem from="1779104140418" duration="13149000" />
     </task>
     <task id="LOCAL-00046" summary="更新1.1.0.1">
       <option name="closed" value="true" />
@@ -735,7 +726,15 @@
       <option name="project" value="LOCAL" />
       <updated>1779088476023</updated>
     </task>
-    <option name="localTasksCounter" value="94" />
+    <task id="LOCAL-00094" summary="修改东西">
+      <option name="closed" value="true" />
+      <created>1779166025246</created>
+      <option name="number" value="00094" />
+      <option name="presentableId" value="LOCAL-00094" />
+      <option name="project" value="LOCAL" />
+      <updated>1779166025246</updated>
+    </task>
+    <option name="localTasksCounter" value="95" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -756,8 +755,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
-    <MESSAGE value="改了很多东西" />
-    <MESSAGE value="增加API统一存储" />
     <MESSAGE value="增加国际服签到和登录" />
     <MESSAGE value="增加帧数显示" />
     <MESSAGE value="优化" />
@@ -781,7 +778,9 @@
     <MESSAGE value="1.2.0.0" />
     <MESSAGE value="砍功能" />
     <MESSAGE value="修复" />
-    <option name="LAST_COMMIT_MESSAGE" value="修复" />
+    <MESSAGE value="修改东西" />
+    <MESSAGE value="增加部分个性化功能" />
+    <option name="LAST_COMMIT_MESSAGE" value="增加部分个性化功能" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

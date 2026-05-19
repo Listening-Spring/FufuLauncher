@@ -1,4 +1,4 @@
-﻿using System.Collections.ObjectModel;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -70,6 +70,8 @@ namespace FufuLauncher.ViewModels
         partial void OnIsGameLaunchingChanged(bool value) => IsGameNotLaunching = !value;
 
         [ObservableProperty] private bool _isPanelExpanded = true;
+        [ObservableProperty] private Visibility _gameNewsCardVisibility = Visibility.Visible;
+        [ObservableProperty] private Visibility _checkinCardVisibility = Visibility.Visible;
 
         private DispatcherQueueTimer _bannerTimer;
 
@@ -97,6 +99,10 @@ namespace FufuLauncher.ViewModels
         [ObservableProperty] private bool _useInjection;
 
         [ObservableProperty] private bool _preferVideoBackground = true;
+
+        [ObservableProperty] private SolidColorBrush _gameNewsCardTextBrush = new(Microsoft.UI.Colors.White);
+        [ObservableProperty] private SolidColorBrush _launchButtonTextBrush = new(Microsoft.UI.Colors.White);
+        [ObservableProperty] private SolidColorBrush _gameCheckinTextBrush = new(Microsoft.UI.Colors.White);
         public string BackgroundTypeToggleText => "切换背景";
 
         [ObservableProperty] private bool _isGameRunning;
@@ -156,6 +162,16 @@ namespace FufuLauncher.ViewModels
             _gameLauncherService = gameLauncherService;
             _notificationService = notificationService;
             _dispatcherQueue = App.MainWindow.DispatcherQueue;
+
+            WeakReferenceMessenger.Default.Register<FufuLauncher.Messages.TextStyleChangedMessage>(this, async (r, m) =>
+            {
+                await LoadTextStylesAsync();
+            });
+
+            WeakReferenceMessenger.Default.Register<CardVisibilityChangedMessage>(this, async (r, m) =>
+            {
+                await LoadCardVisibilityAsync();
+            });
 
             _bannerTimer = _dispatcherQueue.CreateTimer();
             _bannerTimer.Interval = TimeSpan.FromSeconds(5);
@@ -241,6 +257,7 @@ namespace FufuLauncher.ViewModels
 
         public async Task InitializeAsync()
         {
+            await LoadTextStylesAsync();
             await LoadUserPreferencesAsync();
             await LoadCustomBackgroundPathAsync();
             await LoadBackgroundAsync();
@@ -321,8 +338,20 @@ namespace FufuLauncher.ViewModels
             Debug.WriteLine($"[MainViewModel] 配置刷新: {_isInternationalAccount}");
         }
 
+        private async Task LoadCardVisibilityAsync()
+        {
+            var hideNewsCardJson = await _localSettingsService.ReadSettingAsync("IsHideGameNewsCardEnabled");
+            bool isNewsCardHidden = hideNewsCardJson != null && Convert.ToBoolean(hideNewsCardJson);
+            GameNewsCardVisibility = isNewsCardHidden ? Visibility.Collapsed : Visibility.Visible;
+
+            var hideCheckinCardJson = await _localSettingsService.ReadSettingAsync("IsHideCheckinCardEnabled");
+            bool isCheckinCardHidden = hideCheckinCardJson != null && Convert.ToBoolean(hideCheckinCardJson);
+            CheckinCardVisibility = isCheckinCardHidden ? Visibility.Collapsed : Visibility.Visible;
+        }
+
         private async Task LoadUserPreferencesAsync()
         {
+            await LoadCardVisibilityAsync();
             var pref = await _localSettingsService.ReadSettingAsync("PreferVideoBackground");
             if (pref != null)
             {
@@ -340,7 +369,61 @@ namespace FufuLauncher.ViewModels
             }
         }
 
-        private async Task LoadCustomBackgroundPathAsync()
+        private async Task LoadTextStylesAsync()
+        {
+            var newsColor = await _localSettingsService.ReadSettingAsync("GameNewsCardTextColor") as string ?? "#FFFFFF";
+            var newsOpacity = Convert.ToDouble(await _localSettingsService.ReadSettingAsync("GameNewsCardTextOpacity") ?? 1.0);
+            GameNewsCardTextBrush = CreateBrush(newsColor, newsOpacity);
+
+            var launchColor = await _localSettingsService.ReadSettingAsync("LaunchButtonTextColor") as string ?? "#FFFFFF";
+            var launchOpacity = Convert.ToDouble(await _localSettingsService.ReadSettingAsync("LaunchButtonTextOpacity") ?? 1.0);
+            LaunchButtonTextBrush = CreateBrush(launchColor, launchOpacity);
+
+            var checkinColor = await _localSettingsService.ReadSettingAsync("GameCheckinTextColor") as string ?? "#FFFFFF";
+            var checkinOpacity = Convert.ToDouble(await _localSettingsService.ReadSettingAsync("GameCheckinTextOpacity") ?? 1.0);
+            GameCheckinTextBrush = CreateBrush(checkinColor, checkinOpacity);
+        }
+
+        private SolidColorBrush CreateBrush(string hex, double opacity)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(hex)) hex = "#FFFFFF";
+                if (!hex.StartsWith("#")) hex = "#" + hex;
+                if (hex.Length == 4)
+                {
+                    hex = "#" + hex[1] + hex[1] + hex[2] + hex[2] + hex[3] + hex[3];
+                }
+                if (hex.Length != 7 && hex.Length != 9) hex = "#FFFFFF";
+                
+                byte a = 255;
+                byte r, g, b;
+                
+                if (hex.Length == 9)
+                {
+                    a = Convert.ToByte(hex.Substring(1, 2), 16);
+                    r = Convert.ToByte(hex.Substring(3, 2), 16);
+                    g = Convert.ToByte(hex.Substring(5, 2), 16);
+                    b = Convert.ToByte(hex.Substring(7, 2), 16);
+                }
+                else
+                {
+                    r = Convert.ToByte(hex.Substring(1, 2), 16);
+                    g = Convert.ToByte(hex.Substring(3, 2), 16);
+                    b = Convert.ToByte(hex.Substring(5, 2), 16);
+                }
+                
+                a = (byte)(a * opacity);
+                
+                return new SolidColorBrush(Windows.UI.Color.FromArgb(a, r, g, b));
+            }
+            catch
+            {
+                return new SolidColorBrush(Windows.UI.Color.FromArgb((byte)(255 * opacity), 255, 255, 255));
+            }
+        }
+
+        public async Task LoadCustomBackgroundPathAsync()
         {
             var path = await _localSettingsService.ReadSettingAsync("CustomBackgroundPath");
             if (path != null)

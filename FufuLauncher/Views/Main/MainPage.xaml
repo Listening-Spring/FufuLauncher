@@ -86,10 +86,10 @@
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
                         <TextBlock Grid.Column="0" Text="{Binding Title}" FontSize="13" 
-                                   Foreground="White"
+                                   Foreground="{Binding ElementName=MainPageRoot, Path=ViewModel.GameNewsCardTextBrush}"
                                    TextTrimming="CharacterEllipsis" MaxLines="1" Margin="0,0,8,0"/>
                         <TextBlock Grid.Column="1" Text="{Binding Date}" FontSize="12" 
-                                   Foreground="White" Opacity="0.5" 
+                                   Foreground="{Binding ElementName=MainPageRoot, Path=ViewModel.GameNewsCardTextBrush}" Opacity="0.5" 
                                    VerticalAlignment="Center"/>
                     </Grid>
                 </Button>
@@ -126,7 +126,8 @@
                       PointerEntered="InfoCard_PointerEntered"
                       PointerExited="InfoCard_PointerExited"
                       x:Name="InfoCardGrid"
-                      Translation="0,0,32">
+                      Translation="0,0,32"
+                      Visibility="{x:Bind ViewModel.GameNewsCardVisibility, Mode=OneWay}">
                     
                     <Grid.Shadow>
                         <ThemeShadow />
@@ -256,7 +257,8 @@
                       BorderThickness="1" 
                       BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
                       Background="{StaticResource IosGlassBrush}"
-                      Translation="0,0,32">
+                      Translation="0,0,32"
+                      Visibility="{x:Bind ViewModel.CheckinCardVisibility, Mode=OneWay}">
                     
                     <Grid.Shadow>
                         <ThemeShadow />
@@ -294,7 +296,7 @@
                                 HorizontalAlignment="Stretch" 
                                 Background="#1AFFFFFF"
                                 BorderThickness="0"
-                                Foreground="White"
+                                Foreground="{Binding GameCheckinTextBrush, Mode=OneWay}"
                                 CornerRadius="4" 
                                 Padding="12,6"
                                 Margin="0,0,8,0"/>
@@ -309,7 +311,7 @@
                                 CornerRadius="4" 
                                 Padding="0" 
                                 ToolTipService.ToolTip="刷新Token">
-                            <FontIcon Glyph="&#xE72C;" FontSize="14" Foreground="White"/>
+                            <FontIcon Glyph="&#xE72C;" FontSize="14" Foreground="{Binding GameCheckinTextBrush, Mode=OneWay}"/>
                         </Button>
 
                         <Button Grid.Column="2" 
@@ -322,7 +324,7 @@
                                 CornerRadius="4" 
                                 Padding="0" 
                                 ToolTipService.ToolTip="指定/切换签到UID">
-                            <FontIcon Glyph="&#xE77B;" FontSize="14" Foreground="White"/>
+                            <FontIcon Glyph="&#xE77B;" FontSize="14" Foreground="{Binding GameCheckinTextBrush, Mode=OneWay}"/>
                         </Button>
 
                         <Border Grid.Column="3" 
@@ -475,10 +477,10 @@
                                       Visibility="{x:Bind ViewModel.IsGameLaunching, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"/>
          
                         <FontIcon Glyph="{x:Bind ViewModel.LaunchButtonIcon, Mode=OneWay}" 
-                                  FontSize="20" Foreground="White"/>
+                                  FontSize="20" Foreground="{x:Bind ViewModel.LaunchButtonTextBrush, Mode=OneWay}"/>
         
                         <TextBlock Text="{x:Bind ViewModel.LaunchButtonText, Mode=OneWay}"
-                                   Foreground="White"
+                                   Foreground="{x:Bind ViewModel.LaunchButtonTextBrush, Mode=OneWay}"
                                    FontSize="16" FontWeight="SemiBold" VerticalAlignment="Center"/>
                     </StackPanel>
                 </Grid>

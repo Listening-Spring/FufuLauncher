@@ -65,9 +65,9 @@ public class TokenRefreshService
                 }
             }
 
-            Debug.WriteLine(isManual ? "用户手动触发 Token 刷新..." : "当前 Cookie 已失效或角色列表为空，开始执行 Token 刷新...");
+            Debug.WriteLine(isManual ? "用户手动触发Coken刷新..." : "当前Cookie已失效或角色列表为空，开始执行Coken刷新...");
             
-            WeakReferenceMessenger.Default.Send(new NotificationMessage("Token刷新", isManual ? "正在执行手动刷新..." : "Cookie已失效，正在执行刷新...", NotificationType.Warning, 3000));
+            WeakReferenceMessenger.Default.Send(new NotificationMessage("Cookie刷新", isManual ? "正在执行手动刷新..." : "Cookie已失效，正在执行刷新...", NotificationType.Warning, 3000));
 
             var cookieDict = ParseCookieString(config.Account.Cookie);
             
@@ -76,8 +76,8 @@ public class TokenRefreshService
 
             if (string.IsNullOrEmpty(stoken) || string.IsNullOrEmpty(mid))
             {
-                Debug.WriteLine("本地 Cookie 中缺少 stoken 或 mid，无法刷新");
-                if (isManual) SendErrorNotification("本地 Cookie 中缺少 stoken 或 mid，无法刷新");
+                Debug.WriteLine("本地Cookie中缺少stoken或mid，无法刷新");
+                if (isManual) SendErrorNotification("本地Cookie中缺少stoken或mid，无法刷新");
                 return;
             }
 
@@ -127,8 +127,8 @@ public class TokenRefreshService
                 var localSettingsService = new LocalSettingsService();
                 await localSettingsService.SaveSettingAsync("AccountConfig", config);
 
-                Debug.WriteLine("Token刷新成功");
-                WeakReferenceMessenger.Default.Send(new NotificationMessage("Token刷新", isManual ? "Token手动刷新已完成，新凭据已存盘" : "Token自动刷新已完成，新凭据已存盘，请重新启动软件", NotificationType.Success, 3000));
+                Debug.WriteLine("Cookie刷新成功");
+                WeakReferenceMessenger.Default.Send(new NotificationMessage("Cookie刷新", isManual ? "Cookie手动刷新已完成，新凭据已存盘" : "Cookie自动刷新已完成，新凭据已存盘，请重新启动软件", NotificationType.Success, 3000));
                 return;
             }
             else
@@ -138,14 +138,14 @@ public class TokenRefreshService
         }
         catch (Exception ex)
         {
-            Debug.WriteLine($"Token 刷新异常: {ex.Message}");
-            WeakReferenceMessenger.Default.Send(new NotificationMessage("Token 刷新失败", $"Token 刷新过程中出现异常: {ex.Message}", NotificationType.Error, 4000));
+            Debug.WriteLine($"Cookie刷新异常: {ex.Message}");
+            WeakReferenceMessenger.Default.Send(new NotificationMessage("Cookie刷新失败", $"Cookie刷新过程中出现异常: {ex.Message}", NotificationType.Error, 4000));
         }
     }
 
     private void SendErrorNotification(string message)
     {
-        WeakReferenceMessenger.Default.Send(new NotificationMessage("Token 刷新失败", message, NotificationType.Error, 4000));
+        WeakReferenceMessenger.Default.Send(new NotificationMessage("Cookie刷新失败", message, NotificationType.Error, 4000));
     }
 
     private async Task<bool> CheckCookieValidAsync(string cookie)
