@@ -19,14 +19,13 @@ public sealed partial class MainPage : Page
 {
     private const double BannerSwipeThreshold = 42;
     private const double BannerAnimationMs = 460;
-    private Microsoft.UI.Xaml.Media.Brush _originalInfoCardBrush;
-    private Microsoft.UI.Xaml.Media.Brush _originalCheckinCardBrush;
     private DateTimeOffset _lastBackgroundSwitchTime = DateTimeOffset.MinValue;
     private static readonly TimeSpan BackgroundSwitchCooldown = TimeSpan.FromSeconds(2);
     private BannerItem _displayedBanner;
     private bool _isBannerTransitioning;
     private bool _isBannerPointerPressed;
     private Windows.Foundation.Point _bannerPointerPressedPoint;
+    private static bool _hasCardAnimationPlayed = false;
     public MainViewModel ViewModel
     {
         get;
@@ -266,14 +265,14 @@ private async void ChangeUidButton_Click(object sender, RoutedEventArgs e)
         if (input.Length != 9 || !long.TryParse(input, out _))
         {
             args.Cancel = true;
-            statusText.Foreground = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.Red);
+            statusText.Foreground = new SolidColorBrush(Microsoft.UI.Colors.Red);
             statusText.Text = "UID必须为9位纯数字";
             statusText.Visibility = Visibility.Visible;
             deferral.Complete();
             return;
         }
 
-        statusText.Foreground = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.DarkOrange);
+        statusText.Foreground = new SolidColorBrush(Microsoft.UI.Colors.DarkOrange);
         statusText.Text = "正在从验证可用性";
         statusText.Visibility = Visibility.Visible;
 
@@ -283,8 +282,8 @@ private async void ChangeUidButton_Click(object sender, RoutedEventArgs e)
             if (!uids.Contains(input))
             {
                 args.Cancel = true;
-                statusText.Foreground = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.Red);
-                statusText.Text = "校验失败：该UID未绑定，请确认Cookie内是否包含该角色。";
+                statusText.Foreground = new SolidColorBrush(Microsoft.UI.Colors.Red);
+                statusText.Text = "校验失败：该UID未绑定，请确认是否包含该角色";
             }
             else
             {
@@ -295,7 +294,7 @@ private async void ChangeUidButton_Click(object sender, RoutedEventArgs e)
         catch (Exception ex)
         {
             args.Cancel = true;
-            statusText.Foreground = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.Red);
+            statusText.Foreground = new SolidColorBrush(Microsoft.UI.Colors.Red);
             statusText.Text = $"验证请求异常: {ex.Message}";
         }
         finally
@@ -350,13 +349,11 @@ private async void ChangeUidButton_Click(object sender, RoutedEventArgs e)
             return;
         }
 
-        if (e.ClickedItem is FufuLauncher.Services.Background.BackgroundUrlInfo info)
+        if (e.ClickedItem is BackgroundUrlInfo info)
         {
             _lastBackgroundSwitchTime = now;
-            // 触发 ViewModel 中的背景切换命令
             ViewModel.SelectSpecificBackgroundCommand.Execute(info);
-        
-            // 自动关闭 Flyout 弹窗
+            
             BackgroundFlyout.Hide();
         }
     }
@@ -387,9 +384,6 @@ private async void ChangeUidButton_Click(object sender, RoutedEventArgs e)
         ViewModel = App.GetService<MainViewModel>();
         DataContext = ViewModel;
         InitializeComponent();
-        
-        _originalInfoCardBrush = InfoCardGrid.Background;
-        _originalCheckinCardBrush = CheckinCardGrid.Background;
     
         ViewModel.PropertyChanged += ViewModel_PropertyChanged;
         
@@ -412,22 +406,47 @@ private async void ChangeUidButton_Click(object sender, RoutedEventArgs e)
     
     private void UpdateCardBackgrounds()
     {
+        if (InfoCardSolidBg == null || CheckinCardSolidBg == null) return;
+
+        var transparentBrush = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.Transparent);
+        InfoCardSolidBg.Background = transparentBrush;
+        CheckinCardSolidBg.Background = transparentBrush;
+
         if (ViewModel.IsVideoBackground)
         {
-            var isLightTheme = ActualTheme == ElementTheme.Light || 
-                               (ActualTheme == ElementTheme.Default && Application.Current.RequestedTheme == ApplicationTheme.Light);
-        
-            var bgColor = isLightTheme ? Microsoft.UI.Colors.White : Microsoft.UI.Colors.Black;
-            var semiTransparentBrush = new Microsoft.UI.Xaml.Media.SolidColorBrush(bgColor) { Opacity = 0.5 };
-        
-            InfoCardGrid.Background = semiTransparentBrush;
-            CheckinCardGrid.Background = semiTransparentBrush;
+            InfoCardBlurBg.Opacity = 0.5;
+            CheckinCardBlurBg.Opacity = 0.5;
         }
         else
         {
-            InfoCardGrid.Background = _originalInfoCardBrush;
-            CheckinCardGrid.Background = _originalCheckinCardBrush;
+            InfoCardBlurBg.Opacity = 1.0;
+            CheckinCardBlurBg.Opacity = 1.0;
         }
+    }
+    
+    private async Task TransitionCardBackgroundsAsync()
+    {
+        if (InfoCardSolidBg == null || CheckinCardSolidBg == null) return;
+        
+        var transparentBrush = new SolidColorBrush(Microsoft.UI.Colors.Transparent);
+        InfoCardSolidBg.Background = transparentBrush;
+        CheckinCardSolidBg.Background = transparentBrush;
+        
+        InfoCardBlurBg.Opacity = 0.65;
+        CheckinCardBlurBg.Opacity = 0.65;
+        
+        await Task.Delay(700);
+
+        if (ViewModel.IsVideoBackground) return;
+
+        var storyboard = new Storyboard();
+        var duration = new Duration(TimeSpan.FromMilliseconds(400));
+        var easing = new CubicEase { EasingMode = EasingMode.EaseInOut };
+        
+        storyboard.Children.Add(CreateDoubleAnimation(InfoCardBlurBg, "Opacity", 1.0, duration, easing));
+        storyboard.Children.Add(CreateDoubleAnimation(CheckinCardBlurBg, "Opacity", 1.0, duration, easing));
+
+        storyboard.Begin();
     }
     
     private void ViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -477,14 +496,23 @@ private async void ChangeUidButton_Click(object sender, RoutedEventArgs e)
     {
         EntranceStoryboard.Begin();
 
+        InitializeBannerDisplay();
+        
         if (!_isInitialized)
         {
             await ViewModel.InitializeAsync();
             _isInitialized = true;
         }
-    
-        UpdateCardBackgrounds();
-        InitializeBannerDisplay();
+        
+        if (!_hasCardAnimationPlayed)
+        {
+            _hasCardAnimationPlayed = true;
+            _ = TransitionCardBackgroundsAsync();
+        }
+        else
+        {
+            UpdateCardBackgrounds();
+        }
     }
 
     private async void OpenLink(string url)
