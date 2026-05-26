@@ -86,4 +86,12 @@ public class ScrapedMetadata
     {
         get; set;
     }
+    public string Rank
+    {
+        get; set;
+    }
+    public string ItemId
+    {
+        get; set;
+    }
 }

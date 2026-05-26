@@ -26,6 +26,10 @@
         <PublishSingleFile>true</PublishSingleFile>
 
         <PublishReadyToRun>true</PublishReadyToRun>
+
+        <Version>1.2.0.5</Version>
+        <AssemblyVersion>1.2.0.5</AssemblyVersion>
+        <FileVersion>1.2.0.5</FileVersion>
     </PropertyGroup>
 
     <ItemGroup>

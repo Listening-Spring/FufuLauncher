@@ -1,11 +1,17 @@
-﻿using System.Text.Json;
+﻿using System.Diagnostics;
+using System.Security.Cryptography;
+using System.Text;
+using System.Text.Json;
 using System.Text.RegularExpressions;
+using FufuLauncher.Constants;
 using FufuLauncher.Models;
 
 namespace FufuLauncher.Services;
 
 public class GachaService
 {
+    private const string Lk2Salt = "sidQFEglajEz7FA0Aj7HQPV88zpf17SO";
+    private const string AppVersion = "2.95.1";
     private readonly HttpClient _httpClient;
 
     public static readonly Dictionary<string, string> GachaTypes = new()
@@ -19,7 +25,53 @@ public class GachaService
 
     public GachaService()
     {
-        _httpClient = new HttpClient();
+        _httpClient = new HttpClient(new HttpClientHandler { UseCookies = false });
+    }
+
+    public async Task<string> GenerateAuthKeyAsync(string stoken, string mid, string stuid, string gameUid)
+    {
+        try
+        {
+            var body = $"{{\"auth_appid\":\"webview_gacha\",\"game_biz\":\"hk4e_cn\",\"game_uid\":{gameUid},\"region\":\"cn_gf01\"}}";
+            var ds = CalculateLk2Ds();
+            var cookie = $"stuid={stuid};stoken={stoken};mid={mid};";
+
+            var request = new HttpRequestMessage(HttpMethod.Post, ApiEndpoints.GenAuthKeyUrl);
+            request.Content = new StringContent(body, Encoding.UTF8, "application/json");
+            request.Headers.TryAddWithoutValidation("Cookie", cookie);
+            request.Headers.TryAddWithoutValidation("DS", ds);
+            request.Headers.TryAddWithoutValidation("x-rpc-app_version", AppVersion);
+            request.Headers.TryAddWithoutValidation("x-rpc-client_type", "5");
+            request.Headers.TryAddWithoutValidation("x-rpc-device_id", Guid.NewGuid().ToString("N"));
+            request.Headers.TryAddWithoutValidation("Referer", "https://app.mihoyo.com");
+            request.Headers.TryAddWithoutValidation("User-Agent", $"Mozilla/5.0 (Windows NT 10.0; Win64; x64) miHoYoBBS/{AppVersion}");
+
+            var response = await _httpClient.SendAsync(request);
+            var json = await response.Content.ReadAsStringAsync();
+
+            using var doc = JsonDocument.Parse(json);
+            var root = doc.RootElement;
+            if (root.TryGetProperty("retcode", out var rc) && rc.GetInt32() == 0)
+            {
+                return root.GetProperty("data").GetProperty("authkey").GetString();
+            }
+            Debug.WriteLine($"[Gacha] genAuthKey 失败: {json}");
+            return null;
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"[Gacha] genAuthKey 异常: {ex.Message}");
+            return null;
+        }
+    }
+
+    private static string CalculateLk2Ds()
+    {
+        var t = (int)DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+        var chars = "abcdefghijklmnopqrstuvwxyz0123456789";
+        var r = new string(Enumerable.Range(0, 6).Select(_ => chars[new Random().Next(chars.Length)]).ToArray());
+        var check = Convert.ToHexString(MD5.HashData(Encoding.UTF8.GetBytes($"salt={Lk2Salt}&t={t}&r={r}"))).ToLowerInvariant();
+        return $"{t},{r},{check}";
     }
 
     public string ExtractBaseUrl(string fullUrl)
@@ -36,7 +88,7 @@ public class GachaService
         return null;
     }
 
-    public async Task<List<GachaLogItem>> FetchGachaLogAsync(string baseUrl, string gachaType)
+    public async Task<List<GachaLogItem>> FetchGachaLogAsync(string baseUrl, string gachaType, Action<int> onPageFetched = null)
     {
         var allItems = new List<GachaLogItem>();
         string endId = "0";
@@ -73,6 +125,7 @@ public class GachaService
                 allItems.AddRange(response.Data.List);
                 endId = response.Data.List.Last().Id;
                 page++;
+                onPageFetched?.Invoke(allItems.Count);
                 await Task.Delay(200);
             }
             catch (Exception)

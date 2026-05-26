@@ -59,6 +59,7 @@
         public const string CalculateAvatarListUrl = "https://api-takumi.mihoyo.com/event/e20200928calculate/v1/avatar/list";
         public const string CalculateWeaponListUrl = "https://api-takumi.mihoyo.com/event/e20200928calculate/v1/weapon/list";
         public const string CalculateBatchComputeUrl = "https://api-takumi.mihoyo.com/event/e20200928calculate/v3/batch_compute";
+        public const string GenAuthKeyUrl = "https://api-takumi.mihoyo.com/binding/api/genAuthKey";
         public const string InteractiveMapUrl = "https://act.mihoyo.com/ys/app/interactive-map/index.html";
         public const string LelaerPlayerRecordApiUrl = "https://api.lelaer.com/ys/getPlayerRecord.php?uid={0}";
         public const string TeamWikiUrl = "https://webstatic.mihoyo.com/ys/event/lineup-fe/index.html#/m/index";

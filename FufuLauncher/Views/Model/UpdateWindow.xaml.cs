@@ -58,23 +58,7 @@ namespace FufuLauncher.Views
         
         private void LoadLocalVersion()
         {
-            try
-            {
-                string jsonPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Update.json");
-                if (File.Exists(jsonPath))
-                {
-                    string jsonContent = File.ReadAllText(jsonPath);
-                    var updateData = JsonSerializer.Deserialize<JsonElement>(jsonContent);
-                    if (updateData.TryGetProperty("Version", out var versionElement))
-                    {
-                        _localVersion = versionElement.GetString();
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"读取本地配置异常: {ex.Message}");
-            }
+            _localVersion = System.Reflection.Assembly.GetEntryAssembly()?.GetName().Version?.ToString() ?? "";
         }
 
         private void CleanupOldWebView2Data(string baseFolder)
@@ -248,7 +232,7 @@ namespace FufuLauncher.Views
                         .Replace(".exe", "")
                         .Trim();
                     
-                    if (cloudVersion == _localVersion)
+                    if (!Services.UpdateService.IsNewerVersion(cloudVersion, _localVersion))
                     {
                         StopTimeout();
                         this.DispatcherQueue.TryEnqueue(async () => 

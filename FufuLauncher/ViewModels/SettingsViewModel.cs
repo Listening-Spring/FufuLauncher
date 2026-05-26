@@ -49,6 +49,7 @@ namespace FufuLauncher.ViewModels
 
         [ObservableProperty] private ElementTheme _elementTheme;
         [ObservableProperty] private string _versionDescription;
+        public string AppVersion => $"版本 {Assembly.GetEntryAssembly()?.GetName().Version}";
         [ObservableProperty] private ServerType _selectedServer;
         [ObservableProperty] private bool _isBackgroundEnabled = true;
         [ObservableProperty] private AppLanguage _selectedLanguage;

@@ -15,6 +15,8 @@ public sealed partial class AboutPage : Page
     public AboutPage()
     {
         InitializeComponent();
+        var version = System.Reflection.Assembly.GetEntryAssembly()?.GetName().Version;
+        VersionText.Text = $"Version {version?.Major}.{version?.Minor}.{version?.Build}.{version?.Revision}";
     }
 
     private async void ContactAuthor_Click(object sender, RoutedEventArgs e)

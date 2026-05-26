@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using FufuLauncher.Constants;
@@ -8,10 +9,9 @@ namespace FufuLauncher.Services;
 
 public class UpdateService : IUpdateService
 {
-    private const string HardcodedVersion = "1.2.0";
-
     private readonly ILocalSettingsService _localSettingsService;
     private readonly HttpClient _httpClient;
+    private static readonly string CurrentVersion = Assembly.GetEntryAssembly()?.GetName().Version?.ToString() ?? "1.0.0.0";
 
     public UpdateService(ILocalSettingsService localSettingsService)
     {
@@ -29,7 +29,7 @@ public class UpdateService : IUpdateService
             Timeout = TimeSpan.FromSeconds(30),
             DefaultRequestHeaders =
             {
-                UserAgent = { new System.Net.Http.Headers.ProductInfoHeaderValue("Fufu-Launcher", "1.2.0") },
+                UserAgent = { new System.Net.Http.Headers.ProductInfoHeaderValue("Fufu-Launcher", CurrentVersion) },
                 Accept = { new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json") }
             }
         };
@@ -40,6 +40,7 @@ public class UpdateService : IUpdateService
         try
         {
             Debug.WriteLine($"[UpdateService] === 版本检查开始 ===");
+            Debug.WriteLine($"[UpdateService] 本地版本: {CurrentVersion}");
             Debug.WriteLine($"[UpdateService] 超时设置: {_httpClient.Timeout.TotalSeconds} 秒");
 
             if (!await IsServerReachableAsync())
@@ -52,7 +53,7 @@ public class UpdateService : IUpdateService
             Debug.WriteLine($"[UpdateService] 服务器响应: {json}");
 
             var updateInfo = JsonSerializer.Deserialize<UpdateInfo>(json);
-            var serverVersion = updateInfo?.Version ?? HardcodedVersion;
+            var serverVersion = updateInfo?.Version ?? CurrentVersion;
             var updateInfoUrl = updateInfo?.UpdateInfoUrl ?? ApiEndpoints.UpdateHtmlUrl;
 
             Debug.WriteLine($"[UpdateService] 解析后的服务器版本: {serverVersion}");
@@ -62,15 +63,20 @@ public class UpdateService : IUpdateService
             var lastVersion = lastVersionObj?.ToString() ?? string.Empty;
 
             Debug.WriteLine($"[UpdateService] 上次记录版本: '{lastVersion}'");
-            Debug.WriteLine($"[UpdateService] 比较结果: server='{serverVersion}' vs last='{lastVersion}'");
 
-            if (serverVersion == lastVersion)
+            if (!IsNewerVersion(serverVersion, CurrentVersion))
             {
-                Debug.WriteLine($"[UpdateService] 版本相同，跳过显示");
+                Debug.WriteLine($"[UpdateService] 服务器版本不比本地版本新，跳过更新");
                 return new UpdateCheckResult { ShouldShowUpdate = false };
             }
 
-            Debug.WriteLine($"[UpdateService] 版本不同，准备显示更新窗口");
+            if (serverVersion == lastVersion)
+            {
+                Debug.WriteLine($"[UpdateService] 已显示过此版本，跳过重复提示");
+                return new UpdateCheckResult { ShouldShowUpdate = false };
+            }
+
+            Debug.WriteLine($"[UpdateService] 发现新版本，准备显示更新窗口");
             await _localSettingsService.SaveSettingAsync(LocalSettingsService.LastAnnouncedVersionKey, serverVersion);
 
             return new UpdateCheckResult
@@ -85,6 +91,20 @@ public class UpdateService : IUpdateService
             Debug.WriteLine($"[UpdateService] 检查失败: {ex.GetType().Name} - {ex.Message}");
             Debug.WriteLine($"[UpdateService] 堆栈: {ex.StackTrace}");
             return new UpdateCheckResult { ShouldShowUpdate = false };
+        }
+    }
+
+    internal static bool IsNewerVersion(string serverVersion, string currentVersion)
+    {
+        try
+        {
+            var serverVer = new Version(serverVersion);
+            var currentVer = new Version(currentVersion);
+            return serverVer > currentVer;
+        }
+        catch
+        {
+            return false;
         }
     }
 
