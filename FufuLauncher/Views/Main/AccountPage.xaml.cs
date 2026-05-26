@@ -48,10 +48,13 @@ public sealed partial class AccountPage : Page
         }
     }
 
-    private async void OnGachaAnalysisClicked(object sender, RoutedEventArgs e)
+    private void OnGachaAnalysisClicked(object sender, RoutedEventArgs e)
     {
-        var dialog = new GachaDialog();
-        dialog.XamlRoot = XamlRoot;
-        await dialog.ShowAsync();
+        // var dialog = new GachaDialog();
+        // dialog.XamlRoot = XamlRoot;
+        // await dialog.ShowAsync();
+
+        var window = new GachaAnalysisWindow();
+        window.Activate();
     }
 }

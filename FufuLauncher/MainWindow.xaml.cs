@@ -1117,6 +1117,25 @@ private Task ApplyGlobalBackgroundAsync(BackgroundRenderResult? result)
         }
     }
 
+    public async Task NavigateToAccountPageAsync()
+    {
+        Activate();
+
+        for (var i = 0; i < 40 && !_isMainUiLoaded; i++)
+        {
+            await Task.Delay(100);
+        }
+
+        var accountItem = NavigationView.MenuItems
+            .OfType<NavigationViewItem>()
+            .FirstOrDefault(item => item.Tag?.ToString() == "FufuLauncher.ViewModels.AccountViewModel");
+
+        if (accountItem != null)
+            NavigationView.SelectedItem = accountItem;
+        else
+            NavigateToPage("FufuLauncher.ViewModels.AccountViewModel");
+    }
+
     private void UpdatePageOverlayState(bool isMainPage)
 {
     try
