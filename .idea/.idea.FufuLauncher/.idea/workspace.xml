@@ -11,8 +11,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2e6bf6ba-f1a7-4d7b-8b76-8b03b5df7f33" name="更改" comment="">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.FufuLauncher/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.FufuLauncher/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FufuLauncher/Views/Main/PluginSettingsPage.xaml" beforeDir="false" afterPath="$PROJECT_DIR$/FufuLauncher/Views/Main/PluginSettingsPage.xaml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -384,15 +384,7 @@
       <workItem from="1779708284560" duration="1357000" />
       <workItem from="1779821284326" duration="2634000" />
       <workItem from="1779856291261" duration="11514000" />
-      <workItem from="1779894352293" duration="5329000" />
-    </task>
-    <task id="LOCAL-00064" summary="增加国际服签到和登录">
-      <option name="closed" value="true" />
-      <created>1777211246634</created>
-      <option name="number" value="00064" />
-      <option name="presentableId" value="LOCAL-00064" />
-      <option name="project" value="LOCAL" />
-      <updated>1777211246635</updated>
+      <workItem from="1779894352293" duration="6256000" />
     </task>
     <task id="LOCAL-00065" summary="增加帧数显示">
       <option name="closed" value="true" />
@@ -778,7 +770,15 @@
       <option name="project" value="LOCAL" />
       <updated>1779901089208</updated>
     </task>
-    <option name="localTasksCounter" value="113" />
+    <task id="LOCAL-00113" summary="添加排除">
+      <option name="closed" value="true" />
+      <created>1779901623379</created>
+      <option name="number" value="00113" />
+      <option name="presentableId" value="LOCAL-00113" />
+      <option name="project" value="LOCAL" />
+      <updated>1779901623379</updated>
+    </task>
+    <option name="localTasksCounter" value="114" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -811,7 +811,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
-    <MESSAGE value="增加刷新提示" />
     <MESSAGE value="小修复" />
     <MESSAGE value="小修改" />
     <MESSAGE value="1.2.0.0" />
@@ -836,7 +835,8 @@
     <MESSAGE value="修改部分功能" />
     <MESSAGE value="修复服务器切换的写入问题" />
     <MESSAGE value="增加插件帮助说明" />
-    <option name="LAST_COMMIT_MESSAGE" value="增加插件帮助说明" />
+    <MESSAGE value="添加排除" />
+    <option name="LAST_COMMIT_MESSAGE" value="添加排除" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
