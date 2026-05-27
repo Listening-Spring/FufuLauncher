@@ -68,7 +68,8 @@ public partial class GachaAnalysisModel : ObservableObject
     [ObservableProperty] private ObservableCollection<GachaDisplayItem> _weaponFourStars = new();
     [ObservableProperty] private ObservableCollection<GachaDisplayItem> _standardFourStars = new();
     
-    [ObservableProperty] private ObservableCollection<ScrapedMetadata> _allMetadataPreview = new();
+    [ObservableProperty] private ObservableCollection<ScrapedMetadata> _characterMetadataPreview = new();
+    [ObservableProperty] private ObservableCollection<ScrapedMetadata> _weaponMetadataPreview = new();
     [ObservableProperty] private ObservableCollection<string> _knownUids = new();
     [ObservableProperty] private ObservableCollection<string> _uidComboItems = new();
     [ObservableProperty] private string _selectedUid = "";
@@ -198,7 +199,11 @@ public partial class GachaAnalysisModel : ObservableObject
     private void LoadMetadataFromDb()
     {
         _savedMetadata.Clear();
-        App.MainWindow.DispatcherQueue.TryEnqueue(() => AllMetadataPreview.Clear());
+        App.MainWindow.DispatcherQueue.TryEnqueue(() =>
+        {
+            CharacterMetadataPreview.Clear();
+            WeaponMetadataPreview.Clear();
+        });
 
         using var connection = new SqliteConnection(_dbConnectionString);
         connection.Open();
@@ -220,7 +225,12 @@ public partial class GachaAnalysisModel : ObservableObject
             if (!reader.IsDBNull(4)) item.Rank = reader.GetString(4);
             if (!reader.IsDBNull(5)) item.ItemId = reader.GetString(5);
             _savedMetadata.Add(item);
-            App.MainWindow.DispatcherQueue.TryEnqueue(() => AllMetadataPreview.Add(item));
+            var isChar = item.Type == "char";
+            App.MainWindow.DispatcherQueue.TryEnqueue(() =>
+            {
+                if (isChar) CharacterMetadataPreview.Add(item);
+                else WeaponMetadataPreview.Add(item);
+            });
         }
     }
 

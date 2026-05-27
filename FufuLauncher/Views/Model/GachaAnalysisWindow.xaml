@@ -238,7 +238,14 @@
                                 <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Padding="12">
                                     <StackPanel Spacing="4">
                                         <ItemsControl ItemsSource="{x:Bind ViewModel.CharacterFiveStars, Mode=OneWay}" ItemTemplate="{StaticResource GachaRowTemplate}"/>
-                                        <ItemsControl ItemsSource="{x:Bind ViewModel.CharacterFourStars, Mode=OneWay}" ItemTemplate="{StaticResource GachaRowTemplate}" 
+                                        <Grid Margin="0,8"
+                                              Visibility="{Binding ViewModel.IsCharacterFourStarVisible, Converter={StaticResource BoolToVisibilityConverter}}">
+                                            <Border Height="1" Background="{ThemeResource DividerStrokeColorDefaultBrush}" VerticalAlignment="Center"/>
+                                            <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" Padding="12,2" HorizontalAlignment="Center" VerticalAlignment="Center" CornerRadius="4">
+                                                <TextBlock Text="四星" FontSize="14" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                                            </Border>
+                                        </Grid>
+                                        <ItemsControl ItemsSource="{x:Bind ViewModel.CharacterFourStars, Mode=OneWay}" ItemTemplate="{StaticResource GachaRowTemplate}"
                                                       Visibility="{Binding ViewModel.IsCharacterFourStarVisible, Converter={StaticResource BoolToVisibilityConverter}}"/>
                                     </StackPanel>
                                 </ScrollViewer>
@@ -280,7 +287,14 @@
                                 <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Padding="12">
                                     <StackPanel Spacing="4">
                                         <ItemsControl ItemsSource="{x:Bind ViewModel.WeaponFiveStars, Mode=OneWay}" ItemTemplate="{StaticResource GachaRowTemplate}"/>
-                                        <ItemsControl ItemsSource="{x:Bind ViewModel.WeaponFourStars, Mode=OneWay}" ItemTemplate="{StaticResource GachaRowTemplate}" 
+                                        <Grid Margin="0,8"
+                                              Visibility="{Binding ViewModel.IsWeaponFourStarVisible, Converter={StaticResource BoolToVisibilityConverter}}">
+                                            <Border Height="1" Background="{ThemeResource DividerStrokeColorDefaultBrush}" VerticalAlignment="Center"/>
+                                            <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" Padding="12,2" HorizontalAlignment="Center" VerticalAlignment="Center" CornerRadius="4">
+                                                <TextBlock Text="四星" FontSize="14" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                                            </Border>
+                                        </Grid>
+                                        <ItemsControl ItemsSource="{x:Bind ViewModel.WeaponFourStars, Mode=OneWay}" ItemTemplate="{StaticResource GachaRowTemplate}"
                                                       Visibility="{Binding ViewModel.IsWeaponFourStarVisible, Converter={StaticResource BoolToVisibilityConverter}}"/>
                                     </StackPanel>
                                 </ScrollViewer>
@@ -316,20 +330,28 @@
                                         <TextBlock FontSize="13"><Run Text="四星已垫: "/><Run Text="{x:Bind ViewModel.StandardStats.CurrentPity4, Mode=OneWay}" FontWeight="Bold"/></TextBlock>
                                     </StackPanel>
                                     
+                                    
                                     <ToggleButton Content="显示四星记录" IsChecked="{x:Bind ViewModel.IsStandardFourStarVisible, Mode=TwoWay}" HorizontalAlignment="Stretch"/>
                                 </StackPanel>
 
                                 <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Padding="12">
                                     <StackPanel Spacing="4">
                                         <ItemsControl ItemsSource="{x:Bind ViewModel.StandardFiveStars, Mode=OneWay}" ItemTemplate="{StaticResource GachaRowTemplate}"/>
-                                        <ItemsControl ItemsSource="{x:Bind ViewModel.StandardFourStars, Mode=OneWay}" ItemTemplate="{StaticResource GachaRowTemplate}" 
+                                        <Grid Margin="0,8"
+                                              Visibility="{Binding ViewModel.IsStandardFourStarVisible, Converter={StaticResource BoolToVisibilityConverter}}">
+                                            <Border Height="1" Background="{ThemeResource DividerStrokeColorDefaultBrush}" VerticalAlignment="Center"/>
+                                            <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" Padding="12,2" HorizontalAlignment="Center" VerticalAlignment="Center" CornerRadius="4">
+                                                <TextBlock Text="四星" FontSize="14" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                                            </Border>
+                                        </Grid>
+                                        <ItemsControl ItemsSource="{x:Bind ViewModel.StandardFourStars, Mode=OneWay}" ItemTemplate="{StaticResource GachaRowTemplate}"
                                                       Visibility="{Binding ViewModel.IsStandardFourStarVisible, Converter={StaticResource BoolToVisibilityConverter}}"/>
                                     </StackPanel>
                                 </ScrollViewer>
                             </Grid>
                         </Border>
 
-                        <Border Width="440" CornerRadius="8" Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1" Shadow="{StaticResource SharedShadow}" Translation="0,0,16">
+                        <Border Width="340" CornerRadius="8" Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1" Shadow="{StaticResource SharedShadow}" Translation="0,0,16">
                             <Grid>
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto"/>
@@ -342,19 +364,38 @@
                                 </StackPanel>
 
                                 <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Padding="12">
-                                    <GridView ItemsSource="{x:Bind ViewModel.AllMetadataPreview, Mode=OneWay}" SelectionMode="None">
-                                        <GridView.ItemTemplate>
-                                            <DataTemplate x:DataType="models:ScrapedMetadata">
-                                                <Grid Width="90" Height="110" Margin="4" CornerRadius="6" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1" Shadow="{StaticResource SharedShadow}" Translation="0,0,8">
-                                                    <Image Source="{Binding ImgSrc}" Stretch="UniformToFill" Margin="0,0,0,24"/>
-                                                    <Image Source="{Binding ElementSrc}" Width="18" Height="18" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="4"/>
-                                                    <Grid VerticalAlignment="Bottom" Height="24" Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}">
-                                                        <TextBlock Text="{x:Bind Name}" FontSize="11" HorizontalAlignment="Center" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"/>
+                                    <StackPanel Spacing="8">
+                                        <TextBlock Text="角色" FontSize="14" FontWeight="SemiBold" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                                        <GridView ItemsSource="{x:Bind ViewModel.CharacterMetadataPreview, Mode=OneWay}" SelectionMode="None">
+                                            <GridView.ItemTemplate>
+                                                <DataTemplate x:DataType="models:ScrapedMetadata">
+                                                    <Grid Width="90" Height="110" Margin="4" CornerRadius="6" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1" Shadow="{StaticResource SharedShadow}" Translation="0,0,8">
+                                                        <Image Source="{Binding ImgSrc}" Stretch="UniformToFill" Margin="0,0,0,24"/>
+                                                        <Image Source="{Binding ElementSrc}" Width="18" Height="18" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="4"/>
+                                                        <Grid VerticalAlignment="Bottom" Height="24" Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}">
+                                                            <TextBlock Text="{x:Bind Name}" FontSize="11" HorizontalAlignment="Center" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"/>
+                                                        </Grid>
                                                     </Grid>
-                                                </Grid>
-                                            </DataTemplate>
-                                        </GridView.ItemTemplate>
-                                    </GridView>
+                                                </DataTemplate>
+                                            </GridView.ItemTemplate>
+                                        </GridView>
+
+                                        <Border Height="1" Background="{ThemeResource DividerStrokeColorDefaultBrush}" Margin="0,4"/>
+
+                                        <TextBlock Text="武器" FontSize="14" FontWeight="SemiBold" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                                        <GridView ItemsSource="{x:Bind ViewModel.WeaponMetadataPreview, Mode=OneWay}" SelectionMode="None">
+                                            <GridView.ItemTemplate>
+                                                <DataTemplate x:DataType="models:ScrapedMetadata">
+                                                    <Grid Width="90" Height="110" Margin="4" CornerRadius="6" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1" Shadow="{StaticResource SharedShadow}" Translation="0,0,8">
+                                                        <Image Source="{Binding ImgSrc}" Stretch="UniformToFill" Margin="0,0,0,24"/>
+                                                        <Grid VerticalAlignment="Bottom" Height="24" Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}">
+                                                            <TextBlock Text="{x:Bind Name}" FontSize="11" HorizontalAlignment="Center" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"/>
+                                                        </Grid>
+                                                    </Grid>
+                                                </DataTemplate>
+                                            </GridView.ItemTemplate>
+                                        </GridView>
+                                    </StackPanel>
                                 </ScrollViewer>
                             </Grid>
                         </Border>
