@@ -235,59 +235,58 @@
             </StackPanel>
         </Grid>
 
-<Border x:Name="NotificationContainer"
-                HorizontalAlignment="Right"
-                VerticalAlignment="Bottom"
-                Margin="0,0,24,24"
-                Width="380"
-                MaxHeight="450"
-                CornerRadius="8"
-                BorderThickness="1"
-                BorderBrush="#20FFFFFF"
-                Visibility="Collapsed"
-                Canvas.ZIndex="3000">
-            
-            <Border.Background>
-                <AcrylicBrush TintColor="#151515" TintOpacity="0.8" FallbackColor="#DD151515"/>
-            </Border.Background>
-            <Border.Shadow>
-                <ThemeShadow/>
-            </Border.Shadow>
+        <Grid x:Name="NotificationContainer"
+              HorizontalAlignment="Right"
+              VerticalAlignment="Bottom"
+              Margin="0,0,24,24"
+              Width="380"
+              MaxHeight="450"
+              Visibility="Collapsed"
+              Canvas.ZIndex="3000">
 
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
+            <Border CornerRadius="10">
+                <Border.Background>
+                    <AcrylicBrush TintColor="#1E1E1E" TintOpacity="0.85" FallbackColor="#EE1E1E1E"/>
+                </Border.Background>
+                <Border.Shadow>
+                    <ThemeShadow/>
+                </Border.Shadow>
 
-                <Grid Grid.Row="0" Padding="16,12,16,8" BorderBrush="#10FFFFFF" BorderThickness="0,0,0,1">
-                    <TextBlock Text="通知中心" 
-                               FontSize="14" 
-                               FontWeight="SemiBold" 
-                               VerticalAlignment="Center" 
-                               Foreground="White"/>
-                    
-                    <Button Content="全部清除"
-                            HorizontalAlignment="Right"
-                            VerticalAlignment="Center"
-                            Background="Transparent"
-                            BorderThickness="0"
-                            Foreground="#88FFFFFF"
-                            FontSize="12"
-                            Padding="8,4"
-                            Click="ClearAllNotifications_Click"/>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <Grid Grid.Row="0" Padding="16,12,16,8">
+                        <TextBlock Text="通知中心" 
+                                   FontSize="14" 
+                                   FontWeight="SemiBold" 
+                                   VerticalAlignment="Center" 
+                                   Foreground="White"/>
+                
+                        <Button Content="全部清除"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Center"
+                                Background="Transparent"
+                                BorderThickness="0"
+                                Foreground="#88FFFFFF"
+                                FontSize="12"
+                                Padding="8,4"
+                                Click="ClearAllNotifications_Click"/>
+                    </Grid>
+
+                    <ScrollViewer Grid.Row="1" 
+                                  VerticalScrollBarVisibility="Auto" 
+                                  HorizontalScrollBarVisibility="Disabled"
+                                  Padding="12,12,12,12">
+                        <StackPanel x:Name="NotificationPanel" 
+                                    Orientation="Vertical" 
+                                    Spacing="8"/>
+                    </ScrollViewer>
                 </Grid>
-
-                <ScrollViewer Grid.Row="1" 
-                              VerticalScrollBarVisibility="Auto" 
-                              HorizontalScrollBarVisibility="Disabled"
-                              Padding="12,12,12,12">
-                    <StackPanel x:Name="NotificationPanel" 
-                                Orientation="Vertical" 
-                                Spacing="8"/>
-                </ScrollViewer>
-            </Grid>
-        </Border>
+            </Border>
+        </Grid>
 
         <Grid x:Name="AppTitleBar" 
               Height="40" 

@@ -944,6 +944,13 @@ private Task ApplyGlobalBackgroundAsync(BackgroundRenderResult? result)
             await LoadMinimizeToTraySettingAsync();
             await LoadMinWindowSizeLimitSettingAsync();
             ShowMainContent();
+            
+            _ = Task.Run(async () => 
+            {
+                var starService = new StarPromotionService(_localSettingsService, dispatcherQueue);
+                await starService.CheckAndShowPromptAsync();
+            });
+            
             _ = Task.Run(async () =>
             {
                 try

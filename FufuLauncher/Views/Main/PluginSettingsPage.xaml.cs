@@ -116,6 +116,44 @@ public sealed partial class PluginSettingsPage : Page
         }
     }
     
+    private void OnOpenSponsorWindowClick(object sender, RoutedEventArgs e)
+    {
+        var sponsorWindow = new SponsorWindow();
+
+        IntPtr hWnd = WinRT.Interop.WindowNative.GetWindowHandle(sponsorWindow);
+        var windowId = Microsoft.UI.Win32Interop.GetWindowIdFromWindow(hWnd);
+        var appWindow = Microsoft.UI.Windowing.AppWindow.GetFromWindowId(windowId);
+
+        if (appWindow != null)
+        {
+            string iconPath = Path.Combine(AppContext.BaseDirectory, "Assets/WindowIcon.ico");
+            if (File.Exists(iconPath))
+            {
+                appWindow.SetIcon(iconPath);
+            }
+
+            var size = new Windows.Graphics.SizeInt32(640, 520);
+            appWindow.Resize(size);
+
+            var displayArea = Microsoft.UI.Windowing.DisplayArea.GetFromWindowId(windowId, Microsoft.UI.Windowing.DisplayAreaFallback.Primary);
+            if (displayArea != null)
+            {
+                var centeredX = (displayArea.WorkArea.Width - size.Width) / 2;
+                var centeredY = (displayArea.WorkArea.Height - size.Height) / 2;
+                appWindow.Move(new Windows.Graphics.PointInt32(centeredX, centeredY));
+            }
+
+            var presenter = appWindow.Presenter as Microsoft.UI.Windowing.OverlappedPresenter;
+            if (presenter != null)
+            {
+                presenter.IsMaximizable = false;
+                presenter.IsResizable = false;
+            }
+        }
+
+        sponsorWindow.Activate();
+    }
+    
     protected override void OnNavigatedTo(Microsoft.UI.Xaml.Navigation.NavigationEventArgs e)
     {
         base.OnNavigatedTo(e);

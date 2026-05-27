@@ -144,6 +144,44 @@ public sealed partial class SettingsPage : Page
         
         editorWindow.Activate();
     }
+    
+    private void OnOpenSponsorWindowClick(object sender, RoutedEventArgs e)
+    {
+        var sponsorWindow = new SponsorWindow();
+
+        IntPtr hWnd = WindowNative.GetWindowHandle(sponsorWindow);
+        var windowId = Win32Interop.GetWindowIdFromWindow(hWnd);
+        var appWindow = AppWindow.GetFromWindowId(windowId);
+
+        if (appWindow != null)
+        {
+            string iconPath = Path.Combine(AppContext.BaseDirectory, "Assets/WindowIcon.ico");
+            if (File.Exists(iconPath))
+            {
+                appWindow.SetIcon(iconPath);
+            }
+
+            var size = new Windows.Graphics.SizeInt32(640, 520);
+            appWindow.Resize(size);
+
+            var displayArea = DisplayArea.GetFromWindowId(windowId, DisplayAreaFallback.Primary);
+            if (displayArea != null)
+            {
+                var centeredX = (displayArea.WorkArea.Width - size.Width) / 2;
+                var centeredY = (displayArea.WorkArea.Height - size.Height) / 2;
+                appWindow.Move(new Windows.Graphics.PointInt32(centeredX, centeredY));
+            }
+
+            var presenter = appWindow.Presenter as OverlappedPresenter;
+            if (presenter != null)
+            {
+                presenter.IsMaximizable = false;
+                presenter.IsResizable = false;
+            }
+        }
+
+        sponsorWindow.Activate();
+    }
 
     private void OnOpenAboutWindowClick(object sender, RoutedEventArgs e)
     {
