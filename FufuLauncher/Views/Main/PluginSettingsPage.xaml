@@ -11,44 +11,45 @@
 
     <Page.Resources>
         <DataTemplate x:Key="BoolTemplate" x:DataType="viewmodels:PluginSettingItem">
-            <StackPanel Width="240" HorizontalAlignment="Left">
-                <TextBlock Text="{x:Bind DisplayName}" FontSize="12" Margin="0,0,0,8" Opacity="0.9"/>
-                <ToggleSwitch IsOn="{x:Bind BoolValue, Mode=TwoWay}" OnContent="开" OffContent="关" MinWidth="0" Margin="0"/>
+            <StackPanel HorizontalAlignment="Left">
+                <TextBlock Text="{x:Bind DisplayName}" FontSize="12" FontFamily="{StaticResource AppGlobalFont}" Margin="0,0,0,8" Opacity="0.9"/>
+                <ToggleSwitch IsOn="{x:Bind BoolValue, Mode=TwoWay}" OnContent="开" OffContent="关" MinWidth="0" Margin="0" FontFamily="{StaticResource AppGlobalFont}"/>
             </StackPanel>
         </DataTemplate>
+
+        <DataTemplate x:Key="BoolWithLinkedTemplate" x:DataType="viewmodels:PluginSettingItem">
+            <StackPanel HorizontalAlignment="Left">
+                <TextBlock Text="{x:Bind DisplayName}" FontSize="12" FontFamily="{StaticResource AppGlobalFont}" Margin="0,0,0,8" Opacity="0.9"/>
+                <ToggleSwitch IsOn="{x:Bind BoolValue, Mode=TwoWay}" OnContent="开" OffContent="关" MinWidth="0" Margin="0" FontFamily="{StaticResource AppGlobalFont}"/>
+            </StackPanel>
+        </DataTemplate>
+
         <DataTemplate x:Key="KeyTemplate" x:DataType="viewmodels:PluginSettingItem">
-            <StackPanel Width="240" HorizontalAlignment="Left">
-                <TextBlock Text="{x:Bind DisplayName}" FontSize="12" Margin="0,0,0,8" Opacity="0.9"/>
-                <ComboBox ItemsSource="{x:Bind AvailableKeys}" 
-                          SelectedValuePath="KeyCode" 
-                          DisplayMemberPath="KeyName" 
-                          SelectedValue="{x:Bind KeyValue, Mode=TwoWay}" 
-                          Visibility="{x:Bind KeyListVisibility, Mode=OneWay}"
-                          Width="200" HorizontalAlignment="Left"/>
+            <StackPanel HorizontalAlignment="Left">
+                <TextBlock Text="{x:Bind DisplayName}" FontSize="12" FontFamily="{StaticResource AppGlobalFont}" Margin="0,0,0,8" Opacity="0.9"/>
                 <NumberBox Value="{x:Bind KeyNumberValue, Mode=TwoWay}"
                           SpinButtonPlacementMode="Inline"
-                          SmallChange="1"
-                          Minimum="1"
-                          Visibility="{x:Bind KeyNumberVisibility, Mode=OneWay}"
-                          Width="200" HorizontalAlignment="Left"/>
+                          SmallChange="1" Minimum="1" Width="150" HorizontalAlignment="Left" FontFamily="{StaticResource AppGlobalFont}"/>
             </StackPanel>
         </DataTemplate>
+
         <DataTemplate x:Key="NumberTemplate" x:DataType="viewmodels:PluginSettingItem">
-            <StackPanel Width="240" HorizontalAlignment="Left">
-                <TextBlock Text="{x:Bind DisplayName}" FontSize="12" Margin="0,0,0,8" Opacity="0.9"/>
-                <NumberBox Value="{x:Bind FloatValue, Mode=TwoWay}" SpinButtonPlacementMode="Inline" Width="200" HorizontalAlignment="Left"/>
+            <StackPanel HorizontalAlignment="Left">
+                <TextBlock Text="{x:Bind DisplayName}" FontSize="12" FontFamily="{StaticResource AppGlobalFont}" Margin="0,0,0,8" Opacity="0.9"/>
+                <NumberBox Value="{x:Bind FloatValue, Mode=TwoWay}" SpinButtonPlacementMode="Inline" Width="150" HorizontalAlignment="Left" FontFamily="{StaticResource AppGlobalFont}"/>
             </StackPanel>
         </DataTemplate>
 
         <DataTemplate x:Key="StringTemplate" x:DataType="viewmodels:PluginSettingItem">
-            <StackPanel Width="240" HorizontalAlignment="Left">
-                <TextBlock Text="{x:Bind DisplayName}" FontSize="12" Margin="0,0,0,8" Opacity="0.9"/>
-                <TextBox Text="{x:Bind StringValue, Mode=TwoWay}" Width="200" HorizontalAlignment="Left"/>
+            <StackPanel HorizontalAlignment="Left">
+                <TextBlock Text="{x:Bind DisplayName}" FontSize="12" FontFamily="{StaticResource AppGlobalFont}" Margin="0,0,0,8" Opacity="0.9"/>
+                <TextBox Text="{x:Bind StringValue, Mode=TwoWay}" Width="150" HorizontalAlignment="Left" FontFamily="{StaticResource AppGlobalFont}"/>
             </StackPanel>
         </DataTemplate>
 
         <selectors:SettingTemplateSelector x:Key="SettingSelector"
                                            BoolTemplate="{StaticResource BoolTemplate}"
+                                           BoolWithLinkedTemplate="{StaticResource BoolWithLinkedTemplate}"
                                            NumberTemplate="{StaticResource NumberTemplate}"
                                            StringTemplate="{StaticResource StringTemplate}"
                                            KeyTemplate="{StaticResource KeyTemplate}" />
@@ -282,38 +283,75 @@
                             <Button Grid.Column="2" Content="新建预设" Click="OnCreateNewPresetClick" VerticalAlignment="Center" Margin="16,0,0,0"/>
                         </Grid>
 
-                        <GridView ItemsSource="{x:Bind ViewModel.Settings, Mode=OneWay}"
-                                  Visibility="{x:Bind ViewModel.MainSettingsVisibility, Mode=OneWay}"
-                                  ItemTemplateSelector="{StaticResource SettingSelector}"
-                                  SelectionMode="None"
-                                  IsItemClickEnabled="False"
-                                  HorizontalAlignment="Stretch"
-                                  ScrollViewer.VerticalScrollMode="Disabled">
-                            <GridView.ItemContainerStyle>
-                                <Style TargetType="GridViewItem">
-                                    <Setter Property="Margin" Value="0,0,24,24"/>
-                                    <Setter Property="Padding" Value="0"/>
-                                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-                                    <Setter Property="VerticalContentAlignment" Value="Stretch"/>
-                                    <Setter Property="Background" Value="Transparent"/>
-                                    <Setter Property="MinHeight" Value="0"/>
-                                    <Setter Property="MinWidth" Value="0"/>
-                                    <Setter Property="Template">
-                                        <Setter.Value>
-                                            <ControlTemplate TargetType="GridViewItem">
-                                                <ContentPresenter />
-                                            </ControlTemplate>
-                                        </Setter.Value>
-                                    </Setter>
-                                </Style>
-                            </GridView.ItemContainerStyle>
+                        <ItemsControl ItemsSource="{x:Bind ViewModel.BoolRows, Mode=OneWay}"
+                                      Visibility="{x:Bind ViewModel.MainSettingsVisibility, Mode=OneWay}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate x:DataType="viewmodels:SettingRow">
+                                    <Grid Margin="0,0,0,12">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <ContentControl Grid.Column="0" Content="{x:Bind Item0}"
+                                                        ContentTemplateSelector="{StaticResource SettingSelector}"
+                                                        Visibility="{x:Bind Item0Vis}"
+                                                        HorizontalContentAlignment="Left" VerticalContentAlignment="Top"/>
+                                        <ContentControl Grid.Column="1" Content="{x:Bind Item1}"
+                                                        ContentTemplateSelector="{StaticResource SettingSelector}"
+                                                        Visibility="{x:Bind Item1Vis}"
+                                                        HorizontalContentAlignment="Left" VerticalContentAlignment="Top"/>
+                                        <ContentControl Grid.Column="2" Content="{x:Bind Item2}"
+                                                        ContentTemplateSelector="{StaticResource SettingSelector}"
+                                                        Visibility="{x:Bind Item2Vis}"
+                                                        HorizontalContentAlignment="Left" VerticalContentAlignment="Top"/>
+                                        <ContentControl Grid.Column="3" Content="{x:Bind Item3}"
+                                                        ContentTemplateSelector="{StaticResource SettingSelector}"
+                                                        Visibility="{x:Bind Item3Vis}"
+                                                        HorizontalContentAlignment="Left" VerticalContentAlignment="Top"/>
+                                        <ContentControl Grid.Column="4" Content="{x:Bind Item4}"
+                                                        ContentTemplateSelector="{StaticResource SettingSelector}"
+                                                        Visibility="{x:Bind Item4Vis}"
+                                                        HorizontalContentAlignment="Left" VerticalContentAlignment="Top"/>
+                                    </Grid>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
 
-                            <GridView.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <ItemsWrapGrid Orientation="Horizontal" />
-                                </ItemsPanelTemplate>
-                            </GridView.ItemsPanel>
-                        </GridView>
+                        <ItemsControl ItemsSource="{x:Bind ViewModel.ValueRows, Mode=OneWay}"
+                                      Visibility="{x:Bind ViewModel.MainSettingsVisibility, Mode=OneWay}"
+                                      Margin="0,8,0,0">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate x:DataType="viewmodels:SettingRow">
+                                    <Grid Margin="0,0,0,12">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <ContentControl Grid.Column="0" Content="{x:Bind Item0}"
+                                                        ContentTemplateSelector="{StaticResource SettingSelector}"
+                                                        Visibility="{x:Bind Item0Vis}"
+                                                        HorizontalContentAlignment="Left" VerticalContentAlignment="Top"/>
+                                        <ContentControl Grid.Column="1" Content="{x:Bind Item1}"
+                                                        ContentTemplateSelector="{StaticResource SettingSelector}"
+                                                        Visibility="{x:Bind Item1Vis}"
+                                                        HorizontalContentAlignment="Left" VerticalContentAlignment="Top"/>
+                                        <ContentControl Grid.Column="2" Content="{x:Bind Item2}"
+                                                        ContentTemplateSelector="{StaticResource SettingSelector}"
+                                                        Visibility="{x:Bind Item2Vis}"
+                                                        HorizontalContentAlignment="Left" VerticalContentAlignment="Top"/>
+                                        <ContentControl Grid.Column="3" Content="{x:Bind Item3}"
+                                                        ContentTemplateSelector="{StaticResource SettingSelector}"
+                                                        Visibility="{x:Bind Item3Vis}"
+                                                        HorizontalContentAlignment="Left" VerticalContentAlignment="Top"/>
+                                    </Grid>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
                         
                         <StackPanel Visibility="{x:Bind ViewModel.AvatarSettingsVisibility, Mode=OneWay}" Margin="0,16,0,0">
                             <TextBlock Text="头像替换设置 (根据需要上传对应尺寸)" FontSize="16" FontWeight="SemiBold" Margin="0,0,0,16"/>
@@ -356,6 +394,21 @@
                             </StackPanel>
                             <TextBlock Text="支持格式: PNG, JPG, BMP, WEBP.修改后在下次进游戏时生效" Margin="0,16,0,0" FontSize="12" Opacity="0.6"/>
                         </StackPanel>
+
+                        <Border Visibility="{x:Bind ViewModel.AvatarDisabledBannerVisibility, Mode=OneWay}"
+                                Background="#1E1E1E" CornerRadius="0" Padding="14,10" Margin="0,24,0,0"
+                                BorderBrush="#FFC107" BorderThickness="3,0,0,0">
+                            <StackPanel Orientation="Horizontal" Spacing="12">
+                                <Grid Width="20" Height="20">
+                                    <Ellipse Fill="#FFC107" Width="20" Height="20"/>
+                                    <TextBlock Text="!" FontSize="13" FontWeight="Bold" Foreground="Black"
+                                               HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Grid>
+                                <TextBlock Text="已被禁用，开启后可替换千星奇域头像" 
+                                           FontFamily="{StaticResource AppGlobalFont}" FontSize="13" 
+                                           Foreground="#E53935" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Border>
                         
                     </StackPanel>
                 </ContentControl>

@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.Linq;
 using System.Security.Cryptography;
 using System.Text.Json;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -103,6 +104,42 @@ public partial class PluginSettingsViewModel : ObservableObject
     }
 
     public ObservableCollection<PluginSettingItem> Settings { get; } = new();
+    public ObservableCollection<SettingRow> BoolRows { get; } = new();
+    public ObservableCollection<SettingRow> ValueRows { get; } = new();
+
+    private void BuildRows()
+    {
+        BoolRows.Clear();
+        ValueRows.Clear();
+
+        var boolItems = Settings.Where(s => s.Type == "bool").ToList();
+        var valueItems = Settings.Where(s => s.Type != "bool").ToList();
+
+        // Bool toggles: 5 per row
+        for (int i = 0; i < boolItems.Count; i += 5)
+        {
+            BoolRows.Add(new SettingRow
+            {
+                Item0 = i < boolItems.Count ? boolItems[i] : null,
+                Item1 = i + 1 < boolItems.Count ? boolItems[i + 1] : null,
+                Item2 = i + 2 < boolItems.Count ? boolItems[i + 2] : null,
+                Item3 = i + 3 < boolItems.Count ? boolItems[i + 3] : null,
+                Item4 = i + 4 < boolItems.Count ? boolItems[i + 4] : null,
+            });
+        }
+
+        // Value items (int/float/string/key): 4 per row
+        for (int i = 0; i < valueItems.Count; i += 4)
+        {
+            ValueRows.Add(new SettingRow
+            {
+                Item0 = i < valueItems.Count ? valueItems[i] : null,
+                Item1 = i + 1 < valueItems.Count ? valueItems[i + 1] : null,
+                Item2 = i + 2 < valueItems.Count ? valueItems[i + 2] : null,
+                Item3 = i + 3 < valueItems.Count ? valueItems[i + 3] : null,
+            });
+        }
+    }
 
     public Microsoft.UI.Xaml.Visibility AvatarSettingsVisibility => 
         SelectedPluginIndex == 2 ? Microsoft.UI.Xaml.Visibility.Visible : Microsoft.UI.Xaml.Visibility.Collapsed;
@@ -211,10 +248,14 @@ private async Task<bool> CheckHwidAuthorizationAsync()
     }
 
     public Microsoft.UI.Xaml.Visibility SettingsOverlayVisibility => 
-        (SelectedPluginIndex == 0 && !_isMainPluginEnabled) || (SelectedPluginIndex == 1 && !_isFpsPluginEnabled) || (SelectedPluginIndex == 2 && !_isAvatarPluginEnabled) 
+        (SelectedPluginIndex == 0 && !_isMainPluginEnabled) || (SelectedPluginIndex == 1 && !_isFpsPluginEnabled)
             ? Microsoft.UI.Xaml.Visibility.Visible : Microsoft.UI.Xaml.Visibility.Collapsed;
 
     public bool IsSettingsInteractable => (SelectedPluginIndex == 0 && _isMainPluginEnabled) || (SelectedPluginIndex == 1 && _isFpsPluginEnabled) || (SelectedPluginIndex == 2 && _isAvatarPluginEnabled);
+
+    public Microsoft.UI.Xaml.Visibility AvatarDisabledBannerVisibility =>
+        SelectedPluginIndex == 2 && !_isAvatarPluginEnabled
+            ? Microsoft.UI.Xaml.Visibility.Visible : Microsoft.UI.Xaml.Visibility.Collapsed;
 
     public string OverlayWarningText
     {
@@ -488,6 +529,7 @@ private async Task<bool> CheckHwidAuthorizationAsync()
         OnPropertyChanged(nameof(IsSettingsInteractable));
         OnPropertyChanged(nameof(OverlayWarningText));
         OnPropertyChanged(nameof(AvatarSettingsVisibility));
+        OnPropertyChanged(nameof(AvatarDisabledBannerVisibility));
         OnPropertyChanged(nameof(MainSettingsVisibility));
         UpdatePaths();
     }
@@ -735,6 +777,8 @@ private async Task<bool> CheckHwidAuthorizationAsync()
                 var settingItem = new PluginSettingItem(_iniFile, section.Key, name, type, value, OnSettingValueChanged, UseKeyListInput);
                 Settings.Add(settingItem);
             }
+
+            BuildRows();
         }
         catch (Exception ex)
         {
@@ -1017,6 +1061,50 @@ public class PluginSettingItem : ObservableObject
     public string DisplayName { get; }
     public string Type { get; }
 
+    public PluginSettingItem LinkedItem { get; set; }
+
+    public string LinkedDisplayName => LinkedItem?.DisplayName ?? "";
+
+    public Microsoft.UI.Xaml.Visibility LinkedNumberVisibility =>
+        LinkedItem != null && (LinkedItem.Type == "int" || LinkedItem.Type == "float")
+            ? Microsoft.UI.Xaml.Visibility.Visible : Microsoft.UI.Xaml.Visibility.Collapsed;
+
+    public Microsoft.UI.Xaml.Visibility LinkedStringVisibility =>
+        LinkedItem != null && LinkedItem.Type == "string"
+            ? Microsoft.UI.Xaml.Visibility.Visible : Microsoft.UI.Xaml.Visibility.Collapsed;
+
+    public Microsoft.UI.Xaml.Visibility LinkedKeyVisibility =>
+        LinkedItem != null && LinkedItem.Type == "key"
+            ? Microsoft.UI.Xaml.Visibility.Visible : Microsoft.UI.Xaml.Visibility.Collapsed;
+
+    public Microsoft.UI.Xaml.Visibility LinkedBoolVisibility =>
+        LinkedItem != null && LinkedItem.Type == "bool"
+            ? Microsoft.UI.Xaml.Visibility.Visible : Microsoft.UI.Xaml.Visibility.Collapsed;
+
+    public double LinkedFloatValue
+    {
+        get => LinkedItem?.FloatValue ?? 0;
+        set { if (LinkedItem != null) LinkedItem.FloatValue = value; }
+    }
+
+    public string LinkedStringValue
+    {
+        get => LinkedItem?.StringValue ?? "";
+        set { if (LinkedItem != null) LinkedItem.StringValue = value; }
+    }
+
+    public bool LinkedBoolValue
+    {
+        get => LinkedItem?.BoolValue ?? false;
+        set { if (LinkedItem != null) LinkedItem.BoolValue = value; }
+    }
+
+    public double LinkedKeyNumberValue
+    {
+        get => LinkedItem?.KeyValue ?? 0;
+        set { if (LinkedItem != null) LinkedItem.KeyValue = (int)Math.Round(value); }
+    }
+
     private string _rawValue;
     private static readonly ObservableCollection<VirtualKeyOption> _availableKeys = new ObservableCollection<VirtualKeyOption>(GetAvailableKeys());
     private bool _useKeyListInput;
@@ -1208,4 +1296,18 @@ public class PluginSettingItem : ObservableObject
         
         return true;
     }
+}
+
+public class SettingRow
+{
+    public PluginSettingItem Item0 { get; set; }
+    public PluginSettingItem Item1 { get; set; }
+    public PluginSettingItem Item2 { get; set; }
+    public PluginSettingItem Item3 { get; set; }
+    public PluginSettingItem Item4 { get; set; }
+    public Microsoft.UI.Xaml.Visibility Item0Vis => Item0 != null ? Microsoft.UI.Xaml.Visibility.Visible : Microsoft.UI.Xaml.Visibility.Collapsed;
+    public Microsoft.UI.Xaml.Visibility Item1Vis => Item1 != null ? Microsoft.UI.Xaml.Visibility.Visible : Microsoft.UI.Xaml.Visibility.Collapsed;
+    public Microsoft.UI.Xaml.Visibility Item2Vis => Item2 != null ? Microsoft.UI.Xaml.Visibility.Visible : Microsoft.UI.Xaml.Visibility.Collapsed;
+    public Microsoft.UI.Xaml.Visibility Item3Vis => Item3 != null ? Microsoft.UI.Xaml.Visibility.Visible : Microsoft.UI.Xaml.Visibility.Collapsed;
+    public Microsoft.UI.Xaml.Visibility Item4Vis => Item4 != null ? Microsoft.UI.Xaml.Visibility.Visible : Microsoft.UI.Xaml.Visibility.Collapsed;
 }

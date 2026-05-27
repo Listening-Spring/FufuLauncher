@@ -7,6 +7,7 @@ namespace FufuLauncher.Selectors;
 public class SettingTemplateSelector : DataTemplateSelector
 {
     public DataTemplate BoolTemplate { get; set; }
+    public DataTemplate BoolWithLinkedTemplate { get; set; }
     public DataTemplate NumberTemplate { get; set; }
     public DataTemplate StringTemplate { get; set; }
     public DataTemplate KeyTemplate { get; set; }
@@ -28,7 +29,7 @@ public class SettingTemplateSelector : DataTemplateSelector
             var type = settingItem.Type?.ToLower() ?? "";
             return type switch
             {
-                "bool" => BoolTemplate,
+                "bool" => settingItem.LinkedItem != null ? BoolWithLinkedTemplate : BoolTemplate,
                 "int" => NumberTemplate,
                 "float" => NumberTemplate,
                 "key" => KeyTemplate,
