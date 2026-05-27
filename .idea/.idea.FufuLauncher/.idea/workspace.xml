@@ -12,10 +12,7 @@
   <component name="ChangeListManager">
     <list default="true" id="2e6bf6ba-f1a7-4d7b-8b76-8b03b5df7f33" name="更改" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.FufuLauncher/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.FufuLauncher/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FufuLauncher/Views/Model/AboutPage.xaml" beforeDir="false" afterPath="$PROJECT_DIR$/FufuLauncher/Views/Model/AboutPage.xaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FufuLauncher/Views/Model/AboutPage.xaml.cs" beforeDir="false" afterPath="$PROJECT_DIR$/FufuLauncher/Views/Model/AboutPage.xaml.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/binApp.xbf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/binMainWindow.xbf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/FufuLauncher/ViewModels/PluginSettingsViewModel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/FufuLauncher/ViewModels/PluginSettingsViewModel.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -368,15 +365,7 @@
       <workItem from="1779684229002" duration="695000" />
       <workItem from="1779708284560" duration="1357000" />
       <workItem from="1779821284326" duration="2634000" />
-      <workItem from="1779856291261" duration="1392000" />
-    </task>
-    <task id="LOCAL-00059" summary="#130 #131">
-      <option name="closed" value="true" />
-      <created>1776599975426</created>
-      <option name="number" value="00059" />
-      <option name="presentableId" value="LOCAL-00059" />
-      <option name="project" value="LOCAL" />
-      <updated>1776599975426</updated>
+      <workItem from="1779856291261" duration="2111000" />
     </task>
     <task id="LOCAL-00060" summary="1">
       <option name="closed" value="true" />
@@ -762,7 +751,15 @@
       <option name="project" value="LOCAL" />
       <updated>1779823166758</updated>
     </task>
-    <option name="localTasksCounter" value="108" />
+    <task id="LOCAL-00108" summary="贡献者名单改自动获取">
+      <option name="closed" value="true" />
+      <created>1779857783657</created>
+      <option name="number" value="00108" />
+      <option name="presentableId" value="LOCAL-00108" />
+      <option name="project" value="LOCAL" />
+      <updated>1779857783657</updated>
+    </task>
+    <option name="localTasksCounter" value="109" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -795,7 +792,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
-    <MESSAGE value="修复主题冲突问题，修复警告问题" />
     <MESSAGE value="修复部分问题，优化部分功能的体验" />
     <MESSAGE value="增加防呆，修复部分已知问题" />
     <MESSAGE value="增加提示" />
@@ -820,7 +816,8 @@
     <MESSAGE value="解决卡片闪烁问题" />
     <MESSAGE value="预发布1.2.0.1" />
     <MESSAGE value="重构抽卡界面" />
-    <option name="LAST_COMMIT_MESSAGE" value="重构抽卡界面" />
+    <MESSAGE value="贡献者名单改自动获取" />
+    <option name="LAST_COMMIT_MESSAGE" value="贡献者名单改自动获取" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
