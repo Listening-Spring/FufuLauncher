@@ -1601,11 +1601,11 @@ private Task ApplyGlobalBackgroundAsync(BackgroundRenderResult? result)
         try
         {
             var valueObj = await _localSettingsService.ReadSettingAsync("GlobalBackgroundOverlayOpacity");
-            var opacity = 0.3;
+            var opacity = 0.0;
             if (valueObj != null && double.TryParse(valueObj.ToString(), out var parsed)) opacity = parsed;
             ApplyOverlayOpacity(opacity);
         }
-        catch { ApplyOverlayOpacity(0.3); }
+        catch { ApplyOverlayOpacity(0.0); }
     }
 
     private async Task LoadFrameBackgroundOpacityAsync()

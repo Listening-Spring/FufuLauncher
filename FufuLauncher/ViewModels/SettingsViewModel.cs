@@ -503,11 +503,11 @@ namespace FufuLauncher.ViewModels
             var overlayOpacityJson = await _localSettingsService.ReadSettingAsync("GlobalBackgroundOverlayOpacity");
             try
             {
-                GlobalBackgroundOverlayOpacity = overlayOpacityJson != null ? Convert.ToDouble(overlayOpacityJson) : 0.3;
+                GlobalBackgroundOverlayOpacity = overlayOpacityJson != null ? Convert.ToDouble(overlayOpacityJson) : 0;
             }
             catch
             {
-                GlobalBackgroundOverlayOpacity = 0.3;
+                GlobalBackgroundOverlayOpacity = 0;
             }
 
             var frameOpacityJson = await _localSettingsService.ReadSettingAsync("ContentFrameBackgroundOpacity");
