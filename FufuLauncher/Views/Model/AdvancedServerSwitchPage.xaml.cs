@@ -158,7 +158,12 @@ namespace FufuLauncher.Views
             {
                 if (File.Exists(file))
                 {
-                    try { File.Delete(file); } catch { /* ignore */ }
+                    try 
+                    { 
+                        File.SetAttributes(file, FileAttributes.Normal);
+                        File.Delete(file); 
+                    } 
+                    catch { /* ignore */ }
                 }
             }
 
@@ -189,7 +194,25 @@ namespace FufuLauncher.Views
                 }
                 
                 print?.Invoke("正在解压B服SDK...");
-                await Task.Run(() => ZipFile.ExtractToDirectory(tempFile, gameDir, true));
+                await Task.Run(() => 
+                {
+                    using var archive = ZipFile.OpenRead(tempFile);
+                    foreach (var entry in archive.Entries)
+                    {
+                        string destPath = Path.GetFullPath(Path.Combine(gameDir, entry.FullName));
+                        if (string.IsNullOrEmpty(entry.Name))
+                        {
+                            Directory.CreateDirectory(destPath);
+                            continue;
+                        }
+                        Directory.CreateDirectory(Path.GetDirectoryName(destPath));
+                        if (File.Exists(destPath))
+                        {
+                            File.SetAttributes(destPath, FileAttributes.Normal);
+                        }
+                        entry.ExtractToFile(destPath, true);
+                    }
+                });
             }
             finally
             {
@@ -496,7 +519,11 @@ namespace FufuLauncher.Views
                     string relPath = Path.GetRelativePath(targetDir, file);
                     string dstPath = Path.Combine(gameDir, relPath);
                     Directory.CreateDirectory(Path.GetDirectoryName(dstPath));
-                    if (File.Exists(dstPath)) File.Delete(dstPath);
+                    if (File.Exists(dstPath)) 
+                    {
+                        File.SetAttributes(dstPath, FileAttributes.Normal);
+                        File.Delete(dstPath);
+                    }
                     File.Move(file, dstPath);
                 }
                 print("异常文件修复完成");
@@ -678,7 +705,11 @@ private async Task<(string manifestUrl, string chunkPrefix, string chunkSuffix)>
                 string relPath = Path.GetRelativePath(targetDir, file);
                 string dstPath = Path.Combine(gameDir, relPath);
                 Directory.CreateDirectory(Path.GetDirectoryName(dstPath));
-                if (File.Exists(dstPath)) File.Delete(dstPath);
+                if (File.Exists(dstPath)) 
+                {
+                    File.SetAttributes(dstPath, FileAttributes.Normal);
+                    File.Delete(dstPath);
+                }
                 File.Move(file, dstPath);
             }
         }
@@ -916,7 +947,11 @@ private async Task<(string manifestUrl, string chunkPrefix, string chunkSuffix)>
                 string relPath = Path.GetRelativePath(targetDir, file);
                 string dstPath = Path.Combine(gameDir, relPath);
                 Directory.CreateDirectory(Path.GetDirectoryName(dstPath));
-                if (File.Exists(dstPath)) File.Delete(dstPath);
+                if (File.Exists(dstPath)) 
+                {
+                    File.SetAttributes(dstPath, FileAttributes.Normal);
+                    File.Delete(dstPath);
+                }
                 File.Move(file, dstPath);
             }
             
