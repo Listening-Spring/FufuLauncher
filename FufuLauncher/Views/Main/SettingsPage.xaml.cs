@@ -204,7 +204,7 @@ public sealed partial class SettingsPage : Page
         {
             appWindow.SetIcon("Assets/WindowIcon.ico");
 
-            var size = new Windows.Graphics.SizeInt32(1000, 650);
+            var size = new Windows.Graphics.SizeInt32(1350, 850);
             appWindow.Resize(size);
 
             var displayArea = DisplayArea.GetFromWindowId(windowId, DisplayAreaFallback.Primary);

@@ -2,10 +2,22 @@
 using System.Text.Json;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Shapes;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Imaging;
+using Microsoft.UI.Text;
 using Windows.ApplicationModel.DataTransfer;
 using FufuLauncher.Constants;
+using Path = System.IO.Path;
 
 namespace FufuLauncher.Views;
+
+public class ContributorItem
+{
+    public string Name { get; set; }
+    public string Url { get; set; }
+    public string AvatarUrl { get; set; }
+}
 
 public sealed partial class AboutPage : Page
 {
@@ -32,7 +44,7 @@ public sealed partial class AboutPage : Page
         {
             string apiUrl = "https://api.github.com/repos/FufuLauncher/FufuLauncher/contributors";
             var jsonDocument = await GetJsonFromUrl(apiUrl);
-            
+
             if (jsonDocument.RootElement.ValueKind != JsonValueKind.Array)
             {
                 string errorMessage = "API限制或返回结构异常";
@@ -41,60 +53,110 @@ public sealed partial class AboutPage : Page
                 {
                     errorMessage = messageElement.GetString();
                 }
-                
+
                 Debug.WriteLine($"[LoadContributorsAsync] 获取贡献者失败: {errorMessage}");
-                ContributorsLoadingText.Text = "获取失败";
+                ContributorsLoadingRing.IsActive = false;
+                ContributorsErrorPanel.Visibility = Visibility.Visible;
+                ContributorsErrorText.Text = "获取失败";
                 return;
             }
 
             var elements = jsonDocument.RootElement.EnumerateArray();
 
-            var allContributors = new List<(string Name, string Url)>();
+            var allContributors = new List<ContributorItem>();
             foreach (var element in elements)
             {
                 string login = element.GetProperty("login").GetString();
                 string url = element.GetProperty("html_url").GetString();
-                allContributors.Add((login, url));
+                string avatarUrl = element.GetProperty("avatar_url").GetString();
+                allContributors.Add(new ContributorItem { Name = login, Url = url, AvatarUrl = avatarUrl });
             }
 
             var owner = allContributors.FirstOrDefault(c => c.Name.Equals("CodeCubist", StringComparison.OrdinalIgnoreCase));
-            if (string.IsNullOrEmpty(owner.Name))
+            if (owner == null)
             {
-                owner = ("CodeCubist", "https://github.com/CodeCubist");
+                owner = new ContributorItem { Name = "CodeCubist", Url = "https://github.com/CodeCubist", AvatarUrl = "https://avatars.githubusercontent.com/u/249788103?v=4" };
             }
 
             var others = allContributors
                 .Where(c => !c.Name.Equals("CodeCubist", StringComparison.OrdinalIgnoreCase))
-                .OrderBy(c => c.Name, StringComparer.OrdinalIgnoreCase)
+                //.OrderBy(c => c.Name, StringComparer.OrdinalIgnoreCase)
                 .ToList();
 
-            var sortedContributors = new List<(string Name, string Url)> { owner };
+            var sortedContributors = new List<ContributorItem> { owner };
             sortedContributors.AddRange(others);
 
-            ContributorsPanel.Children.Clear();
+            ContributorsContentPanel.Children.Clear();
 
-            for (int i = 0; i < sortedContributors.Count; i++)
+            var stackPanel = new StackPanel { Spacing = 12 };
+
+            for (int i = 0; i < sortedContributors.Count; i += 3)
             {
-                var contributor = sortedContributors[i];
-                HyperlinkButton btn = new()
-                {
-                    Content = contributor.Name,
-                    NavigateUri = new Uri(contributor.Url),
-                    HorizontalAlignment = HorizontalAlignment.Left,
-                    FontSize = 14
-                };
-                ContributorsPanel.Children.Add(btn);
+                var rowPanel = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 12 };
 
-                if (i < sortedContributors.Count - 1)
+                for (int j = i; j < Math.Min(i + 3, sortedContributors.Count); j++)
                 {
-                    ContributorsPanel.Children.Add(new MenuFlyoutSeparator());
+                    var contributor = sortedContributors[j];
+                    var button = new HyperlinkButton
+                    {
+                        NavigateUri = new Uri(contributor.Url),
+                        Width = 100,
+                        Padding = new Thickness(4)
+                    };
+
+                    var innerStackPanel = new StackPanel
+                    {
+                        Orientation = Orientation.Vertical,
+                        Spacing = 6,
+                        HorizontalAlignment = HorizontalAlignment.Center
+                    };
+
+                    var ellipse = new Ellipse
+                    {
+                        Width = 48,
+                        Height = 48,
+                        HorizontalAlignment = HorizontalAlignment.Center
+                    };
+
+                    var imageBrush = new ImageBrush
+                    {
+                        ImageSource = new BitmapImage(new Uri(contributor.AvatarUrl)),
+                        Stretch = Stretch.UniformToFill
+                    };
+                    ellipse.Fill = imageBrush;
+
+                    var textBlock = new TextBlock
+                    {
+                        Text = contributor.Name,
+                        FontSize = 12,
+                        FontWeight = FontWeights.Normal,
+                        HorizontalAlignment = HorizontalAlignment.Center,
+                        TextAlignment = TextAlignment.Center,
+                        TextTrimming = TextTrimming.CharacterEllipsis,
+                        MaxWidth = 90,
+                        Foreground = (Brush)Application.Current.Resources["TextFillColorPrimaryBrush"]
+                    };
+
+                    innerStackPanel.Children.Add(ellipse);
+                    innerStackPanel.Children.Add(textBlock);
+                    button.Content = innerStackPanel;
+
+                    rowPanel.Children.Add(button);
                 }
+
+                stackPanel.Children.Add(rowPanel);
             }
+
+            ContributorsContentPanel.Children.Add(stackPanel);
+            ContributorsLoadingRing.IsActive = false;
+            ContributorsContentPanel.Visibility = Visibility.Visible;
         }
         catch (Exception ex)
         {
             Debug.WriteLine($"[LoadContributorsAsync] 获取贡献者失败: {ex}");
-            ContributorsLoadingText.Text = "获取贡献者失败，请检查网络连接或 API 状态";
+            ContributorsLoadingRing.IsActive = false;
+            ContributorsErrorPanel.Visibility = Visibility.Visible;
+            ContributorsErrorText.Text = "获取贡献者失败，请检查网络连接或 API 状态";
         }
     }
 

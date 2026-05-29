@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using FufuLauncher.Contracts.Services;
+using FufuLauncher.Helpers;
 using FufuLauncher.Models;
 using FufuLauncher.Services;
 using FufuLauncher.ViewModels;
@@ -8,7 +9,10 @@ using Microsoft.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Animation;
+using Windows.Foundation;
 
 namespace FufuLauncher.Converters
 {
@@ -54,13 +58,260 @@ namespace FufuLauncher.Converters
         public object ConvertBack(object value, Type targetType, object parameter, string language)
             => throw new NotImplementedException();
     }
+
+    public class GachaTabForegroundConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, string language)
+        {
+            var selected = value is bool b && b;
+            return selected
+                ? Application.Current.Resources["AccentTextFillColorPrimaryBrush"]
+                : Application.Current.Resources["TextFillColorSecondaryBrush"];
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, string language)
+            => throw new NotImplementedException();
+    }
+
+    public class GachaChartBrushConverter : IValueConverter
+    {
+        private static readonly Windows.UI.Color[] ChartPalette =
+        {
+            Windows.UI.Color.FromArgb(255, 76, 154, 255),
+            Windows.UI.Color.FromArgb(255, 116, 201, 127),
+            Windows.UI.Color.FromArgb(255, 255, 181, 71),
+            Windows.UI.Color.FromArgb(255, 217, 118, 224),
+            Windows.UI.Color.FromArgb(255, 255, 126, 103),
+            Windows.UI.Color.FromArgb(255, 93, 207, 200),
+            Windows.UI.Color.FromArgb(255, 155, 138, 255),
+            Windows.UI.Color.FromArgb(255, 184, 196, 102),
+            Windows.UI.Color.FromArgb(255, 232, 140, 177),
+            Windows.UI.Color.FromArgb(255, 117, 174, 194)
+        };
+
+        public object Convert(object value, Type targetType, object parameter, string language)
+        {
+            var index = value is int i ? i : 0;
+            return new SolidColorBrush(ChartPalette[Math.Abs(index) % ChartPalette.Length]);
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, string language)
+            => throw new NotImplementedException();
+    }
+
+    public class GachaPieGeometryConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, string language)
+        {
+            if (value is not GachaPieSlice slice) return null;
+
+            const double center = 68;
+            const double radius = 64;
+            var sweepAngle = slice.SweepAngle >= 359.99 ? 359.99 : slice.SweepAngle;
+            var start = PointOnCircle(center, radius, slice.StartAngle);
+            var end = PointOnCircle(center, radius, slice.StartAngle + sweepAngle);
+
+            var figure = new PathFigure
+            {
+                StartPoint = new Point(center, center),
+                IsClosed = true
+            };
+            figure.Segments.Add(new LineSegment { Point = start });
+            figure.Segments.Add(new ArcSegment
+            {
+                Point = end,
+                Size = new Size(radius, radius),
+                IsLargeArc = sweepAngle > 180,
+                SweepDirection = SweepDirection.Clockwise
+            });
+
+            return new PathGeometry { Figures = { figure } };
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, string language)
+            => throw new NotImplementedException();
+
+        private static Point PointOnCircle(double center, double radius, double angle)
+        {
+            var radians = Math.PI * angle / 180;
+            return new Point(center + radius * Math.Cos(radians), center + radius * Math.Sin(radians));
+        }
+    }
 }
 
 namespace FufuLauncher.Views
 {
+    public sealed class GachaKpiPanel : Panel
+    {
+        public static readonly DependencyProperty ColumnsProperty =
+            DependencyProperty.Register(nameof(Columns), typeof(int), typeof(GachaKpiPanel), new PropertyMetadata(5));
+
+        public static readonly DependencyProperty ColumnSpacingProperty =
+            DependencyProperty.Register(nameof(ColumnSpacing), typeof(double), typeof(GachaKpiPanel), new PropertyMetadata(10d));
+
+        public static readonly DependencyProperty RowSpacingProperty =
+            DependencyProperty.Register(nameof(RowSpacing), typeof(double), typeof(GachaKpiPanel), new PropertyMetadata(10d));
+
+        public int Columns
+        {
+            get => (int)GetValue(ColumnsProperty);
+            set => SetValue(ColumnsProperty, value);
+        }
+
+        public double ColumnSpacing
+        {
+            get => (double)GetValue(ColumnSpacingProperty);
+            set => SetValue(ColumnSpacingProperty, value);
+        }
+
+        public double RowSpacing
+        {
+            get => (double)GetValue(RowSpacingProperty);
+            set => SetValue(RowSpacingProperty, value);
+        }
+
+        protected override Size MeasureOverride(Size availableSize)
+        {
+            var count = Children.Count;
+            if (count == 0) return new Size(double.IsInfinity(availableSize.Width) ? 0 : availableSize.Width, 0);
+
+            var columns = Math.Max(1, Columns);
+            var columnSpacing = Math.Max(0, ColumnSpacing);
+            var rowSpacing = Math.Max(0, RowSpacing);
+            var rowCount = (int)Math.Ceiling(count / (double)columns);
+            var desiredWidth = double.IsInfinity(availableSize.Width)
+                ? columns * 190 + (columns - 1) * columnSpacing
+                : availableSize.Width;
+            var columnWidth = Math.Max(0, (desiredWidth - (columns - 1) * columnSpacing) / columns);
+            var rowHeights = new double[rowCount];
+
+            for (var i = 0; i < count; i++)
+            {
+                var row = i / columns;
+                var child = Children[i];
+                child.Measure(new Size(columnWidth, availableSize.Height));
+                rowHeights[row] = Math.Max(rowHeights[row], child.DesiredSize.Height);
+            }
+
+            var desiredHeight = rowHeights.Sum() + Math.Max(0, rowCount - 1) * rowSpacing;
+            return new Size(desiredWidth, desiredHeight);
+        }
+
+        protected override Size ArrangeOverride(Size finalSize)
+        {
+            var count = Children.Count;
+            if (count == 0) return finalSize;
+
+            var columns = Math.Max(1, Columns);
+            var columnSpacing = Math.Max(0, ColumnSpacing);
+            var rowSpacing = Math.Max(0, RowSpacing);
+            var rowCount = (int)Math.Ceiling(count / (double)columns);
+            var columnWidth = Math.Max(0, (finalSize.Width - (columns - 1) * columnSpacing) / columns);
+            var rowHeights = new double[rowCount];
+
+            for (var i = 0; i < count; i++)
+            {
+                rowHeights[i / columns] = Math.Max(rowHeights[i / columns], Children[i].DesiredSize.Height);
+            }
+
+            var y = 0d;
+            for (var row = 0; row < rowCount; row++)
+            {
+                var x = 0d;
+                for (var column = 0; column < columns; column++)
+                {
+                    var index = row * columns + column;
+                    if (index >= count) break;
+
+                    Children[index].Arrange(new Rect(x, y, columnWidth, rowHeights[row]));
+                    x += columnWidth + columnSpacing;
+                }
+
+                y += rowHeights[row] + rowSpacing;
+            }
+
+            return finalSize;
+        }
+    }
+
+    public sealed class GachaChartPanel : Panel
+    {
+        public static readonly DependencyProperty MinSlotWidthProperty =
+            DependencyProperty.Register(nameof(MinSlotWidth), typeof(double), typeof(GachaChartPanel), new PropertyMetadata(72d));
+
+        public static readonly DependencyProperty ChartHeightProperty =
+            DependencyProperty.Register(nameof(ChartHeight), typeof(double), typeof(GachaChartPanel), new PropertyMetadata(174d));
+
+        public double MinSlotWidth
+        {
+            get => (double)GetValue(MinSlotWidthProperty);
+            set => SetValue(MinSlotWidthProperty, value);
+        }
+
+        public double ChartHeight
+        {
+            get => (double)GetValue(ChartHeightProperty);
+            set => SetValue(ChartHeightProperty, value);
+        }
+
+        protected override Size MeasureOverride(Size availableSize)
+        {
+            var count = Children.Count;
+            var height = Math.Max(1, ChartHeight);
+            if (!double.IsInfinity(availableSize.Height))
+            {
+                height = Math.Max(height, availableSize.Height);
+            }
+
+            if (count == 0)
+            {
+                return new Size(double.IsInfinity(availableSize.Width) ? 0 : availableSize.Width, height);
+            }
+
+            var minSlotWidth = Math.Max(24, MinSlotWidth);
+            var desiredWidth = count * minSlotWidth;
+            if (!double.IsInfinity(availableSize.Width))
+            {
+                desiredWidth = Math.Max(availableSize.Width, desiredWidth);
+            }
+
+            var slotWidth = desiredWidth / count;
+            foreach (var child in Children)
+            {
+                child.Measure(new Size(slotWidth, height));
+            }
+
+            return new Size(desiredWidth, height);
+        }
+
+        protected override Size ArrangeOverride(Size finalSize)
+        {
+            var count = Children.Count;
+            var height = Math.Max(Math.Max(1, ChartHeight), finalSize.Height);
+            if (count == 0)
+            {
+                return new Size(finalSize.Width, height);
+            }
+
+            var minSlotWidth = Math.Max(24, MinSlotWidth);
+            var slotWidth = Math.Max(minSlotWidth, finalSize.Width / count);
+            var x = 0d;
+
+            foreach (var child in Children)
+            {
+                child.Arrange(new Rect(x, 0, slotWidth, height));
+                x += slotWidth;
+            }
+
+            return new Size(x, height);
+        }
+    }
+
     public sealed partial class GachaAnalysisWindow : Window
     {
         public GachaAnalysisModel ViewModel { get; }
+        private bool _updatingTabSelection = true;
+        private Storyboard _analysisChartStoryboard;
 
         public GachaAnalysisWindow()
         {
@@ -70,6 +321,8 @@ namespace FufuLauncher.Views
             
             RootGrid.DataContext = this;
             ExtendsContentIntoTitleBar = true;
+            WindowManagerHelper.ResizeWithDpi(AppWindow, this, 1120, 720);
+            WindowManagerHelper.CenterWindowOnScreen(AppWindow, 1120, 720);
             LoadingRing.IsActive = true;
 
             ViewModel.GetWindowHandle = () => WinRT.Interop.WindowNative.GetWindowHandle(this);
@@ -130,9 +383,164 @@ namespace FufuLauncher.Views
                             EmptyStatePanel.Visibility = ViewModel.HasGachaData ? Visibility.Collapsed : Visibility.Visible;
                     });
                 }
+                else if (e.PropertyName == nameof(ViewModel.IsOverviewSelected))
+                {
+                    DispatcherQueue.TryEnqueue(UpdateTabIndicator);
+                }
             };
 
+            _updatingTabSelection = false;
+            UpdateTabIndicator();
             ViewModel.IsDataLoaded = false;
+        }
+
+        private async void OnOverviewTabClick(object sender, RoutedEventArgs e)
+        {
+            await ViewModel.ShowOverviewAsync();
+            UpdateTabIndicator();
+        }
+
+        private async void OnAnalysisTabClick(object sender, RoutedEventArgs e)
+        {
+            await ViewModel.ShowAnalysisAsync();
+            UpdateTabIndicator();
+        }
+
+        private void UpdateTabIndicator()
+        {
+            if (GachaTabPivot == null) return;
+
+            var selectedIndex = ViewModel.IsOverviewSelected ? 0 : 1;
+            if (GachaTabPivot.SelectedIndex == selectedIndex) return;
+
+            _updatingTabSelection = true;
+            try
+            {
+                GachaTabPivot.SelectedIndex = selectedIndex;
+            }
+            finally
+            {
+                _updatingTabSelection = false;
+            }
+        }
+
+        private async void OnGachaTabPivotSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (_updatingTabSelection) return;
+
+            if (GachaTabPivot.SelectedIndex == 0)
+            {
+                await ViewModel.ShowOverviewAsync();
+            }
+            else
+            {
+                await ViewModel.ShowAnalysisAsync();
+                DispatcherQueue.TryEnqueue(PlayAnalysisChartAnimations);
+            }
+
+            UpdateTabIndicator();
+        }
+
+        private void PlayAnalysisChartAnimations()
+        {
+            if (!ViewModel.ShowAnalysisContent) return;
+
+            _analysisChartStoryboard?.Stop();
+            _analysisChartStoryboard = new Storyboard();
+
+            AddPieAnimation(RarityPieChart, RarityPieScale, 0);
+            AddPieAnimation(PoolPieChart, PoolPieScale, 80);
+            AddChartAnimation(RecentFiveStarChart, 130);
+            AddChartAnimation(FourStarTopChart, 190);
+            AddChartAnimation(PityBucketsChart, 250);
+            AddChartAnimation(MonthlyPullsChart, 310);
+
+            _analysisChartStoryboard.Begin();
+        }
+
+        private void AddPieAnimation(UIElement element, ScaleTransform scale, int delayMs)
+        {
+            if (element == null || scale == null) return;
+
+            element.Opacity = 0;
+            scale.ScaleX = 0.96;
+            scale.ScaleY = 0.96;
+
+            AddDoubleAnimation(element, "Opacity", 0, 1, delayMs, 260);
+            AddDoubleAnimation(scale, "ScaleX", 0.96, 1.235, delayMs, 360);
+            AddDoubleAnimation(scale, "ScaleY", 0.96, 1.235, delayMs, 360);
+        }
+
+        private void AddChartAnimation(UIElement element, int delayMs)
+        {
+            if (element == null) return;
+
+            if (element.RenderTransform is not CompositeTransform transform)
+            {
+                transform = new CompositeTransform();
+                element.RenderTransform = transform;
+            }
+
+            element.Opacity = 0;
+            transform.TranslateY = 18;
+            transform.ScaleY = 0.94;
+
+            AddDoubleAnimation(element, "Opacity", 0, 1, delayMs, 240);
+            AddDoubleAnimation(transform, "TranslateY", 18, 0, delayMs, 340);
+            AddDoubleAnimation(transform, "ScaleY", 0.94, 1, delayMs, 340);
+        }
+
+        private void AddDoubleAnimation(DependencyObject target, string property, double from, double to, int delayMs, int durationMs)
+        {
+            var animation = new DoubleAnimation
+            {
+                From = from,
+                To = to,
+                BeginTime = TimeSpan.FromMilliseconds(delayMs),
+                Duration = new Duration(TimeSpan.FromMilliseconds(durationMs)),
+                EasingFunction = new CubicEase { EasingMode = EasingMode.EaseOut }
+            };
+
+            Storyboard.SetTarget(animation, target);
+            Storyboard.SetTargetProperty(animation, property);
+            _analysisChartStoryboard.Children.Add(animation);
+        }
+
+        private void OnChartScrollViewerLoaded(object sender, RoutedEventArgs e)
+        {
+            if (sender is ScrollViewer scrollViewer)
+            {
+                StretchChartContentToViewport(scrollViewer);
+            }
+        }
+
+        private void OnChartScrollViewerSizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            if (sender is ScrollViewer scrollViewer)
+            {
+                StretchChartContentToViewport(scrollViewer);
+            }
+        }
+
+        private static void StretchChartContentToViewport(ScrollViewer scrollViewer)
+        {
+            if (scrollViewer.Content is FrameworkElement content)
+            {
+                content.MinWidth = Math.Max(0, scrollViewer.ActualWidth);
+                content.MinHeight = Math.Max(0, scrollViewer.ActualHeight);
+            }
+        }
+
+        private void OnHorizontalScrollViewerPointerWheelChanged(object sender, PointerRoutedEventArgs e)
+        {
+            if (sender is not ScrollViewer scrollViewer || scrollViewer.ScrollableWidth <= 0) return;
+
+            var delta = e.GetCurrentPoint(scrollViewer).Properties.MouseWheelDelta;
+            if (delta == 0) return;
+
+            var nextOffset = Math.Clamp(scrollViewer.HorizontalOffset - delta, 0, scrollViewer.ScrollableWidth);
+            scrollViewer.ChangeView(nextOffset, null, null, true);
+            e.Handled = true;
         }
 
         private async void OnDeleteGachaDataClick(object sender, RoutedEventArgs e)
