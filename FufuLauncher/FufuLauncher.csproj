@@ -27,9 +27,9 @@
 
         <PublishReadyToRun>true</PublishReadyToRun>
 
-        <Version>1.2.0.5</Version>
-        <AssemblyVersion>1.2.0.5</AssemblyVersion>
-        <FileVersion>1.2.0.5</FileVersion>
+        <Version>1.2.1.0</Version>
+        <AssemblyVersion>1.2.1.0</AssemblyVersion>
+        <FileVersion>1.2.1.0</FileVersion>
     </PropertyGroup>
 
     <ItemGroup>
