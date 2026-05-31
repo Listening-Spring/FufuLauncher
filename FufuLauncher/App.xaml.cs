@@ -1,4 +1,4 @@
-﻿using System.Diagnostics;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text.Json;
 using FufuLauncher.Activation;
@@ -122,6 +122,7 @@ public partial class App : Application
                     services.AddSingleton<IGameConfigService, GameConfigService>();
 
                     services.AddSingleton<IHoyoverseCheckinService, HoyoverseCheckinService>();
+                    services.AddSingleton<DailyNoteCardService>();
                     services.AddSingleton<BlankViewModel>();
                     services.AddTransient<BlankPage>();
                     services.AddSingleton<ILauncherService, LauncherService>();

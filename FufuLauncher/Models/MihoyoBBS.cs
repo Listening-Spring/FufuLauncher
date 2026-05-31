@@ -7,6 +7,28 @@ using FufuLauncher.Constants;
 
 namespace MihoyoBBS
 {
+    public class CalendarRewardItem
+    {
+        [JsonPropertyName("icon")]
+        public string Icon { get; set; }
+
+        [JsonPropertyName("name")]
+        public string Name { get; set; }
+
+        [JsonPropertyName("cnt")]
+        public int Count { get; set; }
+
+        public string CountText => $"x{Count}";
+    }
+
+    public class CheckinCalendarData
+    {
+        [JsonPropertyName("month")]
+        public int Month { get; set; }
+
+        [JsonPropertyName("awards")]
+        public List<CalendarRewardItem> Awards { get; set; }
+    }
 
     public class Config
     {
@@ -415,7 +437,29 @@ namespace MihoyoBBS
             HttpClient.Timeout = TimeSpan.FromSeconds(30);
         }
 
-
+        public async Task<CheckinCalendarData> GetCheckinCalendarAsync()
+        {
+            try
+            {
+                var url = $"https://api-takumi.mihoyo.com/event/luna/home?act_id={ActId}&lang=zh-cn";
+                using (var request = new HttpRequestMessage(HttpMethod.Get, url))
+                {
+                    AddHeadersToRequest(request);
+                    var response = await HttpClient.SendAsync(request).ConfigureAwait(false);
+                    var responseText = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                    var result = JsonSerializer.Deserialize<ApiResponse<CheckinCalendarData>>(responseText);
+                    if (result != null && result.RetCode == 0)
+                    {
+                        return result.Data;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                LastApiError = $"获取奖励日历异常: {ex.Message}";
+            }
+            return null;
+        }
 
         protected virtual void SetHeaders(Config config)
         {

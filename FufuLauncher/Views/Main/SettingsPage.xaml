@@ -214,6 +214,46 @@
                                           OffContent="显示"
                                           OnContent="隐藏"
                                           IsOn="{x:Bind ViewModel.IsHideCheckinCardEnabled, Mode=TwoWay}"/>
+                                          
+                            <ToggleSwitch Header="隐藏便签卡片"
+                                          OffContent="显示"
+                                          OnContent="隐藏"
+                                          IsOn="{x:Bind ViewModel.IsHideDailyNoteCardEnabled, Mode=TwoWay}"/>
+                        </StackPanel>
+
+                        <StackPanel Style="{StaticResource SettingItemStyle}" Margin="0,12,0,0">
+                            <TextBlock Text="便签卡片显示项" 
+                                       Style="{ThemeResource BodyStrongTextBlockStyle}"
+                                       FontSize="14"/>
+                            <TextBlock Text="选择要在便签卡片中显示的项目"
+                                       Style="{ThemeResource CaptionTextBlockStyle}"
+                                       Opacity="0.7"
+                                       Margin="0,2,0,12"/>
+                            
+                            <ToggleSwitch Header="显示树脂"
+                                          OffContent="隐藏"
+                                          OnContent="显示"
+                                          IsOn="{x:Bind ViewModel.ShowDailyNoteResin, Mode=TwoWay}"/>
+                                          
+                            <ToggleSwitch Header="显示每日委托"
+                                          OffContent="隐藏"
+                                          OnContent="显示"
+                                          IsOn="{x:Bind ViewModel.ShowDailyNoteDailyTasks, Mode=TwoWay}"/>
+                                          
+                            <ToggleSwitch Header="显示洞天宝钱"
+                                          OffContent="隐藏"
+                                          OnContent="显示"
+                                          IsOn="{x:Bind ViewModel.ShowDailyNoteHomeCoin, Mode=TwoWay}"/>
+                                          
+                            <ToggleSwitch Header="显示探索派遣"
+                                          OffContent="隐藏"
+                                          OnContent="显示"
+                                          IsOn="{x:Bind ViewModel.ShowDailyNoteExpeditions, Mode=TwoWay}"/>
+                                          
+                            <ToggleSwitch Header="显示参量质变仪"
+                                          OffContent="隐藏"
+                                          OnContent="显示"
+                                          IsOn="{x:Bind ViewModel.ShowDailyNoteTransformer, Mode=TwoWay}"/>
                         </StackPanel>
 
                         <StackPanel Style="{StaticResource SettingItemStyle}" Margin="0,12,0,0">

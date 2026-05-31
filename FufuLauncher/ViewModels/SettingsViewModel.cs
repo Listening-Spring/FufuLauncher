@@ -74,6 +74,13 @@ namespace FufuLauncher.ViewModels
         
         [ObservableProperty] private bool _isHideGameNewsCardEnabled;
         [ObservableProperty] private bool _isHideCheckinCardEnabled;
+        [ObservableProperty] private bool _isHideDailyNoteCardEnabled = true;
+
+        [ObservableProperty] private bool _showDailyNoteResin = true;
+        [ObservableProperty] private bool _showDailyNoteDailyTasks = true;
+        [ObservableProperty] private bool _showDailyNoteHomeCoin = true;
+        [ObservableProperty] private bool _showDailyNoteExpeditions = true;
+        [ObservableProperty] private bool _showDailyNoteTransformer = true;
 
         [ObservableProperty] private string _gameNewsCardTextColor = "#FFFFFF";
         [ObservableProperty] private double _gameNewsCardTextOpacity = 1.0;
@@ -550,6 +557,24 @@ namespace FufuLauncher.ViewModels
             var hideCheckinCardJson = await _localSettingsService.ReadSettingAsync("IsHideCheckinCardEnabled");
             IsHideCheckinCardEnabled = hideCheckinCardJson != null && Convert.ToBoolean(hideCheckinCardJson);
 
+            var hideDailyNoteCardJson = await _localSettingsService.ReadSettingAsync("IsHideDailyNoteCardEnabled");
+            IsHideDailyNoteCardEnabled = hideDailyNoteCardJson == null || Convert.ToBoolean(hideDailyNoteCardJson);
+
+            var showResinJson = await _localSettingsService.ReadSettingAsync("ShowDailyNoteResin");
+            ShowDailyNoteResin = showResinJson == null || Convert.ToBoolean(showResinJson);
+
+            var showDailyTasksJson = await _localSettingsService.ReadSettingAsync("ShowDailyNoteDailyTasks");
+            ShowDailyNoteDailyTasks = showDailyTasksJson == null || Convert.ToBoolean(showDailyTasksJson);
+
+            var showHomeCoinJson = await _localSettingsService.ReadSettingAsync("ShowDailyNoteHomeCoin");
+            ShowDailyNoteHomeCoin = showHomeCoinJson == null || Convert.ToBoolean(showHomeCoinJson);
+
+            var showExpeditionsJson = await _localSettingsService.ReadSettingAsync("ShowDailyNoteExpeditions");
+            ShowDailyNoteExpeditions = showExpeditionsJson == null || Convert.ToBoolean(showExpeditionsJson);
+
+            var showTransformerJson = await _localSettingsService.ReadSettingAsync("ShowDailyNoteTransformer");
+            ShowDailyNoteTransformer = showTransformerJson == null || Convert.ToBoolean(showTransformerJson);
+
             var panelOpacityJson = await _localSettingsService.ReadSettingAsync("PanelBackgroundOpacity");
             try
             {
@@ -894,6 +919,42 @@ namespace FufuLauncher.ViewModels
         partial void OnIsHideCheckinCardEnabledChanged(bool value)
         {
             _ = _localSettingsService.SaveSettingAsync("IsHideCheckinCardEnabled", value);
+            WeakReferenceMessenger.Default.Send(new CardVisibilityChangedMessage());
+        }
+
+        partial void OnIsHideDailyNoteCardEnabledChanged(bool value)
+        {
+            _ = _localSettingsService.SaveSettingAsync("IsHideDailyNoteCardEnabled", value);
+            WeakReferenceMessenger.Default.Send(new CardVisibilityChangedMessage());
+        }
+
+        partial void OnShowDailyNoteResinChanged(bool value)
+        {
+            _ = _localSettingsService.SaveSettingAsync("ShowDailyNoteResin", value);
+            WeakReferenceMessenger.Default.Send(new CardVisibilityChangedMessage());
+        }
+
+        partial void OnShowDailyNoteDailyTasksChanged(bool value)
+        {
+            _ = _localSettingsService.SaveSettingAsync("ShowDailyNoteDailyTasks", value);
+            WeakReferenceMessenger.Default.Send(new CardVisibilityChangedMessage());
+        }
+
+        partial void OnShowDailyNoteHomeCoinChanged(bool value)
+        {
+            _ = _localSettingsService.SaveSettingAsync("ShowDailyNoteHomeCoin", value);
+            WeakReferenceMessenger.Default.Send(new CardVisibilityChangedMessage());
+        }
+
+        partial void OnShowDailyNoteExpeditionsChanged(bool value)
+        {
+            _ = _localSettingsService.SaveSettingAsync("ShowDailyNoteExpeditions", value);
+            WeakReferenceMessenger.Default.Send(new CardVisibilityChangedMessage());
+        }
+
+        partial void OnShowDailyNoteTransformerChanged(bool value)
+        {
+            _ = _localSettingsService.SaveSettingAsync("ShowDailyNoteTransformer", value);
             WeakReferenceMessenger.Default.Send(new CardVisibilityChangedMessage());
         }
 

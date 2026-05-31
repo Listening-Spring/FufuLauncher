@@ -1,6 +1,7 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Text.Json;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
@@ -29,6 +30,7 @@ namespace FufuLauncher.ViewModels
         private readonly IHoyoverseCheckinService _checkinService;
         private readonly IGameLauncherService _gameLauncherService;
         private readonly INotificationService _notificationService;
+        private readonly DailyNoteCardService _dailyNoteCardService;
         private readonly DispatcherQueue _dispatcherQueue;
         private static bool _isFirstLoad = true;
         private bool _hasAttemptedAutoCheckin = false;
@@ -72,6 +74,25 @@ namespace FufuLauncher.ViewModels
         [ObservableProperty] private bool _isPanelExpanded = true;
         [ObservableProperty] private Visibility _gameNewsCardVisibility = Visibility.Visible;
         [ObservableProperty] private Visibility _checkinCardVisibility = Visibility.Visible;
+        [ObservableProperty] private Visibility _dailyNoteCardVisibility = Visibility.Visible;
+
+        [ObservableProperty] private int _currentResin;
+        [ObservableProperty] private int _maxResin;
+        [ObservableProperty] private string _resinRecoveryTime = "";
+        [ObservableProperty] private int _finishedTaskNum;
+        [ObservableProperty] private int _totalTaskNum;
+        [ObservableProperty] private int _currentHomeCoin;
+        [ObservableProperty] private int _maxHomeCoin;
+        [ObservableProperty] private int _currentExpeditionNum;
+        [ObservableProperty] private int _maxExpeditionNum;
+        [ObservableProperty] private bool _isTransformerObtained;
+        [ObservableProperty] private string _transformerRecoveryTime = "";
+
+        [ObservableProperty] private Visibility _showResin = Visibility.Visible;
+        [ObservableProperty] private Visibility _showDailyTasks = Visibility.Visible;
+        [ObservableProperty] private Visibility _showHomeCoin = Visibility.Visible;
+        [ObservableProperty] private Visibility _showExpeditions = Visibility.Visible;
+        [ObservableProperty] private Visibility _showTransformer = Visibility.Visible;
 
         private DispatcherQueueTimer _bannerTimer;
 
@@ -153,7 +174,8 @@ namespace FufuLauncher.ViewModels
             IGameLauncherService gameLauncherService,
             ILauncherService launcherService,
             INavigationService navigationService,
-            INotificationService notificationService)
+            INotificationService notificationService,
+            DailyNoteCardService dailyNoteCardService)
         {
             _contentService = contentService;
             _backgroundRenderer = backgroundRenderer;
@@ -161,6 +183,7 @@ namespace FufuLauncher.ViewModels
             _checkinService = checkinService;
             _gameLauncherService = gameLauncherService;
             _notificationService = notificationService;
+            _dailyNoteCardService = dailyNoteCardService;
             _dispatcherQueue = App.MainWindow.DispatcherQueue;
 
             WeakReferenceMessenger.Default.Register<FufuLauncher.Messages.TextStyleChangedMessage>(this, async (r, m) =>
@@ -266,12 +289,25 @@ namespace FufuLauncher.ViewModels
             await LoadTextStylesAsync();
             await LoadUserPreferencesAsync();
             await LoadCustomBackgroundPathAsync();
-            await LoadBackgroundAsync();
-            await LoadAvailableBackgroundsAsync();
-            await LoadContentAsync();
-            await LoadCheckinStatusAsync();
-            UseInjection = await _gameLauncherService.GetUseInjectionAsync();
+            
+            var loadBackgroundTask = LoadBackgroundAsync();
+            var loadAvailableBackgroundsTask = LoadAvailableBackgroundsAsync();
+            var loadContentTask = LoadContentAsync();
+            var loadCheckinStatusTask = LoadCheckinStatusAsync();
+            var loadDailyNoteTask = LoadDailyNoteAsync();
+            var getInjectionTask = _gameLauncherService.GetUseInjectionAsync();
 
+            await Task.WhenAll(
+                loadBackgroundTask,
+                loadAvailableBackgroundsTask,
+                loadContentTask,
+                loadCheckinStatusTask,
+                loadDailyNoteTask,
+                getInjectionTask
+            );
+
+            UseInjection = getInjectionTask.Result;
+            
             try
             {
                 var savedOpacity = await _localSettingsService.ReadSettingAsync("PanelBackgroundOpacity");
@@ -291,7 +327,6 @@ namespace FufuLauncher.ViewModels
 
         partial void OnHasCustomBackgroundChanged(bool value)
         {
-            // Background switching is global-only now; keep button disabled on main page.
             IsBackgroundToggleEnabled = !value;
         }
 
@@ -331,10 +366,15 @@ namespace FufuLauncher.ViewModels
         public async Task OnPageReturnedAsync()
         {
             Debug.WriteLine("[MainViewModel] 页面已返回，正在刷新服务器配置...");
+            
             await RefreshSettingsAsync();
             await LoadUserPreferencesAsync();
-            await ForceRefreshGameStateAsync();
-            await LoadCheckinStatusAsync();
+            
+            var refreshGameTask = ForceRefreshGameStateAsync();
+            var checkinTask = LoadCheckinStatusAsync();
+            var dailyNoteTask = LoadDailyNoteAsync();
+
+            await Task.WhenAll(refreshGameTask, checkinTask, dailyNoteTask);
         }
         
         private async Task RefreshSettingsAsync()
@@ -353,6 +393,25 @@ namespace FufuLauncher.ViewModels
             var hideCheckinCardJson = await _localSettingsService.ReadSettingAsync("IsHideCheckinCardEnabled");
             bool isCheckinCardHidden = hideCheckinCardJson != null && Convert.ToBoolean(hideCheckinCardJson);
             CheckinCardVisibility = isCheckinCardHidden ? Visibility.Collapsed : Visibility.Visible;
+
+            var hideDailyNoteCardJson = await _localSettingsService.ReadSettingAsync("IsHideDailyNoteCardEnabled");
+            bool isDailyNoteCardHidden = hideDailyNoteCardJson == null || Convert.ToBoolean(hideDailyNoteCardJson);
+            DailyNoteCardVisibility = isDailyNoteCardHidden ? Visibility.Collapsed : Visibility.Visible;
+
+            var showResinJson = await _localSettingsService.ReadSettingAsync("ShowDailyNoteResin");
+            ShowResin = showResinJson == null || Convert.ToBoolean(showResinJson) ? Visibility.Visible : Visibility.Collapsed;
+
+            var showDailyTasksJson = await _localSettingsService.ReadSettingAsync("ShowDailyNoteDailyTasks");
+            ShowDailyTasks = showDailyTasksJson == null || Convert.ToBoolean(showDailyTasksJson) ? Visibility.Visible : Visibility.Collapsed;
+
+            var showHomeCoinJson = await _localSettingsService.ReadSettingAsync("ShowDailyNoteHomeCoin");
+            ShowHomeCoin = showHomeCoinJson == null || Convert.ToBoolean(showHomeCoinJson) ? Visibility.Visible : Visibility.Collapsed;
+
+            var showExpeditionsJson = await _localSettingsService.ReadSettingAsync("ShowDailyNoteExpeditions");
+            ShowExpeditions = showExpeditionsJson == null || Convert.ToBoolean(showExpeditionsJson) ? Visibility.Visible : Visibility.Collapsed;
+
+            var showTransformerJson = await _localSettingsService.ReadSettingAsync("ShowDailyNoteTransformer");
+            ShowTransformer = showTransformerJson == null || Convert.ToBoolean(showTransformerJson) ? Visibility.Visible : Visibility.Collapsed;
         }
 
         private async Task LoadUserPreferencesAsync()
@@ -1038,6 +1097,48 @@ private async Task ExecuteCheckinAsync()
             if (actualState != IsGameRunning)
             {
                 await SetGameRunningStateAsync(actualState);
+            }
+        }
+
+        private async Task LoadDailyNoteAsync()
+        {
+            try
+            {
+                var customUid = await _localSettingsService.ReadSettingAsync("CustomCheckinUid");
+                string targetUid = customUid?.ToString()?.Trim();
+
+                var uids = await _checkinService.GetBoundUidsAsync();
+                
+                if (uids.Count == 0)
+                {
+                    Debug.WriteLine("[DailyNote] 未找到绑定账号");
+                    return;
+                }
+
+                string roleId = string.IsNullOrEmpty(targetUid) ? uids[0] : targetUid;
+                string server = roleId.StartsWith("5") ? "cn_qd01" : "cn_gf01";
+
+                var dailyNoteData = await _dailyNoteCardService.LoadCardDataAsync(roleId, server);
+
+                await UpdateUI(() =>
+                {
+                    CurrentResin = dailyNoteData.CurrentResin;
+                    MaxResin = dailyNoteData.MaxResin;
+                    FinishedTaskNum = dailyNoteData.FinishedTaskNum;
+                    TotalTaskNum = dailyNoteData.TotalTaskNum;
+                    CurrentHomeCoin = dailyNoteData.CurrentHomeCoin;
+                    MaxHomeCoin = dailyNoteData.MaxHomeCoin;
+                    CurrentExpeditionNum = dailyNoteData.CurrentExpeditionNum;
+                    MaxExpeditionNum = dailyNoteData.MaxExpeditionNum;
+                    IsTransformerObtained = dailyNoteData.IsTransformerObtained;
+                    TransformerRecoveryTime = dailyNoteData.TransformerRecoveryTime;
+                });
+
+                Debug.WriteLine("[DailyNote] 便签数据加载成功");
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[DailyNote] 加载便签数据失败: {ex.Message}");
             }
         }
         private string _cachedGamePath;

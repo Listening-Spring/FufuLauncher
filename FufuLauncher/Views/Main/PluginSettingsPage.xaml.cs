@@ -117,8 +117,6 @@ public sealed partial class PluginSettingsPage : Page
         }
         
         _isInitializing = false;
-        
-        _ = ViewModel.StartAsynchronousAuthAsync();
     }
     
     private void OnOpenSponsorWindowClick(object sender, RoutedEventArgs e)

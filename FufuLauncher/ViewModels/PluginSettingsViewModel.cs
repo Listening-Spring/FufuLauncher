@@ -120,8 +120,6 @@ public partial class PluginSettingsViewModel : ObservableObject
         LoadConfiguration();
         UpdateAvatarPreview();
         RefreshUIState();
-        
-        _ = TriggerBackgroundAuthCheckAsync();
     }
     
     private bool _isFpsPluginEnabled;
@@ -559,6 +557,21 @@ public async Task TriggerBackgroundAuthCheckAsync()
             var autoCreateTask = localSettings.ReadSettingAsync("IsAutoCreatePresetEnabled");
             autoCreateTask.Wait();
             _isAutoCreatePresetEnabled = autoCreateTask.Result == null || Convert.ToBoolean(autoCreateTask.Result);
+
+            // 在下方补充以下代码：
+            var devFeaturesTask = localSettings.ReadSettingAsync("IsDevFeaturesEnabled");
+            devFeaturesTask.Wait();
+            bool savedDevFeatures = devFeaturesTask.Result != null && Convert.ToBoolean(devFeaturesTask.Result);
+
+            if (savedDevFeatures)
+            {
+                _isDevFeaturesEnabled = true;
+                _ = VerifyAndApplyDevFeaturesOnStartupAsync();
+            }
+            else
+            {
+                _isDevFeaturesEnabled = false;
+            }
         }
 
         // 纯同步本地加载，[DEV] 默认不加载
@@ -732,7 +745,7 @@ public void LoadConfiguration()
                     continue;
                 }
 
-                if (isDevZone && !_isHwidAuthorized)
+                if (isDevZone && !_isDevFeaturesEnabled)
                 {
                     continue;
                 }
@@ -797,6 +810,90 @@ public void LoadConfiguration()
                 OnPropertyChanged(nameof(IsAvatarPluginEnabled));
                 RefreshUIState();
             }
+        }
+    }
+    
+    private bool _isDevFeaturesEnabled;
+    public bool IsDevFeaturesEnabled
+    {
+        get => _isDevFeaturesEnabled;
+        set
+        {
+            if (_isDevFeaturesEnabled != value)
+            {
+                _isDevFeaturesEnabled = value;
+                OnPropertyChanged();
+
+                if (value)
+                {
+                    _ = VerifyAndApplyDevFeaturesAsync();
+                }
+                else
+                {
+                    SaveDevFeaturesSetting(false);
+                    LoadConfiguration();
+                }
+            }
+        }
+    }
+
+    private async Task VerifyAndApplyDevFeaturesAsync()
+    {
+        bool isAuthorized = await CheckHwidAuthorizationAsync();
+        var dispatcher = Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread();
+
+        Action action = () =>
+        {
+            if (isAuthorized)
+            {
+                SaveDevFeaturesSetting(true);
+                LoadConfiguration();
+            }
+            else
+            {
+                WeakReferenceMessenger.Default.Send(new NotificationMessage(
+                    "权限验证失败",
+                    "您当前不具备开发者功能权限，无法开启该功能",
+                    NotificationType.Error,
+                    4000
+                ));
+                
+                _isDevFeaturesEnabled = false;
+                OnPropertyChanged(nameof(IsDevFeaturesEnabled));
+                SaveDevFeaturesSetting(false);
+                LoadConfiguration();
+            }
+        };
+
+        if (dispatcher != null) dispatcher.TryEnqueue(() => action());
+        else action();
+    }
+
+    private async Task VerifyAndApplyDevFeaturesOnStartupAsync()
+    {
+        bool isAuthorized = await CheckHwidAuthorizationAsync();
+        if (!isAuthorized)
+        {
+            var dispatcher = Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread();
+            Action action = () =>
+            {
+                _isDevFeaturesEnabled = false;
+                OnPropertyChanged(nameof(IsDevFeaturesEnabled));
+                SaveDevFeaturesSetting(false);
+                LoadConfiguration();
+            };
+
+            if (dispatcher != null) dispatcher.TryEnqueue(() => action());
+            else action();
+        }
+    }
+
+    private void SaveDevFeaturesSetting(bool isEnabled)
+    {
+        var localSettings = App.GetService<FufuLauncher.Contracts.Services.ILocalSettingsService>();
+        if (localSettings != null)
+        {
+            _ = localSettings.SaveSettingAsync("IsDevFeaturesEnabled", isEnabled);
         }
     }
 

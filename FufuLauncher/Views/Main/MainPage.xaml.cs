@@ -395,34 +395,39 @@ private async void ChangeUidButton_Click(object sender, RoutedEventArgs e)
     
     private void UpdateCardBackgrounds()
     {
-        if (InfoCardSolidBg == null || CheckinCardSolidBg == null) return;
+        if (InfoCardSolidBg == null || CheckinCardSolidBg == null || DailyNoteCardSolidBg == null) return;
 
         var transparentBrush = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.Transparent);
         InfoCardSolidBg.Background = transparentBrush;
         CheckinCardSolidBg.Background = transparentBrush;
+        DailyNoteCardSolidBg.Background = transparentBrush;
 
         if (ViewModel.IsVideoBackground)
         {
             InfoCardBlurBg.Opacity = 0.5;
             CheckinCardBlurBg.Opacity = 0.5;
+            DailyNoteCardBlurBg.Opacity = 0.5;
         }
         else
         {
             InfoCardBlurBg.Opacity = 1.0;
             CheckinCardBlurBg.Opacity = 1.0;
+            DailyNoteCardBlurBg.Opacity = 1.0;
         }
     }
     
     private async Task TransitionCardBackgroundsAsync()
     {
-        if (InfoCardSolidBg == null || CheckinCardSolidBg == null) return;
+        if (InfoCardSolidBg == null || CheckinCardSolidBg == null || DailyNoteCardSolidBg == null) return;
         
         var transparentBrush = new SolidColorBrush(Microsoft.UI.Colors.Transparent);
         InfoCardSolidBg.Background = transparentBrush;
         CheckinCardSolidBg.Background = transparentBrush;
+        DailyNoteCardSolidBg.Background = transparentBrush;
         
         InfoCardBlurBg.Opacity = 0.65;
         CheckinCardBlurBg.Opacity = 0.65;
+        DailyNoteCardBlurBg.Opacity = 0.65;
         
         await Task.Delay(500);
 
@@ -434,6 +439,7 @@ private async void ChangeUidButton_Click(object sender, RoutedEventArgs e)
         
         storyboard.Children.Add(CreateDoubleAnimation(InfoCardBlurBg, "Opacity", 1.0, duration, easing));
         storyboard.Children.Add(CreateDoubleAnimation(CheckinCardBlurBg, "Opacity", 1.0, duration, easing));
+        storyboard.Children.Add(CreateDoubleAnimation(DailyNoteCardBlurBg, "Opacity", 1.0, duration, easing));
 
         storyboard.Begin();
     }
@@ -487,12 +493,6 @@ private async void ChangeUidButton_Click(object sender, RoutedEventArgs e)
 
         InitializeBannerDisplay();
         
-        if (!_isInitialized)
-        {
-            await ViewModel.InitializeAsync();
-            _isInitialized = true;
-        }
-        
         if (!_hasCardAnimationPlayed)
         {
             _hasCardAnimationPlayed = true;
@@ -502,6 +502,18 @@ private async void ChangeUidButton_Click(object sender, RoutedEventArgs e)
         {
             UpdateCardBackgrounds();
         }
+        
+        if (!_isInitialized)
+        {
+            await ViewModel.InitializeAsync();
+            _isInitialized = true;
+        }
+    }
+    
+    private void OpenCheckinCalendar_Click(object sender, RoutedEventArgs e)
+    {
+        var calendarWindow = new CheckinCalendarWindow();
+        calendarWindow.Activate();
     }
 
     private async void OpenLink(string url)

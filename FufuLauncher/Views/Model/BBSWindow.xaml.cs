@@ -1,4 +1,4 @@
-﻿using System.Runtime.InteropServices.WindowsRuntime;
+using System.Runtime.InteropServices.WindowsRuntime;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
@@ -24,6 +24,7 @@ namespace FufuLauncher.Views
     {
         private AppWindow m_AppWindow;
         private string ConfigPath => Helpers.AppPaths.ConfigFile;
+        private static readonly System.Threading.SemaphoreSlim _fetchApiSemaphore = new System.Threading.SemaphoreSlim(1, 1);
         
         private byte[] _screenshotBytes;
 
@@ -613,13 +614,21 @@ namespace FufuLauncher.Views
 
         private async Task LoadPageAsync(string url)
         {
+            System.Diagnostics.Debug.WriteLine($"[BBSWindow] LoadPageAsync called with URL: {url}");
+            System.Diagnostics.Debug.WriteLine($"[BBSWindow] ConfigPath exists: {File.Exists(ConfigPath)}");
+            
             if (File.Exists(ConfigPath))
             {
                 try {
                     var json = await File.ReadAllTextAsync(ConfigPath);
                     var cfg = JsonSerializer.Deserialize<AppConfig>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-                    ParseCookie(cfg?.Account?.Cookie ?? "");
-                } catch { }
+                    var cookieStr = cfg?.Account?.Cookie ?? "";
+                    System.Diagnostics.Debug.WriteLine($"[BBSWindow] Cookie length: {cookieStr.Length}");
+                    ParseCookie(cookieStr);
+                    System.Diagnostics.Debug.WriteLine($"[BBSWindow] Parsed {cookieDic.Count} cookies");
+                } catch (Exception ex) { 
+                    System.Diagnostics.Debug.WriteLine($"[BBSWindow] Failed to load config: {ex.Message}");
+                }
             }
             
             var manager = BBSWebView.CoreWebView2.CookieManager;
@@ -634,6 +643,7 @@ namespace FufuLauncher.Views
                 var cookie = manager.CreateCookie(kv.Key, kv.Value, ".mihoyo.com", "/");
                 manager.AddOrUpdateCookie(cookie);
             }
+            System.Diagnostics.Debug.WriteLine($"[BBSWindow] Added {cookieDic.Count} cookies to WebView2");
             BBSWebView.CoreWebView2.Navigate(url);
         }
 
@@ -647,7 +657,102 @@ namespace FufuLauncher.Views
                 if (kv.Length == 2) cookieDic[kv[0].Trim()] = kv[1].Trim();
             }
         }
+
+public static async Task<string> FetchApiJsonAsync(string apiUrl)
+{
+    await _fetchApiSemaphore.WaitAsync();
+    try
+    {
+        string capturedJson = null;
+        var tcs = new TaskCompletionSource<bool>();
         
+        var window = new BBSWindow();
+        window.AppWindow.Hide();
+
+        await window.BBSWebView.EnsureCoreWebView2Async();
+
+        window.BBSWebView.CoreWebView2.NewWindowRequested += (sender, args) =>
+        {
+            args.Handled = true;
+        };
+
+        window.BBSWebView.CoreWebView2.NavigationCompleted += async (sender, args) =>
+        {
+            try
+            {
+                if (args.IsSuccess && string.IsNullOrEmpty(capturedJson))
+                {
+                    await Task.Delay(800);
+                    
+                    if (!string.IsNullOrEmpty(capturedJson)) return;
+
+                    string json = await window.BBSWebView.CoreWebView2.ExecuteScriptAsync("document.body.innerText;");
+                    if (!string.IsNullOrEmpty(json) && json != "null")
+                    {
+                        var parsedStr = JsonSerializer.Deserialize<string>(json);
+                        if (parsedStr != null && parsedStr.StartsWith("{")) 
+                        {
+                            capturedJson = parsedStr;
+                            tcs.TrySetResult(true);
+                        }
+                    }
+                }
+            }
+            catch
+            {
+                // ignored
+            }
+        };
+
+        window.BBSWebView.CoreWebView2.WebResourceResponseReceived += async (sender, args) =>
+        {
+            if (args.Request.Uri.Contains("api-takumi-record.mihoyo.com") && args.Request.Uri.Contains("dailyNote"))
+            {
+                System.Diagnostics.Debug.WriteLine($"[BBSWindow] 捕获到API响应: {args.Request.Uri}");
+                try
+                {
+                    var content = await args.Response.GetContentAsync();
+                    if (content != null && content.Size > 0)
+                    {
+                        using var reader = new DataReader(content);
+                        reader.UnicodeEncoding = Windows.Storage.Streams.UnicodeEncoding.Utf8;
+                        await reader.LoadAsync((uint)content.Size);
+                        capturedJson = reader.ReadString((uint)content.Size);
+                        System.Diagnostics.Debug.WriteLine($"[BBSWindow] JSON内容: {capturedJson?.Substring(0, Math.Min(200, capturedJson.Length))}");
+                        tcs.TrySetResult(true);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"[BBSWindow] 读取响应失败: {ex.Message}");
+                }
+            }
+        };
+
+        await window.LoadPageAsync(apiUrl);
+
+        var timeoutTask = Task.Delay(15000);
+        var completedTask = await Task.WhenAny(tcs.Task, timeoutTask);
+
+        window.Close();
+
+        if (completedTask == timeoutTask)
+        {
+            throw new TimeoutException("获取API数据超时");
+        }
+
+        if (string.IsNullOrEmpty(capturedJson))
+        {
+            throw new InvalidOperationException("未能获取API响应数据");
+        }
+
+        return capturedJson;
+    }
+    finally
+    {
+        _fetchApiSemaphore.Release();
+    }
+}
         private class JsParam
         {
             [JsonPropertyName("method")] public string Method { get; set; } = "";
