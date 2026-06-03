@@ -1221,7 +1221,12 @@ public class PluginSettingItem : ObservableObject
             if (string.IsNullOrEmpty(HelpUrl)) return null;
             try
             {
-                return new Microsoft.UI.Xaml.Media.Imaging.BitmapImage(new Uri(HelpUrl));
+                var resolvedPath = HelpUrl;
+                if (!Uri.IsWellFormedUriString(HelpUrl, UriKind.Absolute) && !Path.IsPathRooted(HelpUrl))
+                {
+                    resolvedPath = Path.Combine(AppContext.BaseDirectory, HelpUrl);
+                }
+                return new Microsoft.UI.Xaml.Media.Imaging.BitmapImage(new Uri(resolvedPath));
             }
             catch
             {

@@ -12,10 +12,9 @@
     <Page.Resources>
         <DataTemplate x:Key="BoolTemplate" x:DataType="viewmodels:PluginSettingItem">
             <StackPanel Width="240" HorizontalAlignment="Left">
-                <TextBlock Text="{x:Bind DisplayName}" FontSize="12" Margin="0,0,0,8" Opacity="0.9"/>
-                <StackPanel Orientation="Horizontal" Spacing="8">
-                    <ToggleSwitch IsOn="{x:Bind BoolValue, Mode=TwoWay}" OnContent="开" OffContent="关" MinWidth="0" Margin="0" VerticalAlignment="Center"/>
-                    <Button Visibility="{x:Bind HelpVisibility, Mode=OneWay}" Content="&#xE897;" FontFamily="Segoe Fluent Icons" FontSize="14" Width="24" Height="24" MinWidth="0" MinHeight="0" Padding="0" CornerRadius="12" Background="Transparent" BorderThickness="0" VerticalAlignment="Center" ToolTipService.ToolTip="查看帮助">
+                <StackPanel Orientation="Horizontal" Spacing="4" Margin="0,0,0,8">
+                    <TextBlock Text="{x:Bind DisplayName}" FontSize="12" Opacity="0.9" VerticalAlignment="Center"/>
+                    <Button Visibility="{x:Bind HelpVisibility, Mode=OneWay}" Content="&#xE9CE;" FontFamily="Segoe Fluent Icons" FontSize="12" Width="20" Height="20" MinWidth="0" MinHeight="0" Padding="0" CornerRadius="10" Background="Transparent" BorderThickness="0" Opacity="0.5" VerticalAlignment="Center" ToolTipService.ToolTip="查看帮助">
                         <Button.Flyout>
                             <Flyout Placement="Right">
                                 <Flyout.FlyoutPresenterStyle>
@@ -36,28 +35,15 @@
                         </Button.Flyout>
                     </Button>
                 </StackPanel>
+                <ToggleSwitch IsOn="{x:Bind BoolValue, Mode=TwoWay}" OnContent="开" OffContent="关" MinWidth="0" Margin="0"/>
             </StackPanel>
         </DataTemplate>
         
         <DataTemplate x:Key="KeyTemplate" x:DataType="viewmodels:PluginSettingItem">
             <StackPanel Width="240" HorizontalAlignment="Left">
-                <TextBlock Text="{x:Bind DisplayName}" FontSize="12" Margin="0,0,0,8" Opacity="0.9"/>
-                <StackPanel Orientation="Horizontal" Spacing="8">
-                    <Grid>
-                        <ComboBox ItemsSource="{x:Bind AvailableKeys}" 
-                                  SelectedValuePath="KeyCode" 
-                                  DisplayMemberPath="KeyName" 
-                                  SelectedValue="{x:Bind KeyValue, Mode=TwoWay}" 
-                                  Visibility="{x:Bind KeyListVisibility, Mode=OneWay}"
-                                  Width="200" HorizontalAlignment="Left"/>
-                        <NumberBox Value="{x:Bind KeyNumberValue, Mode=TwoWay}"
-                                  SpinButtonPlacementMode="Inline"
-                                  SmallChange="1"
-                                  Minimum="1"
-                                  Visibility="{x:Bind KeyNumberVisibility, Mode=OneWay}"
-                                  Width="200" HorizontalAlignment="Left"/>
-                    </Grid>
-                    <Button Visibility="{x:Bind HelpVisibility, Mode=OneWay}" Content="&#xE897;" FontFamily="Segoe Fluent Icons" FontSize="14" Width="24" Height="24" MinWidth="0" MinHeight="0" Padding="0" CornerRadius="12" Background="Transparent" BorderThickness="0" VerticalAlignment="Center" ToolTipService.ToolTip="查看帮助">
+                <StackPanel Orientation="Horizontal" Spacing="4" Margin="0,0,0,8">
+                    <TextBlock Text="{x:Bind DisplayName}" FontSize="12" Opacity="0.9" VerticalAlignment="Center"/>
+                    <Button Visibility="{x:Bind HelpVisibility, Mode=OneWay}" Content="&#xE9CE;" FontFamily="Segoe Fluent Icons" FontSize="12" Width="20" Height="20" MinWidth="0" MinHeight="0" Padding="0" CornerRadius="10" Background="Transparent" BorderThickness="0" Opacity="0.5" VerticalAlignment="Center" ToolTipService.ToolTip="查看帮助">
                         <Button.Flyout>
                             <Flyout Placement="Right">
                                 <Flyout.FlyoutPresenterStyle>
@@ -78,15 +64,28 @@
                         </Button.Flyout>
                     </Button>
                 </StackPanel>
+                <Grid>
+                    <ComboBox ItemsSource="{x:Bind AvailableKeys}" 
+                              SelectedValuePath="KeyCode" 
+                              DisplayMemberPath="KeyName" 
+                              SelectedValue="{x:Bind KeyValue, Mode=TwoWay}" 
+                              Visibility="{x:Bind KeyListVisibility, Mode=OneWay}"
+                              Width="200" HorizontalAlignment="Left"/>
+                    <NumberBox Value="{x:Bind KeyNumberValue, Mode=TwoWay}"
+                              SpinButtonPlacementMode="Inline"
+                              SmallChange="1"
+                              Minimum="1"
+                              Visibility="{x:Bind KeyNumberVisibility, Mode=OneWay}"
+                              Width="200" HorizontalAlignment="Left"/>
+                </Grid>
             </StackPanel>
         </DataTemplate>
         
         <DataTemplate x:Key="NumberTemplate" x:DataType="viewmodels:PluginSettingItem">
             <StackPanel Width="240" HorizontalAlignment="Left">
-                <TextBlock Text="{x:Bind DisplayName}" FontSize="12" Margin="0,0,0,8" Opacity="0.9"/>
-                <StackPanel Orientation="Horizontal" Spacing="8">
-                    <NumberBox Value="{x:Bind FloatValue, Mode=TwoWay}" SpinButtonPlacementMode="Inline" Width="200" HorizontalAlignment="Left"/>
-                    <Button Visibility="{x:Bind HelpVisibility, Mode=OneWay}" Content="&#xE897;" FontFamily="Segoe Fluent Icons" FontSize="14" Width="24" Height="24" MinWidth="0" MinHeight="0" Padding="0" CornerRadius="12" Background="Transparent" BorderThickness="0" VerticalAlignment="Center" ToolTipService.ToolTip="查看帮助">
+                <StackPanel Orientation="Horizontal" Spacing="4" Margin="0,0,0,8">
+                    <TextBlock Text="{x:Bind DisplayName}" FontSize="12" Opacity="0.9" VerticalAlignment="Center"/>
+                    <Button Visibility="{x:Bind HelpVisibility, Mode=OneWay}" Content="&#xE9CE;" FontFamily="Segoe Fluent Icons" FontSize="12" Width="20" Height="20" MinWidth="0" MinHeight="0" Padding="0" CornerRadius="10" Background="Transparent" BorderThickness="0" Opacity="0.5" VerticalAlignment="Center" ToolTipService.ToolTip="查看帮助">
                         <Button.Flyout>
                             <Flyout Placement="Right">
                                 <Flyout.FlyoutPresenterStyle>
@@ -107,15 +106,15 @@
                         </Button.Flyout>
                     </Button>
                 </StackPanel>
+                <NumberBox Value="{x:Bind FloatValue, Mode=TwoWay}" SpinButtonPlacementMode="Inline" Width="200" HorizontalAlignment="Left"/>
             </StackPanel>
         </DataTemplate>
 
         <DataTemplate x:Key="StringTemplate" x:DataType="viewmodels:PluginSettingItem">
             <StackPanel Width="240" HorizontalAlignment="Left">
-                <TextBlock Text="{x:Bind DisplayName}" FontSize="12" Margin="0,0,0,8" Opacity="0.9"/>
-                <StackPanel Orientation="Horizontal" Spacing="8">
-                    <TextBox Text="{x:Bind StringValue, Mode=TwoWay}" Width="200" HorizontalAlignment="Left"/>
-                    <Button Visibility="{x:Bind HelpVisibility, Mode=OneWay}" Content="&#xE897;" FontFamily="Segoe Fluent Icons" FontSize="14" Width="24" Height="24" MinWidth="0" MinHeight="0" Padding="0" CornerRadius="12" Background="Transparent" BorderThickness="0" VerticalAlignment="Center" ToolTipService.ToolTip="查看帮助">
+                <StackPanel Orientation="Horizontal" Spacing="4" Margin="0,0,0,8">
+                    <TextBlock Text="{x:Bind DisplayName}" FontSize="12" Opacity="0.9" VerticalAlignment="Center"/>
+                    <Button Visibility="{x:Bind HelpVisibility, Mode=OneWay}" Content="&#xE9CE;" FontFamily="Segoe Fluent Icons" FontSize="12" Width="20" Height="20" MinWidth="0" MinHeight="0" Padding="0" CornerRadius="10" Background="Transparent" BorderThickness="0" Opacity="0.5" VerticalAlignment="Center" ToolTipService.ToolTip="查看帮助">
                         <Button.Flyout>
                             <Flyout Placement="Right">
                                 <Flyout.FlyoutPresenterStyle>
@@ -136,6 +135,7 @@
                         </Button.Flyout>
                     </Button>
                 </StackPanel>
+                <TextBox Text="{x:Bind StringValue, Mode=TwoWay}" Width="200" HorizontalAlignment="Left"/>
             </StackPanel>
         </DataTemplate>
 
