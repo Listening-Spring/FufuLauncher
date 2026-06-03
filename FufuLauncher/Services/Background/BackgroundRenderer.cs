@@ -122,16 +122,16 @@ namespace FufuLauncher.Services.Background
             }
         }
 
-        private async Task<BackgroundRenderResult> LoadFromCacheOrNull(string url, bool isVideo)
+        private Task<BackgroundRenderResult> LoadFromCacheOrNull(string url, bool isVideo)
         {
             if (url == _currentBackgroundUrl && _cachedBackground != null)
-                return _cachedBackground;
+                return Task.FromResult(_cachedBackground);
 
             var fileName = GetCacheFileName(url, isVideo ? ".mp4" : ".img");
             var cachedFilePath = Path.Combine(_cacheFolderPath, fileName);
 
             if (!File.Exists(cachedFilePath) || new FileInfo(cachedFilePath).Length <= 1024)
-                return null;
+                return Task.FromResult<BackgroundRenderResult>(null);
 
             try
             {
@@ -143,23 +143,19 @@ namespace FufuLauncher.Services.Background
                 }
                 else
                 {
-                    var bitmap = new BitmapImage();
-                    using (var stream = File.OpenRead(cachedFilePath))
-                    {
-                        await bitmap.SetSourceAsync(stream.AsRandomAccessStream());
-                    }
+                    var bitmap = new BitmapImage(new Uri(cachedFilePath));
                     result = new BackgroundRenderResult { ImageSource = bitmap, IsVideo = false };
                 }
 
                 _cachedBackground = result;
                 _currentBackgroundUrl = url;
-                return result;
+                return Task.FromResult(result);
             }
             catch (Exception ex)
             {
                 Debug.WriteLine($"BackgroundRenderer: 缓存文件加载失败({fileName}): {ex.Message}");
                 try { File.Delete(cachedFilePath); } catch { }
-                return null;
+                return Task.FromResult<BackgroundRenderResult>(null);
             }
         }
 
@@ -445,11 +441,7 @@ namespace FufuLauncher.Services.Background
                 }
                 else
                 {
-                    var bitmap = new BitmapImage();
-                    using (var stream = File.OpenRead(filePath))
-                    {
-                        await bitmap.SetSourceAsync(stream.AsRandomAccessStream());
-                    }
+                    var bitmap = new BitmapImage(new Uri(filePath));
                     result = new BackgroundRenderResult { ImageSource = bitmap, IsVideo = false };
                 }
 
