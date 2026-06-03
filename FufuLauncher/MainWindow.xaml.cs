@@ -813,12 +813,27 @@ public sealed partial class MainWindow : WindowEx
         }
     }
 
-    private Task ApplyGlobalBackgroundAsync(BackgroundRenderResult? result)
+private async Task ApplyGlobalBackgroundAsync(BackgroundRenderResult? result)
 {
-    return RunOnUIThreadAsync(async void () => 
+    if (result == null) 
+    { 
+        await ClearGlobalBackgroundAsync(); 
+        return; 
+    }
+    
+    double finalOpacity = 1.0;
+    try
     {
-        if (result == null) { await ClearGlobalBackgroundAsync(); return; }
+        var valueObj = await _localSettingsService.ReadSettingAsync("GlobalBackgroundImageOpacity");
+        if (valueObj != null && double.TryParse(valueObj.ToString(), out var parsed))
+        {
+            finalOpacity = Math.Clamp(parsed, 0.0, 1.0);
+        }
+    }
+    catch { }
 
+    await RunOnUIThreadAsync(() => 
+    {
         if (result.IsVideo)
         {
             _isVideoBackground = true;
@@ -844,16 +859,10 @@ public sealed partial class MainWindow : WindowEx
             _globalBackgroundPlayer?.Pause();
             GlobalBackgroundVideo.Visibility = Visibility.Collapsed;
             
-            var targetOpacity = GlobalBackgroundImage.Opacity; 
-            var finalOpacity = targetOpacity > 0 ? targetOpacity : 1.0;
-            
             GlobalBackgroundImage.Opacity = 0.0;
-            GlobalBackgroundImage.Source = result.ImageSource;
             GlobalBackgroundImage.Visibility = Visibility.Visible;
-            
-            await Task.Delay(100); 
-            
-            var fadeInAnimation = new DoubleAnimation
+
+            var anim = new DoubleAnimation
             {
                 From = 0.0,
                 To = finalOpacity,
@@ -861,12 +870,51 @@ public sealed partial class MainWindow : WindowEx
                 EasingFunction = new CircleEase { EasingMode = EasingMode.EaseOut }
             };
 
-            Storyboard.SetTarget(fadeInAnimation, GlobalBackgroundImage);
-            Storyboard.SetTargetProperty(fadeInAnimation, "Opacity");
+            Storyboard.SetTarget(anim, GlobalBackgroundImage);
+            Storyboard.SetTargetProperty(anim, "Opacity");
             
             var storyboard = new Storyboard();
-            storyboard.Children.Add(fadeInAnimation);
-            storyboard.Begin();
+            storyboard.Children.Add(anim);
+
+            bool isAnimationStarted = false;
+            void StartFadeInAnimation()
+            {
+                if (isAnimationStarted) return;
+                isAnimationStarted = true;
+                storyboard.Begin();
+            }
+
+            RoutedEventHandler imageOpenedHandler = null!;
+            imageOpenedHandler = (s, e) =>
+            {
+                GlobalBackgroundImage.ImageOpened -= imageOpenedHandler;
+                StartFadeInAnimation();
+            };
+            
+            ExceptionRoutedEventHandler imageFailedHandler = null!;
+            imageFailedHandler = (s, e) =>
+            {
+                GlobalBackgroundImage.ImageFailed -= imageFailedHandler;
+                StartFadeInAnimation();
+            };
+
+            GlobalBackgroundImage.ImageOpened += imageOpenedHandler;
+            GlobalBackgroundImage.ImageFailed += imageFailedHandler;
+            
+            GlobalBackgroundImage.Source = result.ImageSource;
+
+            var fallbackTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(600) };
+            fallbackTimer.Tick += (s, e) =>
+            {
+                fallbackTimer.Stop();
+                if (!isAnimationStarted)
+                {
+                    GlobalBackgroundImage.ImageOpened -= imageOpenedHandler;
+                    GlobalBackgroundImage.ImageFailed -= imageFailedHandler;
+                    StartFadeInAnimation();
+                }
+            };
+            fallbackTimer.Start();
         }
         
         UpdateBackgroundOverlayTheme();
