@@ -55,6 +55,7 @@ public partial class GachaAnalysisModel : ObservableObject
     private List<GachaLogItem> _cachedStandardLogs = new();
     private List<ScrapedMetadata> _savedMetadata = new();
     private string _currentUid = "";
+    private string _uidBeforeAddNew = "";
     private int _refreshVersion;
     private bool _analysisDashboardDirty = true;
 
@@ -116,6 +117,7 @@ public partial class GachaAnalysisModel : ObservableObject
     public Action<string> OnErrorAction;
     public Func<IntPtr> GetWindowHandle;
     public Func<string, string, Task<bool>> OnUidMismatchAsync;
+    public Func<string, string, string, Task> OnShowConfirmDialogAsync;
 
     public GachaAnalysisModel(ILocalSettingsService localSettingsService)
     {
@@ -1178,7 +1180,10 @@ public partial class GachaAnalysisModel : ObservableObject
     private async Task AddNewUserAsync()
     {
         if (!string.IsNullOrEmpty(_currentUid))
+        {
             SaveGachaLogsToDb();
+            _uidBeforeAddNew = _currentUid;
+        }
 
         _currentUid = "";
         _cachedCharacterLogs.Clear();
@@ -1279,14 +1284,17 @@ public partial class GachaAnalysisModel : ObservableObject
     [RelayCommand]
     private async Task FetchFromMiYouSheAsync()
     {
-        string gameUid = "";
-        try
+        string gameUid = _currentUid;
+        if (string.IsNullOrEmpty(gameUid))
         {
-            var userConfigService = App.GetService<Services.IUserConfigService>();
-            var displayConfig = await userConfigService.LoadDisplayConfigAsync();
-            gameUid = displayConfig.GameUid ?? "";
+            try
+            {
+                var userConfigService = App.GetService<Services.IUserConfigService>();
+                var displayConfig = await userConfigService.LoadDisplayConfigAsync();
+                gameUid = displayConfig.GameUid ?? "";
+            }
+            catch { }
         }
-        catch { }
 
         if (string.IsNullOrEmpty(gameUid))
         {
@@ -1311,8 +1319,8 @@ public partial class GachaAnalysisModel : ObservableObject
             return;
         }
 
-        if (!await HandleUidMismatchAsync(gameUid)) { IsFetching = false; return; }
-
+        var previousUid = string.IsNullOrEmpty(_currentUid) ? _uidBeforeAddNew : _currentUid;
+        _uidBeforeAddNew = "";
         _currentUid = gameUid;
 
         IsFetching = true;
@@ -1363,6 +1371,41 @@ public partial class GachaAnalysisModel : ObservableObject
             FillMissingFieldsFromMetadata(charLogs, weaponLogs, chronicledLogs, noviceLogs, standardLogs);
 
             var total = charLogs.Count + weaponLogs.Count + chronicledLogs.Count + noviceLogs.Count + standardLogs.Count;
+
+            if (total == 0)
+            {
+                IsFetching = false;
+                _cachedCharacterLogs.Clear();
+                _cachedWeaponLogs.Clear();
+                _cachedChronicledLogs.Clear();
+                _cachedNoviceLogs.Clear();
+                _cachedStandardLogs.Clear();
+
+                if (!string.IsNullOrEmpty(previousUid))
+                {
+                    if (OnShowConfirmDialogAsync != null)
+                    {
+                        await OnShowConfirmDialogAsync(
+                            "无祈愿记录",
+                            $"UID {gameUid} 没有获取到祈愿记录，已切回 UID {previousUid}",
+                            "确定");
+                    }
+                    await SwitchToUidAsync(previousUid);
+                }
+                else
+                {
+                    if (OnShowConfirmDialogAsync != null)
+                    {
+                        await OnShowConfirmDialogAsync(
+                            "无祈愿记录",
+                            $"UID {gameUid} 没有获取到祈愿记录",
+                            "确定");
+                    }
+                    await AddNewUserAsync();
+                }
+                return;
+            }
+
             CrawlerStatus = $"获取完成，共 {total} 条记录，正在检查图片资源...";
 
             RefreshUIFromCache();

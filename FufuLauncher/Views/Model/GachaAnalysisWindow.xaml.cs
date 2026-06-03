@@ -353,6 +353,24 @@ namespace FufuLauncher.Views
                 });
                 return await tcs.Task;
             };
+            ViewModel.OnShowConfirmDialogAsync = async (title, content, buttonText) =>
+            {
+                var tcs = new TaskCompletionSource();
+                DispatcherQueue.TryEnqueue(async () =>
+                {
+                    var dialog = new ContentDialog
+                    {
+                        Title = title,
+                        Content = content,
+                        PrimaryButtonText = buttonText ?? "确定",
+                        DefaultButton = ContentDialogButton.Primary,
+                        XamlRoot = Content.XamlRoot
+                    };
+                    await dialog.ShowAsync();
+                    tcs.TrySetResult();
+                });
+                await tcs.Task;
+            };
             ViewModel.OnErrorAction = (msg) =>
             {
                 DispatcherQueue.TryEnqueue(async () =>
