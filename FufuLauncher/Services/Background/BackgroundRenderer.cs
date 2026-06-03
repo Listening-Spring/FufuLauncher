@@ -1,12 +1,14 @@
 ﻿using System.Diagnostics;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.Json;
 using FufuLauncher.Models;
+using FufuLauncher.Constants;
+using FufuLauncher.Contracts.Services;
+using FufuLauncher.Messages;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Imaging;
 using Windows.Media.Core;
-using Windows.Storage;
-using FufuLauncher.Messages;
 using CommunityToolkit.Mvvm.Messaging;
 
 public class BackgroundItem
@@ -21,18 +23,9 @@ namespace FufuLauncher.Services.Background
 {
     public class BackgroundRenderResult
     {
-        public ImageSource ImageSource
-        {
-            get; set;
-        }
-        public MediaSource VideoSource
-        {
-            get; set;
-        }
-        public bool IsVideo
-        {
-            get; set;
-        }
+        public ImageSource ImageSource { get; set; }
+        public MediaSource VideoSource { get; set; }
+        public bool IsVideo { get; set; }
     }
 
     public interface IBackgroundRenderer
@@ -41,6 +34,7 @@ namespace FufuLauncher.Services.Background
         Task<BackgroundRenderResult> GetCustomBackgroundAsync(string filePath);
         Task<BackgroundRenderResult> GetSpecificOnlineBackgroundAsync(string url, bool isVideo);
         Task PreloadImageBackgroundsAsync(IEnumerable<string> imageUrls);
+        Task CacheAllBackgroundsAsync(ServerType server);
         void ClearBackground();
         void ClearCustomBackground();
     }
@@ -49,157 +43,384 @@ namespace FufuLauncher.Services.Background
     {
         private static readonly HttpClient _httpClient;
 
-        private readonly SemaphoreSlim _loadLock = new(1, 1);
-        
-        private int _downloadingCount = 0;
-        private readonly object _downloadStateLock = new object();
-        
-        private void NotifyDownloadStarted()
-        {
-            lock (_downloadStateLock)
-            {
-                _downloadingCount++;
-                if (_downloadingCount == 1)
-                {
-                    WeakReferenceMessenger.Default.Send(new BackgroundDownloadStateMessage(true));
-                }
-            }
-        }
-
-        private void NotifyDownloadFinished()
-        {
-            lock (_downloadStateLock)
-            {
-                _downloadingCount--;
-                if (_downloadingCount == 0)
-                {
-                    WeakReferenceMessenger.Default.Send(new BackgroundDownloadStateMessage(false));
-                }
-            }
-        }
-
-        public async Task<BackgroundRenderResult> GetSpecificOnlineBackgroundAsync(string url, bool isVideo)
-        {
-            await _loadLock.WaitAsync();
-            try
-            {
-                if (isVideo)
-                {
-                    var videoSource = await ProcessVideoBackground(url);
-                    return new BackgroundRenderResult { VideoSource = videoSource, IsVideo = true };
-                }
-                else
-                {
-                    var imageSource = await ProcessImageBackground(url);
-                    return new BackgroundRenderResult { ImageSource = imageSource, IsVideo = false };
-                }
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"指定背景加载失败: {ex.Message}");
-                return GetFallbackBackground();
-            }
-            finally
-            {
-                _loadLock.Release();
-            }
-        }
-        
-        static BackgroundRenderer()
-        {
-            _httpClient = new HttpClient
-            {
-                Timeout = TimeSpan.FromSeconds(60)
-            };
-            _httpClient.DefaultRequestHeaders.UserAgent.ParseAdd("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36");
-        }
-
-        private string _cacheFolderPath => Path.Combine(Helpers.AppPaths.CacheDir, "BackgroundCache");
+        private readonly string _cacheFolderPath;
         private BackgroundRenderResult _cachedBackground;
         private string _currentBackgroundUrl;
-
         private BackgroundRenderResult _cachedCustomBackground;
         private string _customBackgroundPath;
 
+        static BackgroundRenderer()
+        {
+            _httpClient = new HttpClient { Timeout = TimeSpan.FromSeconds(30) };
+            _httpClient.DefaultRequestHeaders.UserAgent.ParseAdd(
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36");
+        }
+
         public BackgroundRenderer()
         {
-        }
-        
-        private BackgroundRenderResult GetFallbackBackground()
-        {
-            try
-            {
-                Debug.WriteLine("BackgroundRenderer: 正在加载回退背景 Assets/bg.png");
-                var bgPath = Path.Combine(AppContext.BaseDirectory, "Assets", "bg.png");
-                var bitmap = new BitmapImage(new Uri(bgPath));
-        
-                return new BackgroundRenderResult
-                {
-                    ImageSource = bitmap,
-                    IsVideo = false
-                };
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"BackgroundRenderer: 回退背景失败 - {ex.Message}");
-                return null;
-            }
+            _cacheFolderPath = Path.Combine(Helpers.AppPaths.CacheDir, "BackgroundCache");
         }
 
         public async Task<BackgroundRenderResult> GetBackgroundAsync(ServerType server, bool preferVideo)
         {
-            await _loadLock.WaitAsync();
             try
             {
-                var backgroundService = App.GetService<IHoyoverseBackgroundService>();
-                var backgroundInfo = await backgroundService.GetBackgroundUrlAsync(server, preferVideo);
+                var localSettings = App.GetService<ILocalSettingsService>();
 
-                Debug.WriteLine($"BackgroundRenderer: 获取到 URL = {backgroundInfo?.Url ?? "null"}, IsVideo = {backgroundInfo?.IsVideo ?? false}");
-        
-                if (backgroundInfo == null || string.IsNullOrEmpty(backgroundInfo.Url))
+                var specificUrlObj = await localSettings.ReadSettingAsync("SelectedOnlineBackgroundUrl");
+                string specificUrl = specificUrlObj?.ToString();
+                if (!string.IsNullOrEmpty(specificUrl))
                 {
-                    Debug.WriteLine("BackgroundRenderer: 无法获取在线背景，触发回退机制");
-                    return GetFallbackBackground();
-                }
-
-                if (backgroundInfo.Url == _currentBackgroundUrl && _cachedBackground != null)
-                {
-                    Debug.WriteLine("BackgroundRenderer: 使用内存缓存媒体");
-                    return _cachedBackground;
-                }
-
-                if (backgroundInfo.IsVideo)
-                {
-                    Debug.WriteLine($"BackgroundRenderer: 处理视频背景");
-                    var videoSource = await ProcessVideoBackground(backgroundInfo.Url);
-                    _cachedBackground = new BackgroundRenderResult
+                    var isVideoObj = await localSettings.ReadSettingAsync("SelectedOnlineBackgroundIsVideo");
+                    bool isVideo = isVideoObj != null && Convert.ToBoolean(isVideoObj);
+                    var result = await LoadFromCacheOrNull(specificUrl, isVideo);
+                    if (result != null)
                     {
-                        VideoSource = videoSource,
-                        IsVideo = true
-                    };
-                }
-                else
-                {
-                    Debug.WriteLine($"BackgroundRenderer: 处理静态背景");
-                    var imageSource = await ProcessImageBackground(backgroundInfo.Url);
-                    _cachedBackground = new BackgroundRenderResult
-                    {
-                        ImageSource = imageSource,
-                        IsVideo = false
-                    };
+                        ScheduleBackgroundRefresh(server, preferVideo);
+                        return result;
+                    }
                 }
 
-                _currentBackgroundUrl = backgroundInfo.Url;
-                return _cachedBackground;
+                var cachedResult = await TryLoadFromDiskCacheAsync(server, preferVideo);
+                if (cachedResult != null)
+                {
+                    ScheduleBackgroundRefresh(server, preferVideo);
+                    return cachedResult;
+                }
+
+                var freshResult = await FetchAndCacheAsync(server, preferVideo);
+                if (freshResult != null)
+                    return freshResult;
+
+                return GetFallbackBackground();
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"BackgroundRenderer: 加载或处理背景失败 - {ex.Message}");
+                Debug.WriteLine($"BackgroundRenderer: GetBackgroundAsync 异常 - {ex.Message}");
                 return GetFallbackBackground();
             }
-            finally
+        }
+
+        private async Task<BackgroundRenderResult> TryLoadFromDiskCacheAsync(ServerType server, bool preferVideo)
+        {
+            var apiCachePath = GetApiCachePath(server);
+            if (!File.Exists(apiCachePath))
+                return null;
+
+            try
             {
-                _loadLock.Release();
+                var cachedJson = await File.ReadAllTextAsync(apiCachePath);
+                var bgInfo = ParseTargetBackground(cachedJson, preferVideo);
+                if (bgInfo == null)
+                    return null;
+
+                return await LoadFromCacheOrNull(bgInfo.Url, bgInfo.IsVideo);
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        private async Task<BackgroundRenderResult> LoadFromCacheOrNull(string url, bool isVideo)
+        {
+            if (url == _currentBackgroundUrl && _cachedBackground != null)
+                return _cachedBackground;
+
+            var fileName = GetCacheFileName(url, isVideo ? ".mp4" : ".img");
+            var cachedFilePath = Path.Combine(_cacheFolderPath, fileName);
+
+            if (!File.Exists(cachedFilePath) || new FileInfo(cachedFilePath).Length <= 1024)
+                return null;
+
+            try
+            {
+                BackgroundRenderResult result;
+                if (isVideo)
+                {
+                    var source = MediaSource.CreateFromUri(new Uri(cachedFilePath));
+                    result = new BackgroundRenderResult { VideoSource = source, IsVideo = true };
+                }
+                else
+                {
+                    var bitmap = new BitmapImage();
+                    using (var stream = File.OpenRead(cachedFilePath))
+                    {
+                        await bitmap.SetSourceAsync(stream.AsRandomAccessStream());
+                    }
+                    result = new BackgroundRenderResult { ImageSource = bitmap, IsVideo = false };
+                }
+
+                _cachedBackground = result;
+                _currentBackgroundUrl = url;
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"BackgroundRenderer: 缓存文件加载失败({fileName}): {ex.Message}");
+                try { File.Delete(cachedFilePath); } catch { }
+                return null;
+            }
+        }
+
+        private async Task<BackgroundRenderResult> FetchAndCacheAsync(ServerType server, bool preferVideo)
+        {
+            try
+            {
+                var apiUrl = server switch
+                {
+                    ServerType.CN => ApiEndpoints.BackgroundCnApi,
+                    ServerType.OS => ApiEndpoints.BackgroundOsApi,
+                    _ => ApiEndpoints.BackgroundCnApi
+                };
+
+                var response = await _httpClient.GetStringAsync(apiUrl);
+                await SaveApiCacheAsync(server, response);
+
+                var localSettings = App.GetService<ILocalSettingsService>();
+                var currentHash = ComputeMD5(response);
+                var savedHashObj = await localSettings.ReadSettingAsync("BackgroundJsonHash");
+                string savedHash = savedHashObj?.ToString();
+
+                if (!string.IsNullOrEmpty(savedHash) && savedHash != currentHash)
+                {
+                    await localSettings.SaveSettingAsync("SelectedOnlineBackgroundUrl", "");
+                    await localSettings.SaveSettingAsync("SelectedOnlineBackgroundIsVideo", false);
+                }
+                await localSettings.SaveSettingAsync("BackgroundJsonHash", currentHash);
+
+                var specificUrlObj = await localSettings.ReadSettingAsync("SelectedOnlineBackgroundUrl");
+                string specificUrl = specificUrlObj?.ToString();
+                if (!string.IsNullOrEmpty(specificUrl))
+                {
+                    var isVideoObj = await localSettings.ReadSettingAsync("SelectedOnlineBackgroundIsVideo");
+                    bool isVideo = isVideoObj != null && Convert.ToBoolean(isVideoObj);
+                    await DownloadToCache(specificUrl, isVideo ? ".mp4" : ".img");
+                    return await LoadFromCacheOrNull(specificUrl, isVideo);
+                }
+
+                var bgInfo = ParseTargetBackground(response, preferVideo);
+                if (bgInfo == null)
+                    return null;
+
+                await DownloadToCache(bgInfo.Url, bgInfo.IsVideo ? ".mp4" : ".img");
+                var result = await LoadFromCacheOrNull(bgInfo.Url, bgInfo.IsVideo);
+
+                _ = Task.Run(async () =>
+                {
+                    try
+                    {
+                        await PreloadAllFromResponse(response);
+                        CleanupStaleCacheFiles(response);
+                    }
+                    catch { }
+                });
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"BackgroundRenderer: FetchAndCacheAsync 异常 - {ex.Message}");
+                return null;
+            }
+        }
+
+        private void ScheduleBackgroundRefresh(ServerType server, bool preferVideo)
+        {
+            _ = Task.Run(async () =>
+            {
+                try
+                {
+                    var apiUrl = server switch
+                    {
+                        ServerType.CN => ApiEndpoints.BackgroundCnApi,
+                        ServerType.OS => ApiEndpoints.BackgroundOsApi,
+                        _ => ApiEndpoints.BackgroundCnApi
+                    };
+
+                    var response = await _httpClient.GetStringAsync(apiUrl);
+                    var newHash = ComputeMD5(response);
+
+                    var apiCachePath = GetApiCachePath(server);
+                    string oldHash = null;
+                    if (File.Exists(apiCachePath))
+                    {
+                        try
+                        {
+                            var oldJson = await File.ReadAllTextAsync(apiCachePath);
+                            oldHash = ComputeMD5(oldJson);
+                        }
+                        catch { }
+                    }
+
+                    await SaveApiCacheAsync(server, response);
+
+                    var localSettings = App.GetService<ILocalSettingsService>();
+                    var savedHashObj = await localSettings.ReadSettingAsync("BackgroundJsonHash");
+                    string savedHash = savedHashObj?.ToString();
+
+                    if (!string.IsNullOrEmpty(savedHash) && savedHash != newHash)
+                    {
+                        await localSettings.SaveSettingAsync("SelectedOnlineBackgroundUrl", "");
+                        await localSettings.SaveSettingAsync("SelectedOnlineBackgroundIsVideo", false);
+                    }
+                    await localSettings.SaveSettingAsync("BackgroundJsonHash", newHash);
+
+                    bool dataChanged = oldHash != null && oldHash != newHash;
+
+                    var bgInfo = ParseTargetBackground(response, preferVideo);
+                    if (bgInfo != null)
+                    {
+                        await DownloadToCache(bgInfo.Url, bgInfo.IsVideo ? ".mp4" : ".img");
+                    }
+
+                    await PreloadAllFromResponse(response);
+                    CleanupStaleCacheFiles(response);
+
+                    if (dataChanged)
+                    {
+                        _cachedBackground = null;
+                        _currentBackgroundUrl = null;
+                        WeakReferenceMessenger.Default.Send(new BackgroundRefreshMessage());
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"BackgroundRenderer: 后台刷新异常 - {ex.Message}");
+                }
+            });
+        }
+
+        private BackgroundUrlInfo ParseTargetBackground(string apiResponse, bool preferVideo)
+        {
+            try
+            {
+                var options = new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = false,
+                    ReadCommentHandling = JsonCommentHandling.Skip
+                };
+                var result = JsonSerializer.Deserialize<HoyoverseBackgroundResponse>(apiResponse, options);
+                if (result?.Retcode != 0 || result.Data?.GameInfoList == null || result.Data.GameInfoList.Length == 0)
+                    return null;
+
+                var backgrounds = result.Data.GameInfoList[0].Backgrounds;
+                if (backgrounds == null || backgrounds.Length == 0)
+                    return null;
+
+                if (preferVideo)
+                {
+                    var videoBg = backgrounds.FirstOrDefault(b =>
+                        b.Type == "BACKGROUND_TYPE_VIDEO" && !string.IsNullOrEmpty(b.Video?.Url));
+                    if (videoBg != null)
+                        return new BackgroundUrlInfo { Url = videoBg.Video.Url, IsVideo = true };
+                }
+
+                var staticBg = backgrounds.FirstOrDefault(b =>
+                    b.Type != "BACKGROUND_TYPE_VIDEO" && !string.IsNullOrEmpty(b.Background?.Url));
+                if (staticBg != null)
+                    return new BackgroundUrlInfo { Url = staticBg.Background.Url, IsVideo = false };
+
+                return null;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        private List<string> ParseAllUrls(string apiResponse)
+        {
+            var urls = new List<string>();
+            try
+            {
+                var options = new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = false,
+                    ReadCommentHandling = JsonCommentHandling.Skip
+                };
+                var result = JsonSerializer.Deserialize<HoyoverseBackgroundResponse>(apiResponse, options);
+                if (result?.Retcode != 0 || result.Data?.GameInfoList == null || result.Data.GameInfoList.Length == 0)
+                    return urls;
+
+                var backgrounds = result.Data.GameInfoList[0].Backgrounds;
+                if (backgrounds == null)
+                    return urls;
+
+                foreach (var b in backgrounds)
+                {
+                    if (b.Type == "BACKGROUND_TYPE_VIDEO" && !string.IsNullOrEmpty(b.Video?.Url))
+                        urls.Add(b.Video.Url);
+                    if (!string.IsNullOrEmpty(b.Background?.Url))
+                        urls.Add(b.Background.Url);
+                }
+            }
+            catch { }
+            return urls;
+        }
+
+        private async Task PreloadAllFromResponse(string apiResponse)
+        {
+            var allUrls = ParseAllUrls(apiResponse);
+            foreach (var url in allUrls)
+            {
+                try
+                {
+                    var ext = url.Contains(".mp4", StringComparison.OrdinalIgnoreCase) ? ".mp4" : ".img";
+                    await DownloadToCache(url, ext);
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"BackgroundRenderer: 预缓存失败({url}): {ex.Message}");
+                }
+            }
+        }
+
+        private void CleanupStaleCacheFiles(string apiResponse)
+        {
+            try
+            {
+                if (!Directory.Exists(_cacheFolderPath))
+                    return;
+
+                var validFiles = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "api_cn.json", "api_os.json" };
+                var allUrls = ParseAllUrls(apiResponse);
+                foreach (var url in allUrls)
+                {
+                    var ext = url.Contains(".mp4", StringComparison.OrdinalIgnoreCase) ? ".mp4" : ".img";
+                    validFiles.Add(GetCacheFileName(url, ext));
+                }
+
+                foreach (var file in Directory.GetFiles(_cacheFolderPath))
+                {
+                    var name = Path.GetFileName(file);
+                    if (name.EndsWith(".tmp", StringComparison.OrdinalIgnoreCase))
+                    {
+                        try { File.Delete(file); } catch { }
+                        continue;
+                    }
+                    if (!validFiles.Contains(name))
+                    {
+                        try { File.Delete(file); } catch { }
+                    }
+                }
+            }
+            catch { }
+        }
+
+        public async Task<BackgroundRenderResult> GetSpecificOnlineBackgroundAsync(string url, bool isVideo)
+        {
+            try
+            {
+                var ext = isVideo ? ".mp4" : ".img";
+                await DownloadToCache(url, ext);
+                var result = await LoadFromCacheOrNull(url, isVideo);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"BackgroundRenderer: 指定背景加载失败 - {ex.Message}");
+                return null;
             }
         }
 
@@ -214,19 +435,13 @@ namespace FufuLauncher.Services.Background
             try
             {
                 var extension = Path.GetExtension(filePath).ToLowerInvariant();
-                var videoExtensions = new[] { ".mp4", ".webm", ".mkv", ".avi", ".mov" };
-                var isVideo = videoExtensions.Contains(extension);
+                var isVideo = extension is ".mp4" or ".webm" or ".mkv" or ".avi" or ".mov";
 
                 BackgroundRenderResult result;
-
                 if (isVideo)
                 {
                     var videoSource = MediaSource.CreateFromUri(new Uri(filePath));
-                    result = new BackgroundRenderResult
-                    {
-                        VideoSource = videoSource,
-                        IsVideo = true
-                    };
+                    result = new BackgroundRenderResult { VideoSource = videoSource, IsVideo = true };
                 }
                 else
                 {
@@ -235,11 +450,7 @@ namespace FufuLauncher.Services.Background
                     {
                         await bitmap.SetSourceAsync(stream.AsRandomAccessStream());
                     }
-                    result = new BackgroundRenderResult
-                    {
-                        ImageSource = bitmap,
-                        IsVideo = false
-                    };
+                    result = new BackgroundRenderResult { ImageSource = bitmap, IsVideo = false };
                 }
 
                 _cachedCustomBackground = result;
@@ -248,121 +459,92 @@ namespace FufuLauncher.Services.Background
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"自定义背景加载失败: {ex.Message}");
+                Debug.WriteLine($"BackgroundRenderer: 自定义背景加载失败 - {ex.Message}");
                 return null;
             }
         }
 
-        private async Task<MediaSource> ProcessVideoBackground(string videoUrl)
+        public async Task PreloadImageBackgroundsAsync(IEnumerable<string> imageUrls)
         {
-            var fileName = GetCacheFileName(videoUrl);
+            foreach (var url in imageUrls)
+            {
+                try
+                {
+                    await DownloadToCache(url, ".img");
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"BackgroundRenderer: 预加载失败({url}): {ex.Message}");
+                }
+            }
+        }
+
+        public async Task CacheAllBackgroundsAsync(ServerType server)
+        {
+            try
+            {
+                var apiCachePath = GetApiCachePath(server);
+                if (!File.Exists(apiCachePath))
+                    return;
+
+                var json = await File.ReadAllTextAsync(apiCachePath);
+                await PreloadAllFromResponse(json);
+                CleanupStaleCacheFiles(json);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"BackgroundRenderer: CacheAllBackgroundsAsync 异常 - {ex.Message}");
+            }
+        }
+
+        public void ClearBackground()
+        {
+            if (Directory.Exists(_cacheFolderPath))
+            {
+                try
+                {
+                    foreach (var file in Directory.GetFiles(_cacheFolderPath))
+                        File.Delete(file);
+                }
+                catch { }
+            }
+
+            _cachedBackground = null;
+            _currentBackgroundUrl = null;
+        }
+
+        public void ClearCustomBackground()
+        {
+            _customBackgroundPath = null;
+            _cachedCustomBackground = null;
+        }
+
+        private async Task DownloadToCache(string url, string defaultExtension)
+        {
+            var fileName = GetCacheFileName(url, defaultExtension);
             var cachedFilePath = Path.Combine(_cacheFolderPath, fileName);
 
-            if (File.Exists(cachedFilePath))
-            {
-                var fileInfo = new FileInfo(cachedFilePath);
-                if (fileInfo.Length > 1024)
-                {
-                    try
-                    {
-                        return MediaSource.CreateFromUri(new Uri(cachedFilePath));
-                    }
-                    catch
-                    {
-                        File.Delete(cachedFilePath);
-                        Debug.WriteLine($"BackgroundRenderer: 缓存损坏，已删除 {fileName}");
-                    }
-                }
-            }
+            if (File.Exists(cachedFilePath) && new FileInfo(cachedFilePath).Length > 1024)
+                return;
 
-            
-            try
-            {
-                Debug.WriteLine($"BackgroundRenderer: 开始下载视频: {videoUrl}");
-                var data = await _httpClient.GetByteArrayAsync(videoUrl);
-                Debug.WriteLine($"BackgroundRenderer: 下载完成，大小 {data.Length} bytes");
-
-                var tempFile = Path.Combine(_cacheFolderPath, $"{fileName}.tmp");
-                Directory.CreateDirectory(_cacheFolderPath);
-                await File.WriteAllBytesAsync(tempFile, data);
-                File.Move(tempFile, cachedFilePath, true);
-            }
-            finally
-            {
-                
-            }
-
-            return MediaSource.CreateFromUri(new Uri(cachedFilePath));
+            Directory.CreateDirectory(_cacheFolderPath);
+            var data = await _httpClient.GetByteArrayAsync(url);
+            var tempFile = Path.Combine(_cacheFolderPath, $"{fileName}.tmp");
+            await File.WriteAllBytesAsync(tempFile, data);
+            File.Move(tempFile, cachedFilePath, true);
         }
 
-private async Task<ImageSource> ProcessImageBackground(string imageUrl)
-{
-    var fileName = GetCacheFileName(imageUrl, ".img");
-    var cachedFilePath = Path.Combine(_cacheFolderPath, fileName);
-
-    if (File.Exists(cachedFilePath))
-    {
-        var fileInfo = new FileInfo(cachedFilePath);
-        if (fileInfo.Length > 1024)
+        private string GetApiCachePath(ServerType server)
         {
-            try
-            {
-                Debug.WriteLine($"BackgroundRenderer: 从文件缓存加载图片: {fileName}");
-                var bitmap = new BitmapImage();
-                using (var stream = File.OpenRead(cachedFilePath))
-                {
-                    await bitmap.SetSourceAsync(stream.AsRandomAccessStream());
-                }
-                return bitmap;
-            }
-            catch
-            {
-                File.Delete(cachedFilePath);
-                Debug.WriteLine($"BackgroundRenderer: 图片缓存损坏，已删除 {fileName}");
-            }
+            var name = server == ServerType.OS ? "api_os.json" : "api_cn.json";
+            return Path.Combine(_cacheFolderPath, name);
         }
-    }
 
-    
-    byte[] data;
-    try
-    {
-        Debug.WriteLine($"BackgroundRenderer: 开始下载图片: {imageUrl}");
-        data = await _httpClient.GetByteArrayAsync(imageUrl);
-        Debug.WriteLine($"BackgroundRenderer: 下载完成，大小 {data.Length} bytes");
-
-        Directory.CreateDirectory(_cacheFolderPath);
-        var tempFile = Path.Combine(_cacheFolderPath, $"{fileName}.tmp");
-        await File.WriteAllBytesAsync(tempFile, data);
-        File.Move(tempFile, cachedFilePath, true);
-        Debug.WriteLine($"BackgroundRenderer: 图片已缓存到 {fileName}");
-    }
-    catch (Exception ex)
-    {
-        Debug.WriteLine($"BackgroundRenderer: 图片缓存写入失败: {ex.Message}");
-        throw;
-    }
-    finally
-    {
-        
-    }
-
-    var bitmapImage = new BitmapImage();
-    using (var stream = new MemoryStream(data))
-    {
-        try
+        private async Task SaveApiCacheAsync(ServerType server, string json)
         {
-            await bitmapImage.SetSourceAsync(stream.AsRandomAccessStream());
+            Directory.CreateDirectory(_cacheFolderPath);
+            await File.WriteAllTextAsync(GetApiCachePath(server), json);
         }
-        catch (Exception ex)
-        {
-            Debug.WriteLine($"BackgroundRenderer: 图片解码失败(可能缺少 WebP 扩展): {ex.Message}");
-            throw new NotSupportedException("IMAGE_DECODE_FAILED", ex);
-        }
-    }
-
-    return bitmapImage;
-}
 
         private string GetCacheFileName(string url, string defaultExtension = ".mp4")
         {
@@ -370,90 +552,39 @@ private async Task<ImageSource> ProcessImageBackground(string imageUrl)
             try
             {
                 var uri = new Uri(url);
-                var path = uri.AbsolutePath;
-                var ext = Path.GetExtension(path);
+                var ext = Path.GetExtension(uri.AbsolutePath);
                 if (!string.IsNullOrEmpty(ext))
-                {
                     extension = ext;
-                }
             }
             catch { }
 
-            using (var md5 = MD5.Create())
+            var bytes = Encoding.UTF8.GetBytes(url);
+            var hash = MD5.HashData(bytes);
+            return Convert.ToHexString(hash).ToLower() + extension;
+        }
+
+        private static string ComputeMD5(string input)
+        {
+            var bytes = Encoding.UTF8.GetBytes(input);
+            var hash = MD5.HashData(bytes);
+            return Convert.ToHexString(hash).ToLower();
+        }
+
+        private BackgroundRenderResult GetFallbackBackground()
+        {
+            try
             {
-                var bytes = Encoding.UTF8.GetBytes(url);
-                var hash = md5.ComputeHash(bytes);
-                return BitConverter.ToString(hash).Replace("-", "").ToLower() + extension;
+                var bgPath = Path.Combine(AppContext.BaseDirectory, "Assets", "bg.png");
+                if (!File.Exists(bgPath))
+                    return null;
+
+                var bitmap = new BitmapImage(new Uri(bgPath));
+                return new BackgroundRenderResult { ImageSource = bitmap, IsVideo = false };
             }
-        }
-
-        public void ClearBackground()
-        {
-            Debug.WriteLine("BackgroundRenderer: 清除背景缓存");
-
-            if (Directory.Exists(_cacheFolderPath))
+            catch
             {
-                try
-                {
-                    foreach (var file in Directory.GetFiles(_cacheFolderPath))
-                    {
-                        File.Delete(file);
-                    }
-                }
-                catch
-                {
-                    // ignored
-                }
+                return null;
             }
-
-            _cachedBackground = null;
-            _currentBackgroundUrl = null;
-        }
-
-        public async Task PreloadImageBackgroundsAsync(IEnumerable<string> imageUrls)
-        {
-            var tasks = imageUrls.Select(async url =>
-            {
-                try
-                {
-                    var fileName = GetCacheFileName(url, ".img");
-                    var cachedFilePath = Path.Combine(_cacheFolderPath, fileName);
-
-                    if (File.Exists(cachedFilePath) && new FileInfo(cachedFilePath).Length > 1024)
-                    {
-                        return;
-                    }
-
-                    
-                    try
-                    {
-                        Debug.WriteLine($"BackgroundRenderer: 预加载下载中: {url}");
-                        var data = await _httpClient.GetByteArrayAsync(url);
-                        Directory.CreateDirectory(_cacheFolderPath);
-                        var tempFile = Path.Combine(_cacheFolderPath, $"{fileName}.tmp");
-                        await File.WriteAllBytesAsync(tempFile, data);
-                        File.Move(tempFile, cachedFilePath, true);
-                        Debug.WriteLine($"BackgroundRenderer: 预加载完成: {fileName}");
-                    }
-                    finally
-                    {
-                        
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine($"BackgroundRenderer: 预加载失败({url}): {ex.Message}");
-                }
-            });
-
-            await Task.WhenAll(tasks);
-        }
-
-        public void ClearCustomBackground()
-        {
-            Debug.WriteLine("BackgroundRenderer: 清除自定义背景缓存");
-            _customBackgroundPath = null;
-            _cachedCustomBackground = null;
         }
     }
 }

@@ -59,9 +59,6 @@ public sealed partial class MainWindow : WindowEx
     private int _currentSlideshowIndex = 0;
 
     private bool _isSuspended;
-    private DateTime _backgroundInitWindowShowTime;
-    private bool _isBackgroundDownloading;
-    private Views.BackgroundInitWindow? _backgroundInitWindow;
 
     public IRelayCommand ShowWindowCommand
     {
@@ -113,43 +110,6 @@ public sealed partial class MainWindow : WindowEx
         _backgroundRenderer = App.GetService<IBackgroundRenderer>();
         _localSettingsService = App.GetService<ILocalSettingsService>();
         
-        WeakReferenceMessenger.Default.Register<BackgroundDownloadStateMessage>(this, (_, m) =>
-        {
-            _isBackgroundDownloading = m.Value;
-
-            dispatcherQueue.TryEnqueue(async () =>
-            {
-                if (_isBackgroundDownloading)
-                {
-                    if (_backgroundInitWindow == null)
-                    {
-                        _backgroundInitWindow = new Views.BackgroundInitWindow();
-                        _backgroundInitWindowShowTime = DateTime.Now;
-                        _backgroundInitWindow.Activate();
-                    }
-                }
-                else
-                {
-                    if (_backgroundInitWindow != null)
-                    {
-                        var elapsed = DateTime.Now - _backgroundInitWindowShowTime;
-                        var minDuration = TimeSpan.FromSeconds(1);
-                        
-                        if (elapsed < minDuration)
-                        {
-                            await Task.Delay(minDuration - elapsed);
-                        }
-                        
-                        if (!_isBackgroundDownloading)
-                        {
-                            _backgroundInitWindow?.Close();
-                            _backgroundInitWindow = null;
-                        }
-                    }
-                }
-            });
-        });
-
         WeakReferenceMessenger.Default.Register<AgreementAcceptedMessage>(this, (_, _) =>
         {
             dispatcherQueue.TryEnqueue(async () =>
@@ -785,7 +745,8 @@ public sealed partial class MainWindow : WindowEx
             var server = (ServerType)serverValue;
         
             var result = await _backgroundRenderer.GetBackgroundAsync(server, preferVideo);
-            await ApplyGlobalBackgroundAsync(result);
+            if (result != null)
+                await ApplyGlobalBackgroundAsync(result);
         }
         catch
         {

@@ -165,7 +165,8 @@ namespace FufuLauncher.Services.Background
                                     ThumbnailUrl = b.Background?.Url ?? "" 
                                 });
                             }
-                            else if (b.Type != "BACKGROUND_TYPE_VIDEO" && !string.IsNullOrEmpty(b.Background?.Url))
+
+                            if (!string.IsNullOrEmpty(b.Background?.Url))
                             {
                                 list.Add(new BackgroundUrlInfo 
                                 { 
