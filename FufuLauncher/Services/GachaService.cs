@@ -94,6 +94,7 @@ public class GachaService
         var allItems = new List<GachaLogItem>();
         string endId = "0";
         int page = 1;
+        const int maxRetry = 3;
 
         var uri = new Uri(baseUrl);
         var query = System.Web.HttpUtility.ParseQueryString(uri.Query);
@@ -115,24 +116,53 @@ public class GachaService
 
             var requestUrl = $"{uri.Scheme}://{uri.Host}{uri.AbsolutePath}?{cleanQuery}";
 
-            try
+            bool success = false;
+            for (int retry = 0; retry < maxRetry; retry++)
             {
-                var json = await _httpClient.GetStringAsync(requestUrl);
-                var response = JsonSerializer.Deserialize<GachaLogResponse>(json);
+                try
+                {
+                    var json = await _httpClient.GetStringAsync(requestUrl);
+                    var response = JsonSerializer.Deserialize<GachaLogResponse>(json);
 
-                if (response?.Data?.List == null || response.Data.List.Count == 0)
+                    if (response?.Retcode != 0)
+                    {
+                        Debug.WriteLine($"[Gacha] type={gachaType} page={page} 重试 {retry + 1}/{maxRetry}, retcode={response?.Retcode}, message={response?.Message}");
+                        if (retry < maxRetry - 1)
+                        {
+                            await Task.Delay(2000 + retry * 1000);
+                            continue;
+                        }
+                        break;
+                    }
+
+                    if (response?.Data?.List == null || response.Data.List.Count == 0)
+                    {
+                        Debug.WriteLine($"[Gacha] type={gachaType} page={page} 返回空列表，正常结束");
+                        success = true;
+                        break;
+                    }
+
+                    Debug.WriteLine($"[Gacha] type={gachaType} page={page} 获取 {response.Data.List.Count} 条, end_id={response.Data.List.Last().Id}");
+                    allItems.AddRange(response.Data.List);
+                    endId = response.Data.List.Last().Id;
+                    page++;
+                    onPageFetched?.Invoke(allItems.Count);
+                    await Task.Delay(500);
+                    success = true;
                     break;
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"[Gacha] type={gachaType} page={page} 重试 {retry + 1}/{maxRetry}, 异常: {ex.GetType().Name}: {ex.Message}");
+                    if (retry < maxRetry - 1)
+                    {
+                        await Task.Delay(2000 + retry * 1000);
+                        continue;
+                    }
+                }
+            }
 
-                allItems.AddRange(response.Data.List);
-                endId = response.Data.List.Last().Id;
-                page++;
-                onPageFetched?.Invoke(allItems.Count);
-                await Task.Delay(200);
-            }
-            catch (Exception)
-            {
-                break;
-            }
+            if (!success) break;
         }
 
         allItems.Reverse();
