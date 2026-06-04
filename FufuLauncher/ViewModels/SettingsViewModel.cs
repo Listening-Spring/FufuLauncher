@@ -627,6 +627,7 @@ namespace FufuLauncher.ViewModels
         public async Task ReloadSettingsAsync()
         {
             _isLoadingLaunchParams = true;
+            _isInitializing = true;
 
             try
             {
@@ -669,6 +670,7 @@ namespace FufuLauncher.ViewModels
             finally
             {
                 _isLoadingLaunchParams = false;
+                _isInitializing = false;
             }
         }
 
@@ -1217,6 +1219,7 @@ namespace FufuLauncher.ViewModels
 
         partial void OnSelectedServerChanged(ServerType value)
         {
+            if (_isInitializing) return;
             Debug.WriteLine($"SettingsViewModel: 保存服务器设置 {value}");
             _ = _localSettingsService.SaveSettingAsync(LocalSettingsService.BackgroundServerKey, (int)value);
             WeakReferenceMessenger.Default.Send(new BackgroundRefreshMessage());
@@ -1224,12 +1227,14 @@ namespace FufuLauncher.ViewModels
 
         partial void OnIsBackgroundSlideshowEnabledChanged(bool value)
         {
+            if (_isInitializing) return;
             _ = _localSettingsService.SaveSettingAsync("IsBackgroundSlideshowEnabled", value);
             WeakReferenceMessenger.Default.Send(new BackgroundRefreshMessage());
         }
 
         partial void OnBackgroundSlideshowIntervalChanged(int value)
         {
+            if (_isInitializing) return;
             if (value < 1) value = 1; // min 1 second
             _ = _localSettingsService.SaveSettingAsync("BackgroundSlideshowInterval", value);
             WeakReferenceMessenger.Default.Send(new BackgroundRefreshMessage());
@@ -1237,6 +1242,7 @@ namespace FufuLauncher.ViewModels
 
         partial void OnIsBackgroundEnabledChanged(bool value)
         {
+            if (_isInitializing) return;
             // Now means: whether custom background is allowed. If disabled, we fall back to official background.
             Debug.WriteLine($"SettingsViewModel: 保存自定义背景开关 {value}");
             _ = _localSettingsService.SaveSettingAsync(LocalSettingsService.IsBackgroundEnabledKey, value);
