@@ -40,6 +40,21 @@ public class TokenRefreshService
         try
         {
             var path = Helpers.AppPaths.ConfigFile;
+
+            // OS 模式只读 config.lab.json，不触发 CN 的 token 刷新
+            if (File.Exists(Helpers.AppPaths.ConfigLabFile))
+            {
+                var labJson = await File.ReadAllTextAsync(Helpers.AppPaths.ConfigLabFile);
+                var labDoc = JsonDocument.Parse(labJson);
+                if (labDoc.RootElement.TryGetProperty("Account", out var labAccount) &&
+                    labAccount.TryGetProperty("Cookie", out var labCookie) &&
+                    !string.IsNullOrEmpty(labCookie.GetString()))
+                {
+                    Debug.WriteLine("[TokenRefresh] 检测到 OS 配置文件，跳过 CN Token 刷新");
+                    return;
+                }
+            }
+
             if (!File.Exists(path))
             {
                 if (isManual) SendErrorNotification("未找到配置文件");

@@ -5,6 +5,7 @@ using System.Text.RegularExpressions;
 using FufuLauncher.Contracts.Services;
 using FufuLauncher.Helpers;
 using FufuLauncher.Models;
+using MihoyoBBS;
 
 namespace FufuLauncher.Services;
 
@@ -95,9 +96,21 @@ public class UnifiedCheckinService : IUnifiedCheckinService
                             continue;
                         }
 
-                        var genshin = new MihoyoBBS.Genshin();
-                        await genshin.InitializeAsync(config);
-                        var signResult = await genshin.SignAccountAsync(config, null, disabledUids);
+                        bool isOs = account.ConfigPath.Contains("lab");
+                        string signResult;
+
+                        if (isOs)
+                        {
+                            var os = new HoyolabCheckinService();
+                            await os.InitializeAsync(config.Account.Cookie);
+                            signResult = await os.SignAccountAsync(config.Account.Cookie, disabledUids);
+                        }
+                        else
+                        {
+                            var genshin = new Genshin();
+                            await genshin.InitializeAsync(config);
+                            signResult = await genshin.SignAccountAsync(config, null, disabledUids);
+                        }
 
                         bool success = !signResult.Contains("失败") && !signResult.Contains("异常");
                         if (success)
@@ -124,8 +137,9 @@ public class UnifiedCheckinService : IUnifiedCheckinService
                 }
 
                 result.GameResult.Success = result.GameResult.FailCount == 0;
-                int signDays = MihoyoBBS.GameCheckin.LastSignDays;
-                string rewardItem = MihoyoBBS.GameCheckin.LastRewardItem;
+                bool anyOs = activeAccounts.Any(a => a.ConfigPath.Contains("lab"));
+                int signDays = anyOs ? HoyolabCheckinService.LastSignDays : GameCheckin.LastSignDays;
+                string rewardItem = anyOs ? HoyolabCheckinService.LastRewardItem : GameCheckin.LastRewardItem;
                 result.GameSignDays = signDays.ToString();
                 result.GameRewardItem = rewardItem;
 
@@ -149,6 +163,17 @@ public class UnifiedCheckinService : IUnifiedCheckinService
             {
                 foreach (var account in activeAccounts)
                 {
+                    if (account.ConfigPath.Contains("lab"))
+                    {
+                        Report($"[{account.Nickname}] OS 账号跳过社区签到");
+                        result.AccountResults.Add(new AccountCheckinDetail
+                        {
+                            Nickname = account.Nickname,
+                            Items = { ("社区签到", null, "OS 账号不支持社区签到") }
+                        });
+                        continue;
+                    }
+
                     Report($"[{account.Nickname}] 正在社区签到...");
                     var communityResult = await _communityCheckinService.ExecuteCheckinAsync(
                         account, true, communityRead, communityLike, communityShare);
@@ -206,6 +231,12 @@ public class UnifiedCheckinService : IUnifiedCheckinService
                 {
                     foreach (var account in activeAccounts)
                     {
+                        if (account.ConfigPath.Contains("lab"))
+                        {
+                            result.CloudGameResult.SkippedCount++;
+                            continue;
+                        }
+
                         if (string.IsNullOrEmpty(account.CloudComboToken))
                         {
                             result.CloudGameResult.SkippedCount++;
