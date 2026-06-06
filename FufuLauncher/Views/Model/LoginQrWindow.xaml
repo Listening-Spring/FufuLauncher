@@ -33,6 +33,7 @@
         <StackPanel Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="20">
             <ComboBox x:Name="LoginMethodComboBox" SelectedIndex="0" HorizontalAlignment="Center" SelectionChanged="LoginMethodComboBox_SelectionChanged">
                 <ComboBoxItem Content="米游社APP扫码登录"/>
+                <ComboBoxItem Content="这个是失效的方法"/>
                 <ComboBoxItem Content="网页通行证登录"/>
                 <ComboBoxItem Content="HoYoLAB网页登录"/>
             </ComboBox>

@@ -138,7 +138,7 @@ namespace Updater
                 if (!Version.TryParse(AppVersion, out Version currentVersion) || 
                     !Version.TryParse(remoteVersionStr, out Version remoteVersion))
                 {
-                    MessageBox.Show("版本号无法识别，请前往官网下载。\n此处不提供更新。", "版本异常", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show("版本号无法识别，请前往官网下载\n此处不提供更新", "版本异常", MessageBoxButton.OK, MessageBoxImage.Error);
                     Environment.Exit(0);
                     return;
                 }
@@ -186,7 +186,7 @@ namespace Updater
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"更新初始化失败，请检查网络\n\n详情: {ex.Message}", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"更新初始化失败，请检查网络，或者去下面下载\nhttps://wwaoi.lanzn.com/b00wnb99ef\n密码:6hnh\n错误详情: {ex.Message}", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                 Environment.Exit(1);
             }
         }
@@ -366,7 +366,7 @@ namespace Updater
                     }
                     else if (e.Error != null)
                     {
-                        MessageBox.Show($"错误: {e.Error.Message}\n\n请选择其他节点继续下载", "失败", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        MessageBox.Show($"错误: {e.Error.Message}\n\n请选择其他节点继续下载\n或者去这里下载：https://wwaoi.lanzn.com/b00wnb99ef\n密码:6hnh", "失败", MessageBoxButton.OK, MessageBoxImage.Warning);
                         ResetToSelectionUI();
                     }
                     else
