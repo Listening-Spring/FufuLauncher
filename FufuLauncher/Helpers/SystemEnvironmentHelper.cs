@@ -97,29 +97,82 @@ namespace FufuLauncher.Helpers
             return false;
         }
 
+        private static readonly string[] InvalidValues = {
+            "To Be Filled By O.E.M.",
+            "System Serial Number",
+            "Default string",
+            "None",
+            "N/A"
+        };
+
         public static string GetHwid()
         {
             try
             {
-                using var process = new System.Diagnostics.Process();
-                process.StartInfo.FileName = "powershell.exe";
-                process.StartInfo.Arguments = "-NoProfile -Command \"Get-CimInstance Win32_DiskDrive | Select-Object -ExpandProperty SerialNumber\"";
-                process.StartInfo.RedirectStandardOutput = true;
-                process.StartInfo.UseShellExecute = false;
-                process.StartInfo.CreateNoWindow = true;
-                process.Start();
+                string cpuId = WmiQuery("Win32_Processor", "ProcessorId");
+                string boardSn = WmiQuery("Win32_BaseBoard", "SerialNumber");
+                string biosSn = WmiQuery("Win32_BIOS", "SerialNumber");
+                string diskSn = GetSystemDiskSerial();
 
-                string output = process.StandardOutput.ReadToEnd();
-                process.WaitForExit();
+                var parts = new[] { cpuId, boardSn, biosSn, diskSn }
+                    .Where(s => !string.IsNullOrWhiteSpace(s) && !InvalidValues.Contains(s, StringComparer.OrdinalIgnoreCase))
+                    .ToList();
 
-                var lines = output.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
-                var formatted = string.Join(" ", lines.Select(l => l.Trim()));
-                return formatted;
+                if (parts.Count == 0) return "Unknown";
+
+                string raw = string.Join("|", parts);
+                using var sha256 = System.Security.Cryptography.SHA256.Create();
+                byte[] hash = sha256.ComputeHash(System.Text.Encoding.UTF8.GetBytes(raw));
+                string hex = BitConverter.ToString(hash).Replace("-", "");
+                return hex.Substring(0, 32);
             }
             catch
             {
                 return "Unknown";
             }
+        }
+
+        private static string WmiQuery(string wmiClass, string property)
+        {
+            try
+            {
+                using var searcher = new System.Management.ManagementObjectSearcher($"SELECT {property} FROM {wmiClass}");
+                foreach (var obj in searcher.Get())
+                {
+                    var val = obj[property]?.ToString()?.Trim();
+                    if (!string.IsNullOrWhiteSpace(val)) return val;
+                }
+            }
+            catch { }
+            return string.Empty;
+        }
+
+        private static string GetSystemDiskSerial()
+        {
+            try
+            {
+                string sysDrive = Environment.GetEnvironmentVariable("SystemDrive") ?? "C:";
+                using var partSearcher = new System.Management.ManagementObjectSearcher(
+                    $"ASSOCIATORS OF {{Win32_LogicalDisk.DeviceID='{sysDrive}'}} WHERE AssocClass=Win32_LogicalDiskToPartition");
+                foreach (var part in partSearcher.Get())
+                {
+                    string deviceId = part["DeviceID"]?.ToString() ?? "";
+                    var match = System.Text.RegularExpressions.Regex.Match(deviceId, @"Disk #(\d+)");
+                    if (match.Success)
+                    {
+                        string diskIndex = match.Groups[1].Value;
+                        using var diskSearcher = new System.Management.ManagementObjectSearcher(
+                            $"SELECT SerialNumber FROM Win32_DiskDrive WHERE Index={diskIndex}");
+                        foreach (var disk in diskSearcher.Get())
+                        {
+                            var sn = disk["SerialNumber"]?.ToString()?.Trim();
+                            if (!string.IsNullOrWhiteSpace(sn)) return sn;
+                        }
+                    }
+                }
+            }
+            catch { }
+            return string.Empty;
         }
     }
 }

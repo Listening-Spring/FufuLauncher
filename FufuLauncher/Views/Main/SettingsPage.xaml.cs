@@ -1,4 +1,7 @@
 using System.Linq;
+using System.Net.Http;
+using System.Text;
+using System.Text.Json;
 using FufuLauncher.ViewModels;
 using Microsoft.UI;
 using Microsoft.UI.Windowing;
@@ -304,35 +307,138 @@ public sealed partial class SettingsPage : Page
         window.Activate();
     }
 
-    private void OnOpenSecurityAuthClick(object sender, RoutedEventArgs e)
+    private async void OnOpenSecurityAuthClick(object sender, RoutedEventArgs e)
     {
-        var authWindow = new SecurityWebWindow("", "https://fu1.fun/dev-auth");
-        
-        IntPtr hWnd = WindowNative.GetWindowHandle(authWindow);
-        var windowId = Win32Interop.GetWindowIdFromWindow(hWnd);
-        var appWindow = AppWindow.GetFromWindowId(windowId);
+        string hwid = await Task.Run(() => Helpers.SystemEnvironmentHelper.GetHwid());
 
-        if (appWindow != null)
+        try
         {
-            string iconPath = Path.Combine(AppContext.BaseDirectory, "Assets/WindowIcon.ico");
-            if (File.Exists(iconPath))
+            using var checkClient = new HttpClient();
+            var checkPayload = JsonSerializer.Serialize(new { hwid });
+            var checkContent = new StringContent(checkPayload, Encoding.UTF8, "application/json");
+            var checkResponse = await checkClient.PostAsync("https://dev.s1ky3.xyz/api/verify-hwid", checkContent);
+            if (checkResponse.IsSuccessStatusCode)
             {
-                appWindow.SetIcon(iconPath);
-            }
-
-            var size = new Windows.Graphics.SizeInt32(1280, 720);
-            appWindow.Resize(size);
-
-            var displayArea = DisplayArea.GetFromWindowId(windowId, DisplayAreaFallback.Primary);
-            if (displayArea != null)
-            {
-                var centeredX = (displayArea.WorkArea.Width - size.Width) / 2;
-                var centeredY = (displayArea.WorkArea.Height - size.Height) / 2;
-                appWindow.Move(new Windows.Graphics.PointInt32(centeredX, centeredY));
+                var checkBody = await checkResponse.Content.ReadAsStringAsync();
+                var checkResult = JsonSerializer.Deserialize<JsonElement>(checkBody);
+                if (checkResult.TryGetProperty("authorized", out var auth) && auth.GetBoolean())
+                {
+                    await new ContentDialog
+                    {
+                        Title = "提示",
+                        Content = "您的开发者认证已通过，请勿重复提交申请",
+                        CloseButtonText = "确定",
+                        XamlRoot = this.XamlRoot
+                    }.ShowAsync();
+                    return;
+                }
             }
         }
+        catch { }
 
-        authWindow.Activate();
+        var uidBox = new TextBox { PlaceholderText = "游戏 UID", Margin = new Thickness(0, 8, 0, 0) };
+        var nameBox = new TextBox { PlaceholderText = "用户名", Margin = new Thickness(0, 8, 0, 0) };
+        var githubBox = new TextBox { PlaceholderText = "GitHub 链接（可选）", Margin = new Thickness(0, 8, 0, 0) };
+        var hwidBlock = new TextBlock
+        {
+            Text = $"HWID: {hwid}",
+            Opacity = 0.6,
+            Margin = new Thickness(0, 12, 0, 0),
+            FontSize = 12
+        };
+
+        var panel = new StackPanel();
+        panel.Children.Add(new TextBlock { Text = "填写以下信息提交开发者认证申请" });
+        panel.Children.Add(uidBox);
+        panel.Children.Add(nameBox);
+        panel.Children.Add(githubBox);
+        panel.Children.Add(hwidBlock);
+
+        var dialog = new ContentDialog
+        {
+            Title = "开发者认证申请",
+            Content = panel,
+            PrimaryButtonText = "提交申请",
+            CloseButtonText = "取消",
+            XamlRoot = this.XamlRoot
+        };
+
+        var result = await dialog.ShowAsync();
+        if (result != ContentDialogResult.Primary) return;
+
+        string uid = uidBox.Text?.Trim();
+        string username = nameBox.Text?.Trim();
+        string github = githubBox.Text?.Trim();
+
+        if (string.IsNullOrEmpty(uid) || string.IsNullOrEmpty(username))
+        {
+            await new ContentDialog
+            {
+                Title = "错误",
+                Content = "UID 和用户名不能为空",
+                CloseButtonText = "确定",
+                XamlRoot = this.XamlRoot
+            }.ShowAsync();
+            return;
+        }
+
+        if (uid.Length < 9 || uid.Length > 10 || !uid.All(char.IsDigit))
+        {
+            await new ContentDialog
+            {
+                Title = "错误",
+                Content = "UID 必须为9位或10位数字",
+                CloseButtonText = "确定",
+                XamlRoot = this.XamlRoot
+            }.ShowAsync();
+            return;
+        }
+
+        if (!string.IsNullOrEmpty(github) && !github.Contains("github.com", StringComparison.OrdinalIgnoreCase))
+        {
+            await new ContentDialog
+            {
+                Title = "错误",
+                Content = "请输入正确的GitHub地址",
+                CloseButtonText = "确定",
+                XamlRoot = this.XamlRoot
+            }.ShowAsync();
+            return;
+        }
+
+        try
+        {
+            using var client = new HttpClient();
+            object payload = string.IsNullOrEmpty(github)
+                ? new { uid, username, hwid }
+                : new { uid, username, hwid, github };
+            var json = JsonSerializer.Serialize(payload);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+            var response = await client.PostAsync("https://dev.s1ky3.xyz/api/dev-apply", content);
+            var body = await response.Content.ReadAsStringAsync();
+
+            string msg = response.IsSuccessStatusCode
+                ? "申请已提交，请等待管理员审批"
+                : $"提交失败: {body}";
+
+            await new ContentDialog
+            {
+                Title = response.IsSuccessStatusCode ? "成功" : "失败",
+                Content = msg,
+                CloseButtonText = "确定",
+                XamlRoot = this.XamlRoot
+            }.ShowAsync();
+        }
+        catch (Exception ex)
+        {
+            await new ContentDialog
+            {
+                Title = "网络错误",
+                Content = ex.Message,
+                CloseButtonText = "确定",
+                XamlRoot = this.XamlRoot
+            }.ShowAsync();
+        }
     }
 
     private bool _isNavigatingFromMenu;

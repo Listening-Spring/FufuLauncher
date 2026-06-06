@@ -174,7 +174,7 @@ public partial class PluginSettingsViewModel : ObservableObject
             
             System.Diagnostics.Debug.WriteLine($"[HWID_DEBUG] 请求的Payload: {await content.ReadAsStringAsync()}");
 
-            var response = await client.PostAsync("https://fu1.fun/api/verify-hwid", content);
+            var response = await client.PostAsync("https://dev.s1ky3.xyz/api/verify-hwid", content);
             if (response.IsSuccessStatusCode)
             {
                 var responseString = await response.Content.ReadAsStringAsync();
