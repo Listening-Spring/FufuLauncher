@@ -31,6 +31,8 @@ public sealed partial class LoginQrWindow : Window
     private string _gameAppId = "7";
     private string _gameDevice;
     
+    private bool _isWindowLoaded = false;
+    
     private CancellationTokenSource _pollingCts;
 
     private ContentDialog _statusDialog;
@@ -64,14 +66,16 @@ public sealed partial class LoginQrWindow : Window
         Closed += LoginQrWindow_Closed;
     }
 
-    private async void RootContent_Loaded(object sender, RoutedEventArgs e)
+    private void RootContent_Loaded(object sender, RoutedEventArgs e)
     {
         if (sender is FrameworkElement rootContent)
         {
             rootContent.Loaded -= RootContent_Loaded;
         }
 
-        await StartLoginFlowAsync(false);
+        _isWindowLoaded = true;
+        
+        LoginMethodComboBox_SelectionChanged(LoginMethodComboBox, null);
     }
 
     private void LoginQrWindow_Closed(object sender, WindowEventArgs args)
@@ -165,24 +169,24 @@ public sealed partial class LoginQrWindow : Window
         
         if (WebLoginWarningTextBlock != null)
         {
-            WebLoginWarningTextBlock.Visibility = LoginMethodComboBox.SelectedIndex == 1 ? Visibility.Visible : Visibility.Collapsed;
+            WebLoginWarningTextBlock.Visibility = LoginMethodComboBox?.SelectedIndex == 1 ? Visibility.Visible : Visibility.Collapsed;
         }
 
         if (QrCodeContainer != null && PassportWebView != null)
         {
-            if (LoginMethodComboBox.SelectedIndex == 1)
+            if (LoginMethodComboBox?.SelectedIndex == 1)
             {
                 QrCodeContainer.Visibility = Visibility.Collapsed;
                 PassportWebViewBorder.Visibility = Visibility.Visible;
-                await StartWebPassportLoginAsync();
+                if (_isWindowLoaded) await StartWebPassportLoginAsync();
                 return;
             }
 
-            if (LoginMethodComboBox.SelectedIndex == 2)
+            if (LoginMethodComboBox?.SelectedIndex == 2)
             {
                 PassportWebViewBorder.Visibility = Visibility.Collapsed;
                 QrCodeContainer.Visibility = Visibility.Visible;
-                await StartHoYoLabWebLoginAsync();
+                if (_isWindowLoaded) await StartHoYoLabWebLoginAsync();
                 return;
             }
 
@@ -190,7 +194,7 @@ public sealed partial class LoginQrWindow : Window
             QrCodeContainer.Visibility = Visibility.Visible;
         }
 
-        await RestartLoginFlowAsync(false);
+        if (_isWindowLoaded) await RestartLoginFlowAsync(false);
     }
     private async Task StartHoYoLabWebLoginAsync()
     {
@@ -373,7 +377,7 @@ public sealed partial class LoginQrWindow : Window
         if (LoginMethodComboBox != null && LoginMethodComboBox.SelectedIndex == 1)
         {
             UpdateGameAppIdFromSelection();
-            await RestartLoginFlowAsync();
+            if (_isWindowLoaded) await RestartLoginFlowAsync();
         }
     }
 
