@@ -9,6 +9,7 @@ using MihoyoBBS;
 
 namespace FufuLauncher.Services;
 
+
 public class UnifiedCheckinService : IUnifiedCheckinService
 {
     private readonly ILocalSettingsService _localSettingsService;
