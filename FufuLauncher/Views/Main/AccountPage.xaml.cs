@@ -9,11 +9,18 @@ namespace FufuLauncher.Views;
 
 public sealed partial class AccountPage : Page
 {
+    #region 字段
+    private bool _isDeleting;
+    #endregion
+
+    #region 属性
     public AccountViewModel ViewModel
     {
         get;
     }
+    #endregion
 
+    #region 构造函数
     public AccountPage()
     {
         ViewModel = App.GetService<AccountViewModel>();
@@ -21,25 +28,30 @@ public sealed partial class AccountPage : Page
         InitializeComponent();
         Debug.WriteLine("AccountPage initialized");
     }
+    #endregion
 
-    protected override void OnNavigatedTo(NavigationEventArgs e)
-    {
-        base.OnNavigatedTo(e);
-    }
-
+    #region 页面加载与动画
     private async void Page_Loaded(object sender, RoutedEventArgs e)
     {
         EntranceStoryboard.Begin();
-        
         await Task.Delay(600);
-        await ViewModel.LoadUserInfoAsync();
+        await ViewModel.LoadUserInfoAsync(); 
     }
-    
+    protected override async void OnNavigatedTo(NavigationEventArgs e)
+    {
+        base.OnNavigatedTo(e);
+        if (DataContext is AccountViewModel vm)
+        {
+            await vm.RefreshDataAsync();
+        }
+    }
     private void AvatarPicture_Loaded(object sender, RoutedEventArgs e)
     {
         AvatarEntranceStoryboard.Begin();
     }
+    #endregion
 
+    #region 账户切换
     private void OnSwitchAccountClicked(object sender, RoutedEventArgs e)
     {
         if (sender is Button button && button.DataContext is AccountInfo account)
@@ -47,56 +59,72 @@ public sealed partial class AccountPage : Page
             ViewModel.SwitchAccountCommand.Execute(account);
         }
     }
+    #endregion
 
+    #region 账户删除
     private async void OnDeleteSavedAccountClicked(object sender, RoutedEventArgs e)
     {
-        if (sender is Button button && button.DataContext is AccountInfo account)
-        {
-            var dialog = new ContentDialog
-            {
-                Title = "删除账号",
-                Content = $"确定要删除账号 {account.Nickname} ({account.GameUid}) 吗？\n\n此操作将删除该账号的所有相关数据，包括凭证、祈愿记录和云游戏凭证，且无法恢复。",
-                PrimaryButtonText = "删除",
-                CloseButtonText = "取消",
-                DefaultButton = ContentDialogButton.Close,
-                XamlRoot = XamlRoot
-            };
+        if (_isDeleting) return;
+        if (sender is not Button button || button.DataContext is not AccountInfo account)
+            return;
 
-            var result = await dialog.ShowAsync();
-            if (result == ContentDialogResult.Primary)
-            {
-                ViewModel.DeleteSavedAccountCommand.Execute(account);
-            }
-        }
+        await DeleteAccountWithConfirmationAsync(account, false);
     }
 
     private async void OnDeleteCurrentAccountClicked(object sender, RoutedEventArgs e)
     {
-        if (ViewModel.CurrentAccount == null) return;
+        if (_isDeleting) return;
+        var accountToDelete = ViewModel.CurrentAccount;
+        if (accountToDelete == null) return;
 
-        var dialog = new ContentDialog
-        {
-            Title = "删除当前账号",
-            Content = $"确定要删除当前账号 {ViewModel.CurrentAccount.Nickname} ({ViewModel.CurrentAccount.GameUid}) 吗？\n此操作将删除该账号的所有相关数据，且无法恢复。",
-            PrimaryButtonText = "删除",
-            CloseButtonText = "取消",
-            DefaultButton = ContentDialogButton.Close,
-            XamlRoot = XamlRoot
-        };
+        await DeleteAccountWithConfirmationAsync(accountToDelete, true);
+    }
 
-        var result = await dialog.ShowAsync();
-        if (result == ContentDialogResult.Primary)
+    private async Task DeleteAccountWithConfirmationAsync(AccountInfo account, bool isCurrentAccount)
+    {
+        _isDeleting = true;
+        try
         {
-            ViewModel.DeleteAccountCommand.Execute(null);
+            string title = isCurrentAccount ? "删除当前账号" : "删除账号";
+            string content = isCurrentAccount
+                ? $"确定要删除当前账号 {account.Nickname} ({account.GameUid}) 吗？\n此操作将删除该账号的所有相关数据，且无法恢复。"
+                : $"确定要删除账号 {account.Nickname} ({account.GameUid}) 吗？\n\n此操作将删除该账号的所有相关数据，包括凭证、祈愿记录和云游戏凭证，且无法恢复。";
+
+            var result = await ShowDeleteConfirmationDialogAsync(title, content);
+            if (result == ContentDialogResult.Primary)
+            {
+                await ViewModel.DeleteAccountAsync(account);
+                Debug.WriteLine($"[Page] 账号 {account.Nickname} 删除完成");
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"删除账号异常: {ex.Message}");
+        }
+        finally
+        {
+            _isDeleting = false;
         }
     }
 
+    private async Task<ContentDialogResult> ShowDeleteConfirmationDialogAsync(string title, string content)
+    {
+        var dialog = new ContentDialog
+        {
+            Title = title,
+            Content = content,
+            PrimaryButtonText = "删除",
+            CloseButtonText = "取消",
+            DefaultButton = ContentDialogButton.Close,
+            XamlRoot = this.XamlRoot
+        };
+        return await dialog.ShowAsync();
+    }
+    #endregion
+
+    #region 其他 UI 操作
     private void OnGachaAnalysisClicked(object sender, RoutedEventArgs e)
     {
-        // var dialog = new GachaDialog();
-        // dialog.XamlRoot = XamlRoot;
-        // await dialog.ShowAsync();
-
         var window = new GachaAnalysisWindow();
         window.Activate();
     }
@@ -119,4 +147,5 @@ public sealed partial class AccountPage : Page
             }
         }
     }
+    #endregion
 }
