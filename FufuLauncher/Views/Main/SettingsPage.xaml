@@ -1005,6 +1005,22 @@
                                     Command="{x:Bind ViewModel.ClearWebView2CacheCommand}" 
                                     Style="{StaticResource PresetButtonStyle}" />
                         </StackPanel>
+                        <StackPanel Style="{StaticResource SettingItemStyle}" Margin="0,20,0,0">
+                            <TextBlock Text="程序性能优先级" 
+                                       Style="{ThemeResource BodyStrongTextBlockStyle}"
+                                       FontSize="14"/>
+                            <TextBlock Text="调整启动器在系统中的CPU调度优先级（过高可能影响系统其他进程）"
+                                       Style="{ThemeResource CaptionTextBlockStyle}"
+                                       Opacity="0.7"
+                                       Margin="0,2,0,12"/>
+                            
+                            <ComboBox SelectedIndex="{x:Bind ViewModel.AppProcessPriority, Mode=TwoWay, Converter={StaticResource EnumToIntConverter}}"
+                                      MinWidth="200">
+                                <ComboBoxItem Content="正常 (默认)"/>
+                                <ComboBoxItem Content="高于正常"/>
+                                <ComboBoxItem Content="高"/>
+                            </ComboBox>
+                        </StackPanel>
                         <Button HorizontalAlignment="Center"
                                 Margin="0,20,0,10"
                                 Padding="16,8"

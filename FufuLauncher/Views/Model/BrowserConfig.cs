@@ -8,6 +8,8 @@ namespace FufuLauncher.Views
         public double ZoomFactor { get; set; } = 1.0;
         public string FastForwardKey { get; set; } = "ArrowRight"; 
         public string RewindKey { get; set; } = "ArrowLeft";
+        
+        public bool EnableHighPriority { get; set; }
 
         [System.Text.Json.Serialization.JsonIgnore]
         public static string ConfigPath => Path.Combine(Helpers.AppPaths.DataDir, "browser_config.json");

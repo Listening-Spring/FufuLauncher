@@ -21,6 +21,24 @@ namespace FufuLauncher.Views
             _config = BrowserConfig.Load();
             InitializeWindow();
             InitializeWebView();
+            ApplyProcessPriority();
+        }
+        
+        private void ApplyProcessPriority()
+        {
+            try
+            {
+                using (var process = System.Diagnostics.Process.GetCurrentProcess())
+                {
+                    process.PriorityClass = _config.EnableHighPriority 
+                        ? System.Diagnostics.ProcessPriorityClass.High 
+                        : System.Diagnostics.ProcessPriorityClass.Normal;
+                }
+            }
+            catch
+            {
+                // ignored
+            }
         }
 
         private void InitializeWindow()
@@ -105,8 +123,9 @@ namespace FufuLauncher.Views
             SettingZoomSlider.Value = _config.ZoomFactor;
             SettingRewindBox.Text = _config.RewindKey;
             SettingForwardBox.Text = _config.FastForwardKey;
+            SettingHighPriorityToggle.IsOn = _config.EnableHighPriority;
 
-            SettingsDialog.XamlRoot = this.Content.XamlRoot;
+            SettingsDialog.XamlRoot = Content.XamlRoot;
             var result = await SettingsDialog.ShowAsync();
 
             if (result == ContentDialogResult.Primary)
@@ -115,8 +134,10 @@ namespace FufuLauncher.Views
                 _config.ZoomFactor = SettingZoomSlider.Value;
                 _config.RewindKey = SettingRewindBox.Text;
                 _config.FastForwardKey = SettingForwardBox.Text;
+                _config.EnableHighPriority = SettingHighPriorityToggle.IsOn;
                 _config.Save();
                 
+                ApplyProcessPriority();
                 ApplyScriptsToWebView();
             }
         }

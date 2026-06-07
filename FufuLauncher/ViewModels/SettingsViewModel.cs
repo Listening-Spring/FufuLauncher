@@ -40,6 +40,13 @@ namespace FufuLauncher.ViewModels
         Normal,
         Popup
     }
+    
+    public enum AppProcessPriority
+    {
+        Normal = 0,
+        AboveNormal = 1,
+        High = 2
+    }
 
     public partial class SettingsViewModel : ObservableRecipient
     {
@@ -121,6 +128,8 @@ namespace FufuLauncher.ViewModels
         [ObservableProperty] private bool _showWidgetDailyNoteWindow = true;
         [ObservableProperty] private bool _showWidgetVideo = true;
         [ObservableProperty] private bool _showWidgetBBS = true;
+        
+        [ObservableProperty] private AppProcessPriority _appProcessPriority;
         
         [ObservableProperty] private string _launchButtonOverlayColor = "#0078D7";
         
@@ -301,6 +310,36 @@ namespace FufuLauncher.ViewModels
         {
             _localSettingsService.SaveSettingAsync("LaunchButtonOverlayColor", value);
             WeakReferenceMessenger.Default.Send(new FufuLauncher.Messages.TextStyleChangedMessage());
+        }
+        
+        partial void OnAppProcessPriorityChanged(AppProcessPriority value)
+        {
+            _localSettingsService.SaveSettingAsync("AppProcessPriority", (int)value);
+            ApplyProcessPriority(value);
+        }
+
+        private void ApplyProcessPriority(AppProcessPriority priority)
+        {
+            try
+            {
+                var process = Process.GetCurrentProcess();
+                switch (priority)
+                {
+                    case AppProcessPriority.Normal:
+                        process.PriorityClass = ProcessPriorityClass.Normal;
+                        break;
+                    case AppProcessPriority.AboveNormal:
+                        process.PriorityClass = ProcessPriorityClass.AboveNormal;
+                        break;
+                    case AppProcessPriority.High:
+                        process.PriorityClass = ProcessPriorityClass.High;
+                        break;
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"设置进程优先级失败: {ex.Message}");
+            }
         }
         
         public SettingsViewModel(
@@ -723,6 +762,7 @@ namespace FufuLauncher.ViewModels
                 OnPropertyChanged(nameof(IsHideCheckinCardEnabled));
                 OnPropertyChanged(nameof(IsAcrylicOverlayEnabled));
                 OnPropertyChanged(nameof(IsAutoCheckinEnabled));
+                OnPropertyChanged(nameof(AppProcessPriority));
                 LoadMonitors();
             }
             finally
@@ -958,6 +998,17 @@ namespace FufuLauncher.ViewModels
 
             var batchCheckinJson = await _localSettingsService.ReadSettingAsync("IsBatchCheckinEnabled");
             IsBatchCheckinEnabled = batchCheckinJson != null && Convert.ToBoolean(batchCheckinJson);
+            
+            var priorityJson = await _localSettingsService.ReadSettingAsync("AppProcessPriority");
+            if (priorityJson != null)
+            {
+                AppProcessPriority = (AppProcessPriority)Convert.ToInt32(priorityJson);
+            }
+            else
+            {
+                AppProcessPriority = AppProcessPriority.Normal;
+            }
+            ApplyProcessPriority(AppProcessPriority);
         }
         
         private void CheckAndLimitDailyNoteItems(string settingName, Action revertAction)
