@@ -50,6 +50,8 @@
         <Grid x:Name="GlobalBackgroundHost" IsHitTestVisible="False">
             <Image x:Name="GlobalBackgroundImage"
                    Stretch="UniformToFill"
+                   VerticalAlignment="Top"
+                   Margin="0,-25,0,0"
                    Opacity="1"/>
             <MediaPlayerElement x:Name="GlobalBackgroundVideo"
                                 Stretch="UniformToFill"
