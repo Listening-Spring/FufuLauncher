@@ -262,7 +262,7 @@
                             <FontIcon Glyph="&#xE8B5;" FontSize="32" HorizontalAlignment="Center"/>
                             <StackPanel Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="4">
                                 <TextBlock Text="导入 UIGF 文件" FontWeight="SemiBold" FontSize="14" HorizontalAlignment="Center"/>
-                                <TextBlock Text="从标准UIGF格式&#x0a;JSON文件导入记录&#x0a;UIGF v4.0/4.1/4.2/2.2" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Center" TextAlignment="Center"/>
+                                <TextBlock Text="从标准UIGF格式&#x0a;JSON文件导入记录&#x0a;UIGF v4.x/3.0/2.x" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Center" TextAlignment="Center"/>
                             </StackPanel>
                         </Grid>
                     </Button>
@@ -332,6 +332,9 @@
                                     <MenuFlyoutItem Text="导出为 v4.2" Command="{x:Bind ViewModel.ExportUigfCommand}" CommandParameter="v4.2"/>
                                     <MenuFlyoutItem Text="导出为 v4.1" Command="{x:Bind ViewModel.ExportUigfCommand}" CommandParameter="v4.1"/>
                                     <MenuFlyoutItem Text="导出为 v4.0" Command="{x:Bind ViewModel.ExportUigfCommand}" CommandParameter="v4.0"/>
+                                    <MenuFlyoutItem Text="导出为 v3.0" Command="{x:Bind ViewModel.ExportUigfCommand}" CommandParameter="v3.0"/>
+                                    <MenuFlyoutItem Text="导出为 v2.4" Command="{x:Bind ViewModel.ExportUigfCommand}" CommandParameter="v2.4"/>
+                                    <MenuFlyoutItem Text="导出为 v2.3" Command="{x:Bind ViewModel.ExportUigfCommand}" CommandParameter="v2.3"/>
                                     <MenuFlyoutItem Text="导出为 v2.2" Command="{x:Bind ViewModel.ExportUigfCommand}" CommandParameter="v2.2"/>
                                 </MenuFlyout>
                             </DropDownButton.Flyout>
