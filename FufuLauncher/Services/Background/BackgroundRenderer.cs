@@ -43,7 +43,7 @@ namespace FufuLauncher.Services.Background
     {
         private static readonly HttpClient _httpClient;
 
-        private readonly string _cacheFolderPath;
+        private string _cacheFolderPath => Path.Combine(Helpers.AppPaths.CacheDir, "BackgroundCache");
         private BackgroundRenderResult _cachedBackground;
         private string _currentBackgroundUrl;
         private BackgroundRenderResult _cachedCustomBackground;
@@ -58,7 +58,6 @@ namespace FufuLauncher.Services.Background
 
         public BackgroundRenderer()
         {
-            _cacheFolderPath = Path.Combine(Helpers.AppPaths.CacheDir, "BackgroundCache");
         }
 
         public async Task<BackgroundRenderResult> GetBackgroundAsync(ServerType server, bool preferVideo)

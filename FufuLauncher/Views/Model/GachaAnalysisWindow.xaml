@@ -8,6 +8,7 @@
     xmlns:models="using:FufuLauncher.Models"
     xmlns:views="using:FufuLauncher.Views"
     xmlns:converters="using:FufuLauncher.Converters"
+    xmlns:helpers="using:FufuLauncher.Helpers"
     xmlns:primitives="using:Microsoft.UI.Xaml.Controls.Primitives"
     mc:Ignorable="d"
     Title="抽卡记录分析">
@@ -20,7 +21,7 @@
         <Grid.Resources>
             <ThemeShadow x:Key="SharedShadow"/>
             
-            <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+            <helpers:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
             <converters:BoolInverter x:Key="BoolInverter"/>
             <converters:CountToColorConverter x:Key="CountToColorConverter"/>
             <converters:TotalToPrimogemsConverter x:Key="TotalToPrimogemsConverter"/>

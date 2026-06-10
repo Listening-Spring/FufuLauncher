@@ -277,7 +277,13 @@ namespace FufuLauncher.Views
                     _currentAchievementText.Text = "等待网络请求连接";
 
                     // 不阻塞主线程，启动异步合并任务
-                    _ = FetchAndMergeGithubDataAsync();
+                    _ = FetchAndMergeGithubDataAsync().ContinueWith(t =>
+                    {
+                        if (t.IsFaulted)
+                        {
+                            System.Diagnostics.Debug.WriteLine($"[AchievementUpdater] 异步合并异常: {t.Exception?.InnerException?.Message}");
+                        }
+                    }, TaskScheduler.Default);
                 }
                 else if (type == "error")
                 {
@@ -443,18 +449,27 @@ namespace FufuLauncher.Views
             }
             catch (Exception ex)
             {
-                _progressDialog.Hide();
-                StartButton.IsEnabled = true;
+                try
+                {
+                    _progressDialog.Hide();
+                    StartButton.IsEnabled = true;
 
-                if (_browserWindow != null) _browserWindow.Close();
-                
-                var errorDialog = new ContentDialog {
-                    Title = "执行异常",
-                    Content = $"获取或整合数据时发生错误: {ex.Message}",
-                    CloseButtonText = "关闭",
-                    XamlRoot = Content.XamlRoot
-                };
-                await errorDialog.ShowAsync();
+                    if (_browserWindow != null) _browserWindow.Close();
+
+                    if (Content?.XamlRoot == null) return;
+                    
+                    var errorDialog = new ContentDialog {
+                        Title = "执行异常",
+                        Content = $"获取或整合数据时发生错误: {ex.Message}",
+                        CloseButtonText = "关闭",
+                        XamlRoot = Content.XamlRoot
+                    };
+                    await errorDialog.ShowAsync();
+                }
+                catch (Exception innerEx)
+                {
+                    System.Diagnostics.Debug.WriteLine($"[AchievementUpdater] 错误处理中再次异常: {innerEx.Message}");
+                }
             }
         }
     }

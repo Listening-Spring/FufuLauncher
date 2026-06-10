@@ -4,5 +4,6 @@
     {
         Task<object?> ReadSettingAsync(string key);
         Task SaveSettingAsync<T>(string key, T value);
+        Task ReInitializeAsync();
     }
 }

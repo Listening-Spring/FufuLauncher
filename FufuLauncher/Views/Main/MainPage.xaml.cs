@@ -616,7 +616,10 @@ private void OnOpenGachaAnalysisClick(object sender, RoutedEventArgs e)
     protected override void OnNavigatedTo(NavigationEventArgs e)
     {
         base.OnNavigatedTo(e);
-        _ = ViewModel.OnPageReturnedAsync();
+        if (_isInitialized)
+        {
+            _ = ViewModel.OnPageReturnedAsync();
+        }
     }
 
     private async void Page_Loaded(object sender, RoutedEventArgs e)
@@ -639,6 +642,7 @@ private void OnOpenGachaAnalysisClick(object sender, RoutedEventArgs e)
     
         if (!_isInitialized)
         {
+            if (Helpers.AppPaths.IsFirstRun) return;
             await ViewModel.InitializeAsync();
             _isInitialized = true;
         }

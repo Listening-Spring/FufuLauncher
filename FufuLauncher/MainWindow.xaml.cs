@@ -1,4 +1,4 @@
-using System.Diagnostics;
+  using System.Diagnostics;
 using System.Numerics;
 using Windows.Foundation;
 using CommunityToolkit.Mvvm.Input;
@@ -59,6 +59,8 @@ public sealed partial class MainWindow : WindowEx
     private int _currentSlideshowIndex = 0;
 
     private bool _isSuspended;
+
+    public bool IsAgreementShowing { get; private set; }
 
     public IRelayCommand ShowWindowCommand
     {
@@ -128,13 +130,46 @@ public sealed partial class MainWindow : WindowEx
             {
                 try
                 {
+                    IsAgreementShowing = false;
                     AgreementFrame.Visibility = Visibility.Collapsed;
                     AgreementFrame.Content = null;
                     await ApplyMainWindowSizeAsync();
                     await Task.Delay(50);
                     await PerformMainInitAsync();
+                    _announcementCheckTimer.Start();
+                    await CheckAndWarnVCRedistAsync();
+                    await CheckAndWarnUacElevationAsync();
                 }
                 catch (Exception ex) { Debug.WriteLine($"消息处理异常: {ex.Message}"); }
+            });
+
+            _ = Task.Run(async () =>
+            {
+                try
+                {
+                    await Task.Delay(800);
+                    await ((App)App.Current).PlayStartupSoundAsync();
+                }
+                catch (Exception ex) { Debug.WriteLine($"启动语音播放失败: {ex.Message}"); }
+            });
+
+            _ = Task.Run(async () =>
+            {
+                try
+                {
+                    await Task.Delay(1500);
+                    var announcementService = App.GetService<IAnnouncementService>();
+                    var announcementUrl = await announcementService.CheckForNewAnnouncementAsync();
+                    if (!string.IsNullOrEmpty(announcementUrl))
+                    {
+                        dispatcherQueue.TryEnqueue(() =>
+                        {
+                            var announcementWindow = new Views.AnnouncementWindowL(announcementUrl);
+                            announcementWindow.Activate();
+                        });
+                    }
+                }
+                catch (Exception ex) { Debug.WriteLine($"[Announcement] 公告检查失败: {ex.Message}"); }
             });
         });
         
@@ -201,18 +236,21 @@ public sealed partial class MainWindow : WindowEx
         dispatcherQueue.TryEnqueue(async void () => await LoadBackgroundImageOpacityAsync());
         Activated += OnWindowActivated;
 
-        dispatcherQueue.TryEnqueue(async void () =>
+        if (!Helpers.AppPaths.IsFirstRun)
         {
-            try
+            dispatcherQueue.TryEnqueue(async void () =>
             {
-                await CheckAndWarnVCRedistAsync();
-                await CheckAndWarnUacElevationAsync();
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"启动弹窗检查发生未捕获异常: {ex.Message}");
-            }
-        });
+                try
+                {
+                    await CheckAndWarnVCRedistAsync();
+                    await CheckAndWarnUacElevationAsync();
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"启动弹窗检查发生未捕获异常: {ex.Message}");
+                }
+            });
+        }
 
         SizeChanged += MainWindow_SizeChanged;
 
@@ -226,7 +264,10 @@ public sealed partial class MainWindow : WindowEx
         _announcementService = App.GetService<IAnnouncementService>();
         _announcementCheckTimer = new DispatcherTimer { Interval = TimeSpan.FromMinutes(1) };
         _announcementCheckTimer.Tick += async (_, _) => await CheckPeriodicAnnouncementAsync();
-        _announcementCheckTimer.Start();
+        if (!Helpers.AppPaths.IsFirstRun)
+        {
+            _announcementCheckTimer.Start();
+        }
 
     }
     
@@ -679,8 +720,11 @@ public sealed partial class MainWindow : WindowEx
 
     private void UpdateBackgroundOverlayTheme()
     {
-        if (Content is FrameworkElement rootElement)
+        try
         {
+            if (_isExit) return;
+            if (Content is not FrameworkElement rootElement) return;
+
             var currentTheme = rootElement.ActualTheme;
             if (currentTheme == ElementTheme.Default)
                 currentTheme = Application.Current.RequestedTheme == ApplicationTheme.Dark ? ElementTheme.Dark : ElementTheme.Light;
@@ -707,6 +751,8 @@ public sealed partial class MainWindow : WindowEx
 
             ApplyFrameBackgroundOpacity(_frameBackgroundOpacity);
         }
+        catch (ObjectDisposedException) { }
+        catch (System.Runtime.InteropServices.COMException) { }
     }
     private async Task LoadAndApplyAcrylicSettingAsync()
     {
@@ -996,11 +1042,23 @@ private async Task ApplyGlobalBackgroundAsync(BackgroundRenderResult? result)
     {
         try
         {
+            if (Helpers.AppPaths.IsFirstRun)
+            {
+                IsAgreementShowing = true;
+                Width = 850;
+                Height = 560;
+                WindowManagerHelper.CenterWindowOnScreen(AppWindow, Width, Height);
+                AgreementFrame.Visibility = Visibility.Visible;
+                AgreementFrame.Navigate(typeof(Views.AgreementPage));
+                return;
+            }
+
             var localSettings = App.GetService<ILocalSettingsService>();
 
             var accepted = await localSettings.ReadSettingAsync("UserAgreementAccepted");
             if (accepted == null || !Convert.ToBoolean(accepted))
             {
+                IsAgreementShowing = true;
                 Width = 850;
                 Height = 560;
                 WindowManagerHelper.CenterWindowOnScreen(AppWindow, Width, Height);

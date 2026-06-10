@@ -2,6 +2,7 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text.Json;
 using FufuLauncher.Activation;
+using CommunityToolkit.Mvvm.Messaging;
 using FufuLauncher.Contracts.Services;
 using FufuLauncher.Helpers;
 using FufuLauncher.Models;
@@ -322,10 +323,23 @@ public partial class App : Application
             _ = Task.Run(() => LaunchLocalUpdater());
 
             await VerifyResourceFilesAsync();
-            await ApplyLanguageSettingAsync();
 
-            // Initialize default theme to Dark if not set
-            await SetDefaultThemeAsync();
+            if (!Helpers.AppPaths.IsFirstRun)
+            {
+                await ApplyLanguageSettingAsync();
+                await SetDefaultThemeAsync();
+            }
+            else
+            {
+                WeakReferenceMessenger.Default.Register<Messages.AgreementAcceptedMessage>(this, (r, m) =>
+                {
+                    WeakReferenceMessenger.Default.Unregister<Messages.AgreementAcceptedMessage>(r);
+                    _mainDispatcherQueue.TryEnqueue(async () =>
+                    {
+                        await SetDefaultThemeAsync();
+                    });
+                });
+            }
 
             MainWindow = new MainWindow();
             if (MainWindow is MainWindow mainWindow)
@@ -337,65 +351,70 @@ public partial class App : Application
             await activationService.ActivateAsync(args);
 
             Debug.WriteLine("=== App 主窗口已激活 ===");
-            _ = Task.Run(async () =>
+            var shouldRunBackgroundTasks = !Helpers.AppPaths.IsFirstRun && 
+                !(MainWindow is MainWindow mw && mw.IsAgreementShowing);
+            if (shouldRunBackgroundTasks)
             {
-                try
+                _ = Task.Run(async () =>
                 {
-                    await Task.Delay(800);
-                    await PlayStartupSoundAsync();
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine($"启动语音播放失败: {ex.Message}");
-                }
-            });
-
-            _ = Task.Run(async () =>
-            {
-                try
-                {
-                    await Task.Delay(1500);
-
-                    var announcementService = GetService<IAnnouncementService>();
-                    var announcementUrl = await announcementService.CheckForNewAnnouncementAsync();
-
-                    if (!string.IsNullOrEmpty(announcementUrl))
+                    try
                     {
-                        await _mainDispatcherQueue.EnqueueAsync(() =>
+                        await Task.Delay(800);
+                        await PlayStartupSoundAsync();
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine($"启动语音播放失败: {ex.Message}");
+                    }
+                });
+
+                _ = Task.Run(async () =>
+                {
+                    try
+                    {
+                        await Task.Delay(1500);
+
+                        var announcementService = GetService<IAnnouncementService>();
+                        var announcementUrl = await announcementService.CheckForNewAnnouncementAsync();
+
+                        if (!string.IsNullOrEmpty(announcementUrl))
                         {
-                            var announcementWindow = new AnnouncementWindowL(announcementUrl);
-                            announcementWindow.Activate();
+                            await _mainDispatcherQueue.EnqueueAsync(() =>
+                            {
+                                var announcementWindow = new AnnouncementWindowL(announcementUrl);
+                                announcementWindow.Activate();
+                            });
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine($"[Announcement] 公告检查失败: {ex.Message}");
+                    }
+                });
+
+                _ = Task.Run(async () =>
+                {
+                    try
+                    {
+                        Debug.WriteLine("[Background] 后台任务开始，等待主窗口渲染...");
+                        await Task.Delay(500);
+
+                        Debug.WriteLine("[Background] 准备调度到UI线程...");
+
+                        await _mainDispatcherQueue.EnqueueAsync(async () =>
+                        {
+                            Debug.WriteLine("[Background] 已在UI线程，执行更新检查...");
+                            await CheckAndShowUpdateWindowAsync();
                         });
                     }
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine($"[Announcement] 公告检查失败: {ex.Message}");
-                }
-            });
-
-            _ = Task.Run(async () =>
-            {
-                try
-                {
-                    Debug.WriteLine("[Background] 后台任务开始，等待主窗口渲染...");
-                    await Task.Delay(500);
-
-                    Debug.WriteLine("[Background] 准备调度到UI线程...");
-
-                    await _mainDispatcherQueue.EnqueueAsync(async () =>
+                    catch (Exception ex)
                     {
-                        Debug.WriteLine("[Background] 已在UI线程，执行更新检查...");
-                        await CheckAndShowUpdateWindowAsync();
-                    });
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine($"[Background] 后台更新检查失败: {ex.Message}");
-                    Debug.WriteLine($"[Background] 异常类型: {ex.GetType().FullName}");
-                    Debug.WriteLine($"[Background] 堆栈: {ex.StackTrace}");
-                }
-            });
+                        Debug.WriteLine($"[Background] 后台更新检查失败: {ex.Message}");
+                        Debug.WriteLine($"[Background] 异常类型: {ex.GetType().FullName}");
+                        Debug.WriteLine($"[Background] 堆栈: {ex.StackTrace}");
+                    }
+                });
+            }
 
             Debug.WriteLine("=== App 启动完成 ===");
         }
@@ -435,7 +454,7 @@ public partial class App : Application
         }
     }
 
-    private async Task PlayStartupSoundAsync()
+    internal async Task PlayStartupSoundAsync()
     {
         try
         {
