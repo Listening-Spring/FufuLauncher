@@ -36,8 +36,15 @@ namespace FufuLauncher.Helpers
                     isOs = dir != null && System.IO.File.Exists(System.IO.Path.Combine(dir, "GenshinImpact.exe"));
                 }
 
+                if (isOs)
+                {
+                    await _localSettingsService.SaveSettingAsync("LastRedeemCodeReminderDate", todayStr);
+                    return;
+                }
+
                 using var client = new HttpClient();
                 client.DefaultRequestHeaders.UserAgent.ParseAdd("Mozilla/5.0 (Windows NT 10.0; Win64; x64)");
+                var json = await client.GetStringAsync(ApiEndpoints.RedeemCodesUrl);
 
                 var options = new System.Text.Json.JsonSerializerOptions
                 {
@@ -46,42 +53,14 @@ namespace FufuLauncher.Helpers
                     ReadCommentHandling = System.Text.Json.JsonCommentHandling.Skip
                 };
 
-                List<RedeemCodeItem>? codesList = null;
-
-                if (isOs)
-                {
-                    var json = await client.GetStringAsync(ApiEndpoints.RedeemCodesOsUrl);
-                    var response = System.Text.Json.JsonSerializer.Deserialize<HoyoCodeResponse>(json, options);
-                    codesList = response?.Codes?
-                        .Where(c => string.Equals(c.Status, "OK", StringComparison.OrdinalIgnoreCase))
-                        .Select(c => new RedeemCodeItem
-                        {
-                            Title = c.Rewards,
-                            Codes = new List<string> { c.Code }
-                        })
-                        .ToList();
-                }
-                else
-                {
-                    var json = await client.GetStringAsync(ApiEndpoints.RedeemCodesUrl);
-                    codesList = System.Text.Json.JsonSerializer.Deserialize<List<RedeemCodeItem>>(json, options);
-                }
+                var codesList = System.Text.Json.JsonSerializer.Deserialize<List<RedeemCodeItem>>(json, options);
 
                 if (codesList != null && codesList.Count > 0)
                 {
-                    List<RedeemCodeItem> todaysCodes;
-
-                    if (isOs)
-                    {
-                        todaysCodes = codesList;
-                    }
-                    else
-                    {
-                        todaysCodes = codesList.Where(c =>
-                            (!string.IsNullOrEmpty(c.Valid) && c.Valid.Contains(todayStr)) ||
-                            (!string.IsNullOrEmpty(c.Time) && c.Time.Contains(todayStr))
-                        ).ToList();
-                    }
+                    var todaysCodes = codesList.Where(c =>
+                        (!string.IsNullOrEmpty(c.Valid) && c.Valid.Contains(todayStr)) ||
+                        (!string.IsNullOrEmpty(c.Time) && c.Time.Contains(todayStr))
+                    ).ToList();
 
                     if (todaysCodes.Count > 0)
                     {
@@ -89,10 +68,8 @@ namespace FufuLauncher.Helpers
                         var codesContent = string.Join("\n", todaysCodes.SelectMany(c => c.Codes));
 
                         var msg = new NotificationMessage(
-                            isOs ? "新兑换码可用" : "兑换码失效提醒",
-                            isOs
-                                ? $"以下兑换码可用：\n{codesContent}"
-                                : $"活动{titles}包含可用兑换码：\n{codesContent}\n请及时前往游戏内使用，否则将会在今天之后失效！",
+                            "兑换码失效提醒",
+                            $"活动{titles}包含可用兑换码：\n{codesContent}\n请及时前往游戏内使用，否则将会在今天之后失效！",
                             NotificationType.Warning,
                             0
                         );
