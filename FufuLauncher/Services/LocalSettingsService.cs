@@ -44,6 +44,12 @@ namespace FufuLauncher.Services
         {
             if (!_isInitialized)
             {
+                if (Helpers.AppPaths.IsFirstRun)
+                {
+                    Debug.WriteLine("LocalSettingsService: 首次运行，跳过数据库初始化");
+                    return;
+                }
+
                 Debug.WriteLine("LocalSettingsService: 开始初始化数据库");
                 
                 try
@@ -70,8 +76,17 @@ namespace FufuLauncher.Services
             }
         }
 
+        public async Task ReInitializeAsync()
+        {
+            _isInitialized = false;
+            _settings = new Dictionary<string, string>();
+            await InitializeAsync();
+        }
+
         public async Task<object?> ReadSettingAsync(string key)
         {
+            if (Helpers.AppPaths.IsFirstRun) return null;
+
             if (!_isInitialized)
             {
                 await InitializeAsync();
@@ -113,6 +128,8 @@ namespace FufuLauncher.Services
 
         public async Task SaveSettingAsync<T>(string key, T value)
         {
+            if (Helpers.AppPaths.IsFirstRun) return;
+
             if (!_isInitialized)
             {
                 await InitializeAsync();

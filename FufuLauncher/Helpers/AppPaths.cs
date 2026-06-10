@@ -36,14 +36,18 @@ public static class AppPaths
         _cacheDir = Path.Combine(RootDir, "Cache");
     }
 
+    public static bool IsFirstRun { get; private set; }
+
     public static void EnsureDirectories()
     {
         Directory.CreateDirectory(SettingsDir);
         LoadCustomPaths();
 
-        if (!File.Exists(PathsConfigFile))
+        IsFirstRun = !File.Exists(PathsConfigFile);
+
+        if (IsFirstRun)
         {
-            WritePathsConfig(_dataDir, _cacheDir);
+            return;
         }
 
         Directory.CreateDirectory(DataDir);
@@ -53,16 +57,21 @@ public static class AppPaths
         var defaultCache = Path.Combine(RootDir, "Cache");
         if (!string.Equals(defaultData, _dataDir, StringComparison.OrdinalIgnoreCase) && Directory.Exists(defaultData))
         {
-            MoveDirectoryContents(defaultData, _dataDir);
-            ForceDeleteDirectory(defaultData);
+            if (MoveDirectoryContents(defaultData, _dataDir))
+                TryDeleteEmptyDirectory(defaultData);
         }
         if (!string.Equals(defaultCache, _cacheDir, StringComparison.OrdinalIgnoreCase) && Directory.Exists(defaultCache))
         {
-            MoveDirectoryContents(defaultCache, _cacheDir);
-            ForceDeleteDirectory(defaultCache);
+            if (MoveDirectoryContents(defaultCache, _cacheDir))
+                TryDeleteEmptyDirectory(defaultCache);
         }
 
         MigrateOldFiles();
+    }
+
+    public static void FinalizeFirstRun()
+    {
+        IsFirstRun = false;
     }
 
     public static void SaveCustomPaths(string newDataDir, string newCacheDir)
@@ -70,36 +79,46 @@ public static class AppPaths
         var oldDataDir = _dataDir;
         var oldCacheDir = _cacheDir;
 
-        _dataDir = newDataDir;
-        _cacheDir = newCacheDir;
-
         Directory.CreateDirectory(newDataDir);
         Directory.CreateDirectory(newCacheDir);
 
+        bool dataMovedOk = true;
+        bool cacheMovedOk = true;
+
         if (!string.Equals(oldDataDir, newDataDir, StringComparison.OrdinalIgnoreCase))
         {
-            MoveDirectoryContents(oldDataDir, newDataDir);
-            ForceDeleteDirectory(oldDataDir);
+            dataMovedOk = MoveDirectoryContents(oldDataDir, newDataDir);
         }
 
         if (!string.Equals(oldCacheDir, newCacheDir, StringComparison.OrdinalIgnoreCase))
         {
-            MoveDirectoryContents(oldCacheDir, newCacheDir);
-            ForceDeleteDirectory(oldCacheDir);
+            cacheMovedOk = MoveDirectoryContents(oldCacheDir, newCacheDir);
         }
+
+        _dataDir = newDataDir;
+        _cacheDir = newCacheDir;
+
+        WritePathsConfig(newDataDir, newCacheDir);
 
         Environment.SetEnvironmentVariable("WEBVIEW2_USER_DATA_FOLDER",
             Path.Combine(newCacheDir, "WebView2Data"));
 
-        WritePathsConfig(newDataDir, newCacheDir);
+        if (dataMovedOk && !string.Equals(oldDataDir, newDataDir, StringComparison.OrdinalIgnoreCase))
+        {
+            TryDeleteEmptyDirectory(oldDataDir);
+        }
+        if (cacheMovedOk && !string.Equals(oldCacheDir, newCacheDir, StringComparison.OrdinalIgnoreCase))
+        {
+            TryDeleteEmptyDirectory(oldCacheDir);
+        }
     }
 
-    private static void ForceDeleteDirectory(string dir)
+    private static void TryDeleteEmptyDirectory(string dir)
     {
         try
         {
-            if (Directory.Exists(dir))
-                Directory.Delete(dir, true);
+            if (Directory.Exists(dir) && Directory.GetFileSystemEntries(dir).Length == 0)
+                Directory.Delete(dir, false);
         }
         catch { }
     }
@@ -115,11 +134,12 @@ public static class AppPaths
         File.WriteAllText(PathsConfigFile, JsonSerializer.Serialize(config));
     }
 
-    private static void MoveDirectoryContents(string sourceDir, string destDir)
+    private static bool MoveDirectoryContents(string sourceDir, string destDir)
     {
+        bool allSuccess = true;
         try
         {
-            if (!Directory.Exists(sourceDir)) return;
+            if (!Directory.Exists(sourceDir)) return true;
             Directory.CreateDirectory(destDir);
 
             foreach (var file in Directory.GetFiles(sourceDir, "*", SearchOption.TopDirectoryOnly))
@@ -131,15 +151,23 @@ public static class AppPaths
                     {
                         File.Copy(file, destFile, false);
                     }
-                    File.Delete(file);
+                    if (File.Exists(destFile))
+                    {
+                        File.Delete(file);
+                    }
                 }
-                catch { }
+                catch (Exception ex)
+                {
+                    allSuccess = false;
+                    Debug.WriteLine($"[AppPaths] 迁移文件失败 {file}: {ex.Message}");
+                }
             }
 
             foreach (var dir in Directory.GetDirectories(sourceDir, "*", SearchOption.TopDirectoryOnly))
             {
                 var destSubDir = Path.Combine(destDir, Path.GetFileName(dir));
-                MoveDirectoryContents(dir, destSubDir);
+                if (!MoveDirectoryContents(dir, destSubDir))
+                    allSuccess = false;
             }
 
             try
@@ -151,8 +179,10 @@ public static class AppPaths
         }
         catch (Exception ex)
         {
+            allSuccess = false;
             Debug.WriteLine($"[AppPaths] 迁移目录失败 {sourceDir} -> {destDir}: {ex.Message}");
         }
+        return allSuccess;
     }
 
     private static void LoadCustomPaths()

@@ -270,6 +270,13 @@
                     HorizontalAlignment="Center"
                     Padding="24,8"
                     CornerRadius="4"/>
+
+            <TextBlock Text="{x:Bind ViewModel.PathError, Mode=OneWay}"
+                       Foreground="{ThemeResource SystemFillColorCriticalBrush}"
+                       FontSize="12"
+                       HorizontalAlignment="Center"
+                       Visibility="{x:Bind ViewModel.PathErrorVisibility, Mode=OneWay}"
+                       Margin="0,4,0,0"/>
         </StackPanel>
 
         <Grid Grid.Row="1" 
