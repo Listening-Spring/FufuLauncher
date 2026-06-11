@@ -475,6 +475,29 @@ public sealed partial class SettingsPage : Page
         }
     }
 
+    private bool _cpuUsageWarningToggleLoaded;
+
+    private async void OnCpuUsageWarningToggled(object sender, RoutedEventArgs e)
+    {
+        if (!_cpuUsageWarningToggleLoaded)
+        {
+            _cpuUsageWarningToggleLoaded = true;
+            return;
+        }
+
+        if (sender is ToggleSwitch { IsOn: false })
+        {
+            var dialog = new ContentDialog
+            {
+                Title = "已关闭 CPU 占用异常警告",
+                Content = "关闭后，启动器即使长期高 CPU 占用也不会再主动提示。若遇到卡顿、发热或异常耗电，请自行留意并及时反馈问题。",
+                CloseButtonText = "我知道了",
+                XamlRoot = XamlRoot
+            };
+            await dialog.ShowAsync();
+        }
+    }
+
     private bool _isNavigatingFromMenu;
     private DispatcherTimer? _navLockTimer;
 

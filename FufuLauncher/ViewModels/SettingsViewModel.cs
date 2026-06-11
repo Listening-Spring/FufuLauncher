@@ -137,6 +137,8 @@ namespace FufuLauncher.ViewModels
         [ObservableProperty] private string _currentBackgroundApiUrl = "";
         
         [ObservableProperty] private string _launchButtonOverlayColor = "#0078D7";
+        [ObservableProperty] private bool _isCpuUsageWarningEnabled = true;
+        [ObservableProperty] private double _cpuUsageWarningThreshold = ProcessCpuUsageMonitor.DefaultCpuThreshold;
         
         partial void OnIsShowWidgetCardEnabledChanged(bool value)
         {
@@ -304,6 +306,7 @@ namespace FufuLauncher.ViewModels
         
         public IAsyncRelayCommand ResetBackgroundApiCommand { get; }
         public IAsyncRelayCommand ResetLaunchButtonOverlayColorCommand { get; }
+        public IAsyncRelayCommand ResetCpuUsageWarningSettingsCommand { get; }
         
         private async Task ResetBackgroundApiAsync()
         {
@@ -337,6 +340,26 @@ namespace FufuLauncher.ViewModels
         {
             _localSettingsService.SaveSettingAsync("LaunchButtonOverlayColor", value);
             WeakReferenceMessenger.Default.Send(new FufuLauncher.Messages.TextStyleChangedMessage());
+        }
+
+        partial void OnIsCpuUsageWarningEnabledChanged(bool value)
+        {
+            if (_isInitializing) return;
+            _ = _localSettingsService.SaveSettingAsync(ProcessCpuUsageMonitor.IsEnabledSettingKey, value);
+        }
+
+        partial void OnCpuUsageWarningThresholdChanged(double value)
+        {
+            if (_isInitializing) return;
+            _ = _localSettingsService.SaveSettingAsync(ProcessCpuUsageMonitor.ThresholdSettingKey, Math.Clamp(value, 5.0, 100.0));
+        }
+
+        private async Task ResetCpuUsageWarningSettingsAsync()
+        {
+            IsCpuUsageWarningEnabled = true;
+            CpuUsageWarningThreshold = ProcessCpuUsageMonitor.DefaultCpuThreshold;
+            await _localSettingsService.SaveSettingAsync(ProcessCpuUsageMonitor.IsEnabledSettingKey, true);
+            await _localSettingsService.SaveSettingAsync(ProcessCpuUsageMonitor.ThresholdSettingKey, ProcessCpuUsageMonitor.DefaultCpuThreshold);
         }
         
         partial void OnAppProcessPriorityChanged(AppProcessPriority value)
@@ -398,6 +421,7 @@ namespace FufuLauncher.ViewModels
             ClearCustomBackgroundCommand = new AsyncRelayCommand(ClearCustomBackgroundAsync);
             ResetGameExeNameCommand = new AsyncRelayCommand(ResetGameExeNameAsync);
             ResetBackgroundApiCommand = new AsyncRelayCommand(ResetBackgroundApiAsync);
+            ResetCpuUsageWarningSettingsCommand = new AsyncRelayCommand(ResetCpuUsageWarningSettingsAsync);
             
             ResetLaunchButtonOverlayColorCommand = new AsyncRelayCommand(ResetLaunchButtonOverlayColorAsync);
 
@@ -795,6 +819,8 @@ namespace FufuLauncher.ViewModels
                 OnPropertyChanged(nameof(IsAcrylicOverlayEnabled));
                 OnPropertyChanged(nameof(IsAutoCheckinEnabled));
                 OnPropertyChanged(nameof(AppProcessPriority));
+                OnPropertyChanged(nameof(IsCpuUsageWarningEnabled));
+                OnPropertyChanged(nameof(CpuUsageWarningThreshold));
                 LoadMonitors();
             }
             finally
@@ -876,6 +902,14 @@ namespace FufuLauncher.ViewModels
             
             var autoCheckinJson = await _localSettingsService.ReadSettingAsync("IsAutoCheckinEnabled");
             IsAutoCheckinEnabled = autoCheckinJson != null && Convert.ToBoolean(autoCheckinJson);
+
+            var cpuWarningEnabledJson = await _localSettingsService.ReadSettingAsync(ProcessCpuUsageMonitor.IsEnabledSettingKey);
+            IsCpuUsageWarningEnabled = cpuWarningEnabledJson == null || Convert.ToBoolean(cpuWarningEnabledJson);
+
+            var cpuWarningThresholdJson = await _localSettingsService.ReadSettingAsync(ProcessCpuUsageMonitor.ThresholdSettingKey);
+            CpuUsageWarningThreshold = cpuWarningThresholdJson != null
+                ? Math.Clamp(Convert.ToDouble(cpuWarningThresholdJson), 5.0, 100.0)
+                : ProcessCpuUsageMonitor.DefaultCpuThreshold;
             
             var customExeJson = await _localSettingsService.ReadSettingAsync(GameExeManager.CustomExeNameKey);
             CustomGameExeName = customExeJson?.ToString() ?? string.Empty;

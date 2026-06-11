@@ -65,6 +65,7 @@ public partial class App : Application
         get; set;
     }
     private static Microsoft.UI.Dispatching.DispatcherQueue _mainDispatcherQueue = null!;
+    private ProcessCpuUsageMonitor? _cpuUsageMonitor;
     public App()
     {
         Helpers.AppPaths.EnsureDirectories();
@@ -345,6 +346,8 @@ public partial class App : Application
             var accountManager = GetService<AccountManager>();
             await accountManager.InitializeAsync();
             MainWindow = new MainWindow();
+            _cpuUsageMonitor = new ProcessCpuUsageMonitor(_mainDispatcherQueue, GetService<ILocalSettingsService>());
+            _cpuUsageMonitor.Start();
             if (MainWindow is MainWindow mainWindow)
             {
                 await mainWindow.InitializeWindowSizeAsync();

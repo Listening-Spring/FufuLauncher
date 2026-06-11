@@ -1044,6 +1044,34 @@
                                 <ComboBoxItem Content="高"/>
                             </ComboBox>
                         </StackPanel>
+                        <StackPanel Style="{StaticResource SettingItemStyle}" Margin="0,20,0,0">
+                            <TextBlock Text="CPU 占用异常警告" 
+                                       Style="{ThemeResource BodyStrongTextBlockStyle}"
+                                       FontSize="14"/>
+                            <TextBlock Text="当启动器 CPU 占用持续超过阈值 5 分钟，且未检测到 OBS 时弹出置顶提示。默认开启。"
+                                       Style="{ThemeResource CaptionTextBlockStyle}"
+                                       Opacity="0.7"
+                                       Margin="0,2,0,12"/>
+                            <ToggleSwitch Header="启用 CPU 占用异常警告"
+                                          OffContent="已禁用"
+                                          OnContent="已启用"
+                                          IsOn="{x:Bind ViewModel.IsCpuUsageWarningEnabled, Mode=TwoWay}"
+                                          Toggled="OnCpuUsageWarningToggled"/>
+                            <StackPanel Orientation="Horizontal" Spacing="12" Margin="0,12,0,0" VerticalAlignment="Center">
+                                <NumberBox Header="警告阈值 (%)"
+                                           Width="180"
+                                           Minimum="5"
+                                           Maximum="100"
+                                           SmallChange="1"
+                                           LargeChange="5"
+                                           SpinButtonPlacementMode="Compact"
+                                           Value="{x:Bind ViewModel.CpuUsageWarningThreshold, Mode=TwoWay}"/>
+                                <Button Content="恢复默认"
+                                        Command="{x:Bind ViewModel.ResetCpuUsageWarningSettingsCommand}"
+                                        Style="{StaticResource PresetButtonStyle}"
+                                        VerticalAlignment="Bottom"/>
+                            </StackPanel>
+                        </StackPanel>
                         <Button HorizontalAlignment="Center"
                                 Margin="0,20,0,10"
                                 Padding="16,8"
