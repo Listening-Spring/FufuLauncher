@@ -154,7 +154,10 @@ namespace FufuLauncher.ViewModels
 
         private const string TargetProcessName = "yuanshen";
         private const string TargetProcessNameAlt = "GenshinImpact";
+        private static readonly TimeSpan GameProcessCheckInterval = TimeSpan.FromSeconds(15);
         private CancellationTokenSource _gameMonitoringCts;
+        private bool _cachedGameRunning;
+        private DateTimeOffset _lastGameProcessCheck = DateTimeOffset.MinValue;
 
         public IAsyncRelayCommand LoadBackgroundCommand
         {
@@ -238,7 +241,6 @@ namespace FufuLauncher.ViewModels
 
             WeakReferenceMessenger.Default.Register<GamePathChangedMessage>(this, (r, m) =>
             {
-                _cachedGamePath = null;
                 _dispatcherQueue?.TryEnqueue(() => UpdateLaunchButtonState());
             });
 
@@ -1217,7 +1219,7 @@ private void QuickSwitchPreset(PresetModel targetPreset)
 
         private async Task ForceRefreshGameStateAsync()
         {
-            bool actualState = await CheckGameProcessRunningAsync();
+            bool actualState = CheckGameProcessRunning(forceRefresh: true);
             if (actualState != IsGameRunning)
             {
                 await SetGameRunningStateAsync(actualState);
@@ -1267,66 +1269,38 @@ private void QuickSwitchPreset(PresetModel targetPreset)
                 Debug.WriteLine($"[DailyNote] 加载便签数据失败: {ex.Message}");
             }
         }
-        private string _cachedGamePath;
-        private async Task<bool> CheckGameProcessRunningAsync()
+        private bool CheckGameProcessRunning(bool forceRefresh = false)
         {
+            var now = DateTimeOffset.UtcNow;
+            if (!forceRefresh && now - _lastGameProcessCheck < GameProcessCheckInterval)
+            {
+                return _cachedGameRunning;
+            }
+
             try
             {
-                var processes = Process.GetProcessesByName(TargetProcessName)
-                    .Concat(Process.GetProcessesByName(TargetProcessNameAlt))
-                    .ToList();
-
-                if (processes.Count == 0) return false;
-                
-                if (string.IsNullOrEmpty(_cachedGamePath))
-                {
-                    var savedPathTask = await _localSettingsService.ReadSettingAsync("GameInstallationPath");
-                    _cachedGamePath = savedPathTask?.ToString()?.Trim('"')?.Trim();
-                }
-                var gamePath = _cachedGamePath;
-
-                foreach (var p in processes)
-                {
-                    try
-                    {
-                        if (p.HasExited) continue;
-                        
-                        if (!string.IsNullOrEmpty(gamePath))
-                        {
-                            var processPath = p.MainModule?.FileName;
-                            if (!string.IsNullOrEmpty(processPath))
-                            {
-                                if (processPath.StartsWith(gamePath, StringComparison.OrdinalIgnoreCase))
-                                {
-                                    return true;
-                                }
-                                continue; 
-                            }
-                        }
-                        
-                        if (p.MainWindowHandle != IntPtr.Zero)
-                        {
-                            return true;
-                        }
-                
-                        return true;
-                    }
-                    catch (Win32Exception)
-                    {
-                        return true;
-                    }
-                    catch (InvalidOperationException)
-                    {
-                        continue;
-                    }
-                }
-
-                return false;
+                _cachedGameRunning = HasRunningProcess(TargetProcessName) || HasRunningProcess(TargetProcessNameAlt);
             }
             catch
             {
-                return false;
+                _cachedGameRunning = false;
             }
+
+            _lastGameProcessCheck = now;
+            return _cachedGameRunning;
+        }
+
+        private static bool HasRunningProcess(string processName)
+        {
+            foreach (var process in Process.GetProcessesByName(processName))
+            {
+                using (process)
+                {
+                    if (!process.HasExited) return true;
+                }
+            }
+
+            return false;
         }
 
         private async Task SetGameRunningStateAsync(bool isRunning, string temporaryText = null)
@@ -1438,7 +1412,7 @@ private void QuickSwitchPreset(PresetModel targetPreset)
             {
                 try
                 {
-                    bool currentState = await CheckGameProcessRunningAsync(); 
+                    bool currentState = CheckGameProcessRunning();
 
                     if (currentState != lastState || currentState != IsGameRunning)
                     {
@@ -1456,7 +1430,7 @@ private void QuickSwitchPreset(PresetModel targetPreset)
                     Debug.WriteLine($"进程监控错误: {ex.Message}");
                 }
                 
-                await Task.Delay(1000, token); 
+                await Task.Delay(GameProcessCheckInterval, token);
             }
         }
     }

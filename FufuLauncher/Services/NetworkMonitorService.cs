@@ -1,7 +1,6 @@
-﻿using System.Net;
-using System.Net.NetworkInformation;
+﻿using System.Net.NetworkInformation;
 using Microsoft.UI.Xaml;
-using FufuLauncher.Constants;
+using Microsoft.Win32;
 
 namespace FufuLauncher.Services;
 
@@ -22,6 +21,7 @@ public class NetworkMonitorService
     private readonly DispatcherTimer _networkCheckTimer;
     private bool? _lastNetworkAvailable;
     private bool? _lastProxyEnabled;
+    private bool _isChecking;
 
     public event EventHandler<NetworkStatusChangedEventArgs>? NetworkStatusChanged;
 
@@ -39,36 +39,36 @@ public class NetworkMonitorService
 
     public async Task CheckNetworkAndProxyStatusAsync()
     {
-        var (currentNetwork, currentProxy) = await Task.Run(() =>
+        if (_isChecking) return;
+
+        _isChecking = true;
+        try
         {
-            var isNet = NetworkInterface.GetIsNetworkAvailable();
-            var isProxy = false;
-            
-            if (isNet)
+            var currentNetwork = NetworkInterface.GetIsNetworkAvailable();
+            var currentProxy = currentNetwork && IsSystemProxyEnabled();
+
+            var isNetworkLost = !currentNetwork && (_lastNetworkAvailable == null || _lastNetworkAvailable == true);
+            var isProxyNewlyEnabled = currentNetwork && currentProxy && (_lastProxyEnabled == null || _lastProxyEnabled == false);
+
+            if (isNetworkLost || isProxyNewlyEnabled)
             {
-                try
-                {
-                    var proxy = WebRequest.GetSystemWebProxy();
-                    Uri resource = new(ApiEndpoints.MicrosoftNetworkCheckUrl);
-                    isProxy = !proxy.IsBypassed(resource);
-                }
-                catch 
-                { 
-                    isProxy = false; 
-                }
+                NetworkStatusChanged?.Invoke(this, new NetworkStatusChangedEventArgs(isNetworkLost, isProxyNewlyEnabled));
             }
-            return (isNet, isProxy);
-        });
 
-        var isNetworkLost = !currentNetwork && (_lastNetworkAvailable == null || _lastNetworkAvailable == true);
-        var isProxyNewlyEnabled = currentNetwork && currentProxy && (_lastProxyEnabled == null || _lastProxyEnabled == false);
-
-        if (isNetworkLost || isProxyNewlyEnabled)
+            _lastNetworkAvailable = currentNetwork;
+            _lastProxyEnabled = currentProxy;
+        }
+        finally
         {
-            NetworkStatusChanged?.Invoke(this, new NetworkStatusChangedEventArgs(isNetworkLost, isProxyNewlyEnabled));
+            _isChecking = false;
         }
 
-        _lastNetworkAvailable = currentNetwork;
-        _lastProxyEnabled = currentProxy;
+        await Task.CompletedTask;
+    }
+
+    private static bool IsSystemProxyEnabled()
+    {
+        using var internetSettings = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Internet Settings");
+        return internetSettings?.GetValue("ProxyEnable") is int proxyEnable && proxyEnable != 0;
     }
 }

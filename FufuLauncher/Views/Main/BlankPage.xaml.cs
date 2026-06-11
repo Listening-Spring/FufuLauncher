@@ -1196,8 +1196,18 @@ private async Task LoadGameInfoAsync(string gamePath)
         {
             try
             {
-                var files = Directory.GetFiles(path, "*.*", SearchOption.AllDirectories);
-                long sizeInBytes = files.Sum(file => new FileInfo(file).Length);
+                var options = new EnumerationOptions
+                {
+                    RecurseSubdirectories = true,
+                    IgnoreInaccessible = true,
+                    AttributesToSkip = FileAttributes.ReparsePoint
+                };
+
+                long sizeInBytes = 0;
+                foreach (var file in new DirectoryInfo(path).EnumerateFiles("*", options))
+                {
+                    sizeInBytes += file.Length;
+                }
 
                 return sizeInBytes switch
                 {
