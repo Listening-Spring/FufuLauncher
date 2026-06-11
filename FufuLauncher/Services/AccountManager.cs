@@ -7,14 +7,15 @@ namespace FufuLauncher.Services;
 
 public class AccountManager
 {
+
     private readonly string _dataDir;
     private readonly string _cookiesDir;
     private readonly string _accountsFilePath;
     private readonly SemaphoreSlim _lock = new(1, 1);
 
     private AccountList _accountList;
-    private string _activeAccountId;
-
+    private string? _activeAccountId;
+    public string? ActiveAccountId => _activeAccountId;
     public AccountManager()
     {
         _dataDir = Helpers.AppPaths.DataDir;
@@ -30,16 +31,7 @@ public class AccountManager
         await LoadAccountListAsync();
     }
 
-    public string ActiveAccountId
-    {
-        get => _activeAccountId;
-        set
-        {
-            _activeAccountId = value;
-            var settings = App.GetService<ILocalSettingsService>();
-            settings?.SaveSettingAsync("ActiveAccountId", value).GetAwaiter().GetResult();
-        }
-    }
+
 
     public AccountEntry GetActiveAccountEntry() =>
         _accountList.Accounts.FirstOrDefault(a => a.Id == _activeAccountId);
@@ -72,10 +64,16 @@ public class AccountManager
             _activeAccountId = _accountList.Accounts.FirstOrDefault()?.Id;
         }
     }
-
-    public void Logout()
+    public async Task SetActiveAccountIdAsync(string? accountId)
     {
-        ActiveAccountId = null; 
+        _activeAccountId = accountId;
+        var settings = App.GetService<ILocalSettingsService>();
+        if (settings != null)
+            await settings.SaveSettingAsync("ActiveAccountId", accountId ?? string.Empty);
+    }
+    public async Task LogoutAsync()
+    {
+        await SetActiveAccountIdAsync(null);
     }
     private async Task SaveAccountListAsync()
     {
@@ -152,7 +150,7 @@ public class AccountManager
             if (_activeAccountId == accountId)
             {
                 var next = _accountList.Accounts.FirstOrDefault();
-                ActiveAccountId = next?.Id;
+                await SetActiveAccountIdAsync(next?.Id);
             }
         }
         finally
@@ -165,7 +163,7 @@ public class AccountManager
     public async Task<bool> SwitchAccountAsync(string accountId)
     {
         if (_accountList.Accounts.All(a => a.Id != accountId)) return false;
-        ActiveAccountId = accountId;
+        await SetActiveAccountIdAsync(accountId);
 
         var entry = GetActiveAccountEntry();
         if (entry != null)

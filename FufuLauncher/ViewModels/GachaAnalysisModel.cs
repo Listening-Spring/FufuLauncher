@@ -1312,9 +1312,8 @@ public partial class GachaAnalysisModel : ObservableObject
             return;
         }
 
-    
-        var accountManager = App.GetService<AccountManager>();
-        var activeId = accountManager.ActiveAccountId;
+
+        var activeId = _accountManager.ActiveAccountId;
         if (activeId == null)
         {
             CrawlerStatus = "请先登录米游社账号后重试";
@@ -1322,7 +1321,7 @@ public partial class GachaAnalysisModel : ObservableObject
             return;
         }
 
-        var cookies = await accountManager.LoadCookiesAsync(activeId);
+        var cookies = await _accountManager.LoadCookiesAsync(activeId);
         if (cookies == null || cookies.Count == 0)
         {
             CrawlerStatus = "无法读取登录凭证，请重新登录";
@@ -1956,10 +1955,9 @@ private async Task ImportUigfAsync()
     }
     private async Task<string> GetCurrentCookieAsync()
     {
-        var accountManager = App.GetService<AccountManager>();
-        var activeId = accountManager.ActiveAccountId;
+        var activeId = _accountManager.ActiveAccountId;
         if (activeId == null) return null;
-        var cookies = await accountManager.LoadCookiesAsync(activeId);
+        var cookies = await _accountManager.LoadCookiesAsync(activeId);
         if (cookies == null || cookies.Count == 0) return null;
         return string.Join("; ", cookies.Select(kv => $"{kv.Key}={kv.Value}"));
     }

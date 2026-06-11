@@ -355,7 +355,7 @@ public partial class AccountViewModel : ObservableRecipient
 
         RunOnUIThread(() => CurrentAccount = info);
 
-        await LoadUserInfoAsync();
+        _ = LoadUserInfoAsync();
     }
     private async Task OpenGenshinDataAsync()
     {
@@ -383,7 +383,6 @@ public partial class AccountViewModel : ObservableRecipient
             SavedAccounts.Clear();
             foreach (var entry in _accountManager.GetAllAccounts())
             {
-                Debug.WriteLine($"[RefreshList] 账户 {entry.Id} 头像URL: {entry.AvatarUrl}");
                 SavedAccounts.Add(new AccountInfo
                 {
                     AccountId = entry.Id,
@@ -502,7 +501,7 @@ public partial class AccountViewModel : ObservableRecipient
             var entry = await _accountManager.AddAccountAsync(cookies, serverType, nickname: "新账户");
             await _accountManager.SwitchAccountAsync(entry.Id);
 
-            await LoadActiveAccountAsync(entry.Id);  
+            await LoadActiveAccountAsync(entry.Id);
             RefreshSavedAccountsList();
 
             RunOnUIThread(() => StatusMessage = "登录成功");
@@ -521,10 +520,10 @@ public partial class AccountViewModel : ObservableRecipient
     {
         try
         {
-            
-            _accountManager.Logout();
 
-           
+            await _accountManager.LogoutAsync();
+
+
             RunOnUIThread(() =>
             {
                 CurrentAccount = null;
