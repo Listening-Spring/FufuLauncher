@@ -3,140 +3,188 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:helpers="using:FufuLauncher.Helpers"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:models="using:FufuLauncher.Models"
-    xmlns:converters="using:FufuLauncher.Converters"
-    mc:Ignorable="d"
     x:Name="RootPage"
-    Loaded="Page_Loaded">
+    Loaded="Page_Loaded"
+    mc:Ignorable="d">
 
     <Page.Resources>
-        <helpers:NullToVisibilityConverter x:Key="NullToVisibilityConverter"/>
-        <helpers:BoolNegationConverter x:Key="BoolNegationConverter"/>
-        <helpers:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
-        <helpers:DictionarySafeConverter x:Key="DictionarySafeConverter"/>
-        <converters:EmptyCountToVisibilityConverter x:Key="EmptyCountToVisibilityConverter"/>
+        <helpers:NullToVisibilityConverter x:Key="NullToVisibilityConverter" />
+        <helpers:BoolNegationConverter x:Key="BoolNegationConverter" />
+        <helpers:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+        <helpers:DictionarySafeConverter x:Key="DictionarySafeConverter" />
 
         <Style x:Key="CardBorderStyle" TargetType="Border">
-            <Setter Property="Background" Value="{ThemeResource CardBackgroundFillColorDefaultBrush}"/>
-            <Setter Property="BorderBrush" Value="{ThemeResource CardStrokeColorDefaultBrush}"/>
-            <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="CornerRadius" Value="8"/>
-            <Setter Property="Padding" Value="16"/>
+            <Setter Property="Background" Value="{ThemeResource CardBackgroundFillColorDefaultBrush}" />
+            <Setter Property="BorderBrush" Value="{ThemeResource CardStrokeColorDefaultBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="8" />
+            <Setter Property="Padding" Value="16" />
         </Style>
 
         <Style x:Key="ActionButtonStyle" TargetType="Button">
-            <Setter Property="HorizontalAlignment" Value="Stretch"/>
-            <Setter Property="Padding" Value="0,12"/>
-            <Setter Property="Background" Value="{ThemeResource LayerFillColorDefaultBrush}"/>
-            <Setter Property="BorderBrush" Value="{ThemeResource CardStrokeColorDefaultBrush}"/>
-            <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch" />
+            <Setter Property="Padding" Value="0,12" />
+            <Setter Property="Background" Value="{ThemeResource LayerFillColorDefaultBrush}" />
+            <Setter Property="BorderBrush" Value="{ThemeResource CardStrokeColorDefaultBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="8" />
         </Style>
 
         <Storyboard x:Name="EntranceStoryboard">
-            <DoubleAnimation Storyboard.TargetName="RootLayoutGrid"
-                             Storyboard.TargetProperty="Opacity"
-                             From="0" To="1" Duration="0:0:0.6">
+            <DoubleAnimation
+                Storyboard.TargetName="RootLayoutGrid"
+                Storyboard.TargetProperty="Opacity"
+                From="0"
+                To="1"
+                Duration="0:0:0.6">
                 <DoubleAnimation.EasingFunction>
-                    <CubicEase EasingMode="EaseOut"/>
+                    <CubicEase EasingMode="EaseOut" />
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+            <DoubleAnimation
+                Storyboard.TargetName="RootLayoutTranslate"
+                Storyboard.TargetProperty="Y"
+                From="40"
+                To="0"
+                Duration="0:0:0.6">
+                <DoubleAnimation.EasingFunction>
+                    <CubicEase EasingMode="EaseOut" />
                 </DoubleAnimation.EasingFunction>
             </DoubleAnimation>
         </Storyboard>
         <Storyboard x:Name="AvatarEntranceStoryboard">
-            <DoubleAnimation Storyboard.TargetName="AvatarPicture"
-                             Storyboard.TargetProperty="Opacity"
-                             From="0" To="1" Duration="0:0:0.6" BeginTime="0:0:0.25">
+            <DoubleAnimation
+                BeginTime="0:0:0.25"
+                Storyboard.TargetName="AvatarPicture"
+                Storyboard.TargetProperty="Opacity"
+                From="0"
+                To="1"
+                Duration="0:0:0.6">
                 <DoubleAnimation.EasingFunction>
-                    <CubicEase EasingMode="EaseOut"/>
+                    <CubicEase EasingMode="EaseOut" />
                 </DoubleAnimation.EasingFunction>
             </DoubleAnimation>
         </Storyboard>
         <Storyboard x:Name="ExitStoryboard">
-            <DoubleAnimation Storyboard.TargetName="RootLayoutGrid"
-                             Storyboard.TargetProperty="Opacity"
-                             From="1" To="0" Duration="0:0:0.3">
+            <DoubleAnimation
+                Storyboard.TargetName="RootLayoutGrid"
+                Storyboard.TargetProperty="Opacity"
+                From="1"
+                To="0"
+                Duration="0:0:0.3">
                 <DoubleAnimation.EasingFunction>
-                    <CubicEase EasingMode="EaseIn"/>
+                    <CubicEase EasingMode="EaseIn" />
                 </DoubleAnimation.EasingFunction>
             </DoubleAnimation>
         </Storyboard>
     </Page.Resources>
 
-    <Grid x:Name="RootLayoutGrid" Opacity="0" RenderTransformOrigin="0.5,0.5">
-        <Grid.Transitions>
-            <TransitionCollection>
-                <EntranceThemeTransition FromVerticalOffset="40"/>
-            </TransitionCollection>
-        </Grid.Transitions>
+    <Grid
+        x:Name="RootLayoutGrid"
+        Opacity="0"
+        RenderTransformOrigin="0.5,0.5">
         <Grid.RenderTransform>
-            <ScaleTransform x:Name="RootLayoutScale" ScaleX="1" ScaleY="1"/>
+            <TransformGroup>
+                <ScaleTransform x:Name="RootLayoutScale" ScaleX="1" ScaleY="1" />
+                <TranslateTransform x:Name="RootLayoutTranslate" X="0" Y="0" />
+            </TransformGroup>
         </Grid.RenderTransform>
 
-        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+        <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
             <StackPanel Margin="24,12,24,24" Spacing="24">
-
-                <StackPanel.ChildrenTransitions>
-                    <TransitionCollection>
-                        <EntranceThemeTransition FromVerticalOffset="28" IsStaggeringEnabled="True"/>
-                        <RepositionThemeTransition/>
-                    </TransitionCollection>
-                </StackPanel.ChildrenTransitions>
-
-<StackPanel Spacing="24" 
-            Visibility="{x:Bind ViewModel.IsNotLoggedIn, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"
-            HorizontalAlignment="Center" Margin="0,48,0,0">
-    <FontIcon Glyph="&#xE77B;" FontSize="64" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Center"/>
-    <TextBlock Text="尚未登录" Style="{StaticResource SubtitleTextBlockStyle}" HorizontalAlignment="Center"/>
-    <Button Command="{x:Bind ViewModel.LoginCommand}" HorizontalAlignment="Center" Padding="32,12">
-        <StackPanel Orientation="Horizontal" Spacing="8">
-            <FontIcon Glyph="&#xE710;" FontSize="16"/>
-            <TextBlock Text="{x:Bind ViewModel.LoginButtonText, Mode=OneWay}"/>
-        </StackPanel>
-    </Button>
-
-    <StackPanel Spacing="12" Margin="0,32,0,0" Visibility="{x:Bind ViewModel.HasSavedAccounts, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
-        <TextBlock Text="已保存的其他账户" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Center"/>
-        <ListView ItemsSource="{x:Bind ViewModel.SavedAccounts, Mode=OneWay}" SelectionMode="None" Width="320">
-            <ListView.ItemTemplate>
-                <DataTemplate x:DataType="models:AccountInfo">
-                    <Grid Margin="0,6">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="Auto"/>
-                        </Grid.ColumnDefinitions>
-                        <PersonPicture ProfilePicture="{x:Bind AvatarUrl}" Width="32" Height="32" Margin="0,0,12,0"/>
-                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                            <TextBlock Text="{x:Bind Nickname}" FontSize="14" FontWeight="SemiBold"/>
-                            <TextBlock Text="{x:Bind GameUid}" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                <StackPanel
+                    Margin="0,48,0,0"
+                    HorizontalAlignment="Center"
+                    Spacing="24"
+                    Visibility="{x:Bind ViewModel.IsNotLoggedIn, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
+                    <FontIcon
+                        HorizontalAlignment="Center"
+                        FontSize="64"
+                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                        Glyph="&#xE77B;" />
+                    <TextBlock
+                        HorizontalAlignment="Center"
+                        Style="{StaticResource SubtitleTextBlockStyle}"
+                        Text="尚未登录" />
+                    <Button
+                        Padding="32,12"
+                        HorizontalAlignment="Center"
+                        Command="{x:Bind ViewModel.LoginCommand}">
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <FontIcon FontSize="16" Glyph="&#xE710;" />
+                            <TextBlock Text="{x:Bind ViewModel.LoginButtonText, Mode=OneWay}" />
                         </StackPanel>
-                        <Button Grid.Column="2" Content="登录" FontSize="12" Click="OnSwitchAccountClicked" Margin="0,0,4,0"/>
-                        <Button Grid.Column="3" FontSize="12" Padding="8,4" Background="Transparent" Click="OnDeleteSavedAccountClicked" Tag="{Binding GameUid}">
-                            <FontIcon Glyph="&#xE74D;" FontSize="12" Foreground="{ThemeResource SystemFillColorCriticalBrush}"/>
-                        </Button>
-                    </Grid>
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
-    </StackPanel>
-</StackPanel>
+                    </Button>
+
+                    <StackPanel
+                        Margin="0,32,0,0"
+                        Spacing="12"
+                        Visibility="{x:Bind ViewModel.HasSavedAccounts, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
+                        <TextBlock
+                            HorizontalAlignment="Center"
+                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                            Text="或选择已保存的账户登录" />
+                        <ListView
+                            Width="320"
+                            ItemsSource="{x:Bind ViewModel.SavedAccounts, Mode=OneWay}"
+                            SelectionMode="None">
+                            <ListView.ItemTemplate>
+                                <DataTemplate x:DataType="models:AccountInfo">
+                                    <Grid Margin="0,6">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+                                        <PersonPicture
+                                            Width="32"
+                                            Height="32"
+                                            Margin="0,0,12,0"
+                                            ProfilePicture="{x:Bind AvatarUrl}" />
+                                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                            <TextBlock
+                                                FontSize="14"
+                                                FontWeight="SemiBold"
+                                                Text="{x:Bind Nickname}" />
+                                            <TextBlock
+                                                FontSize="12"
+                                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                                Text="{x:Bind GameUid}" />
+                                        </StackPanel>
+                                        <Button
+                                            Grid.Column="2"
+                                            Margin="0,0,4,0"
+                                            Click="OnSwitchAccountClicked"
+                                            Content="登录"
+                                            FontSize="12" />
+                                        <Button
+                                            Grid.Column="3"
+                                            Padding="8,4"
+                                            Background="Transparent"
+                                            Click="OnDeleteSavedAccountClicked"
+                                            FontSize="12"
+                                            Tag="{Binding GameUid}">
+                                            <FontIcon
+                                                FontSize="12"
+                                                Foreground="{ThemeResource SystemFillColorCriticalBrush}"
+                                                Glyph="&#xE74D;" />
+                                        </Button>
+                                    </Grid>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+                    </StackPanel>
+                </StackPanel>
 
                 <StackPanel Spacing="24" Visibility="{x:Bind ViewModel.IsLoggedIn, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
-
-                    <StackPanel.ChildrenTransitions>
-                        <TransitionCollection>
-                            <EntranceThemeTransition FromVerticalOffset="28" IsStaggeringEnabled="True"/>
-                            <RepositionThemeTransition/>
-                        </TransitionCollection>
-                    </StackPanel.ChildrenTransitions>
-
                     <Grid ColumnSpacing="24">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="4.5*"/>
-                            <ColumnDefinition Width="5.5*"/>
+                            <ColumnDefinition Width="4.5*" />
+                            <ColumnDefinition Width="5.5*" />
                         </Grid.ColumnDefinitions>
 
                         <StackPanel Grid.Column="0" Spacing="24">
@@ -146,80 +194,124 @@
                                 </Border.Shadow>
                                 <Grid ColumnSpacing="16">
                                     <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto"/>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
                                     </Grid.ColumnDefinitions>
 
-                                    <Ellipse x:Name="AvatarPicture" 
-                                             Width="84" Height="84" 
-                                             Opacity="0" 
-                                             Loaded="AvatarPicture_Loaded">
+                                    <Ellipse
+                                        x:Name="AvatarPicture"
+                                        Width="84"
+                                        Height="84"
+                                        Loaded="AvatarPicture_Loaded"
+                                        Opacity="0">
                                         <Ellipse.Fill>
-                                            <ImageBrush ImageSource="{x:Bind ViewModel.CurrentAccount.AvatarUrl, Mode=OneWay}" Stretch="UniformToFill"/>
+                                            <ImageBrush ImageSource="{x:Bind ViewModel.CurrentAccount.AvatarUrl, Mode=OneWay}" Stretch="UniformToFill" />
                                         </Ellipse.Fill>
                                     </Ellipse>
 
-                                    <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="6">
-                                        <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Bottom">
-                                            <TextBlock Text="{x:Bind ViewModel.CurrentAccount.Nickname, Mode=OneWay}" 
-                                                       Style="{StaticResource SubtitleTextBlockStyle}"
-                                                       VerticalAlignment="Center"/>
+                                    <StackPanel
+                                        Grid.Column="1"
+                                        VerticalAlignment="Center"
+                                        Spacing="6">
+                                        <StackPanel
+                                            VerticalAlignment="Bottom"
+                                            Orientation="Horizontal"
+                                            Spacing="8">
+                                            <TextBlock
+                                                VerticalAlignment="Center"
+                                                Style="{StaticResource SubtitleTextBlockStyle}"
+                                                Text="{x:Bind ViewModel.CurrentAccount.Nickname, Mode=OneWay}" />
 
-                                            <Border Background="{ThemeResource LayerFillColorDefaultBrush}" 
-                                                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
-                                                    BorderThickness="1"
-                                                    CornerRadius="12" 
-                                                    Padding="8,2"
-                                                    VerticalAlignment="Center">
-                                                <StackPanel Orientation="Horizontal" Spacing="4" VerticalAlignment="Center">
-                                                    <FontIcon Glyph="{x:Bind ViewModel.CurrentAccount.GenderIcon, Mode=OneWay}" 
-                                                              FontFamily="Segoe Fluent Icons" 
-                                                              FontSize="12" 
-                                                              Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
-                                                    <TextBlock Text="{x:Bind ViewModel.CurrentAccount.GenderText, Mode=OneWay}" 
-                                                               FontSize="12" 
-                                                               Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                                                               VerticalAlignment="Center"/>
+                                            <Border
+                                                Padding="8,2"
+                                                VerticalAlignment="Center"
+                                                Background="{ThemeResource LayerFillColorDefaultBrush}"
+                                                BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                                                BorderThickness="1"
+                                                CornerRadius="12">
+                                                <StackPanel
+                                                    VerticalAlignment="Center"
+                                                    Orientation="Horizontal"
+                                                    Spacing="4">
+                                                    <FontIcon
+                                                        FontFamily="Segoe Fluent Icons"
+                                                        FontSize="12"
+                                                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                                        Glyph="{x:Bind ViewModel.CurrentAccount.GenderIcon, Mode=OneWay}" />
+                                                    <TextBlock
+                                                        VerticalAlignment="Center"
+                                                        FontSize="12"
+                                                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                                        Text="{x:Bind ViewModel.CurrentAccount.GenderText, Mode=OneWay}" />
                                                 </StackPanel>
                                             </Border>
 
-                                            <Border Background="{ThemeResource AccentFillColorDefaultBrush}" CornerRadius="4" Padding="6,2" VerticalAlignment="Center" Margin="4,0,0,0">
-                                                <TextBlock Text="{x:Bind ViewModel.CurrentAccount.LevelDisplay, Mode=OneWay}" Foreground="White" FontSize="10" FontWeight="Bold"/>
+                                            <Border
+                                                Margin="4,0,0,0"
+                                                Padding="6,2"
+                                                VerticalAlignment="Center"
+                                                Background="{ThemeResource AccentFillColorDefaultBrush}"
+                                                CornerRadius="4">
+                                                <TextBlock
+                                                    FontSize="10"
+                                                    FontWeight="Bold"
+                                                    Foreground="White"
+                                                    Text="{x:Bind ViewModel.CurrentAccount.LevelDisplay, Mode=OneWay}" />
                                             </Border>
                                         </StackPanel>
 
-                                        <TextBlock Text="{x:Bind ViewModel.CurrentAccount.Sign, Mode=OneWay}" 
-                                                   Foreground="{ThemeResource TextFillColorSecondaryBrush}" 
-                                                   FontSize="13" 
-                                                   TextTrimming="CharacterEllipsis" 
-                                                   MaxLines="1"/>
+                                        <TextBlock
+                                            FontSize="13"
+                                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                            MaxLines="1"
+                                            Text="{x:Bind ViewModel.CurrentAccount.Sign, Mode=OneWay}"
+                                            TextTrimming="CharacterEllipsis" />
 
                                         <StackPanel Orientation="Horizontal" Spacing="8">
-                                            <TextBlock Foreground="{ThemeResource TextFillColorTertiaryBrush}" FontSize="12">
-                                                <Run Text="UID:"/>
-                                                <Run Text="{x:Bind ViewModel.CurrentAccount.GameUidDisplay, Mode=OneWay}" FontWeight="SemiBold"/>
+                                            <TextBlock FontSize="12" Foreground="{ThemeResource TextFillColorTertiaryBrush}">
+                                                <Run Text="UID:" />
+                                                <Run FontWeight="SemiBold" Text="{x:Bind ViewModel.CurrentAccount.GameUidDisplay, Mode=OneWay}" />
                                             </TextBlock>
 
-                                            <Border Width="1" Height="10" Background="{ThemeResource DividerStrokeColorDefaultBrush}"/>
+                                            <Border
+                                                Width="1"
+                                                Height="10"
+                                                Background="{ThemeResource DividerStrokeColorDefaultBrush}" />
 
-                                            <TextBlock Text="{x:Bind ViewModel.CurrentAccount.Server, Mode=OneWay}"
-                                                       Foreground="{ThemeResource TextFillColorTertiaryBrush}" FontSize="12"/>
+                                            <TextBlock
+                                                FontSize="12"
+                                                Foreground="{ThemeResource TextFillColorTertiaryBrush}"
+                                                Text="{x:Bind ViewModel.CurrentAccount.Server, Mode=OneWay}" />
 
-                                            <Border Width="1" Height="10" Background="{ThemeResource DividerStrokeColorDefaultBrush}"/>
+                                            <Border
+                                                Width="1"
+                                                Height="10"
+                                                Background="{ThemeResource DividerStrokeColorDefaultBrush}" />
 
-                                            <StackPanel Orientation="Horizontal" Spacing="4" VerticalAlignment="Center">
-                                                <FontIcon Glyph="&#xE81D;" FontSize="10" FontFamily="Segoe Fluent Icons" Foreground="{ThemeResource TextFillColorTertiaryBrush}"/>
-                                                <TextBlock Text="{x:Bind ViewModel.CurrentAccount.IpRegion, Mode=OneWay}"
-                                                           Foreground="{ThemeResource TextFillColorTertiaryBrush}" FontSize="12"/>
+                                            <StackPanel
+                                                VerticalAlignment="Center"
+                                                Orientation="Horizontal"
+                                                Spacing="4">
+                                                <FontIcon
+                                                    FontFamily="Segoe Fluent Icons"
+                                                    FontSize="10"
+                                                    Foreground="{ThemeResource TextFillColorTertiaryBrush}"
+                                                    Glyph="&#xE81D;" />
+                                                <TextBlock
+                                                    FontSize="12"
+                                                    Foreground="{ThemeResource TextFillColorTertiaryBrush}"
+                                                    Text="{x:Bind ViewModel.CurrentAccount.IpRegion, Mode=OneWay}" />
                                             </StackPanel>
                                         </StackPanel>
                                     </StackPanel>
 
                                     <StackPanel Grid.Column="2" VerticalAlignment="Top">
-                                        <ProgressRing IsActive="{x:Bind ViewModel.IsLoadingUserInfo, Mode=OneWay}" 
-                                                      Visibility="{x:Bind ViewModel.IsLoadingUserInfo, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"
-                                                      Width="20" Height="20"/>
+                                        <ProgressRing
+                                            Width="20"
+                                            Height="20"
+                                            IsActive="{x:Bind ViewModel.IsLoadingUserInfo, Mode=OneWay}"
+                                            Visibility="{x:Bind ViewModel.IsLoadingUserInfo, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}" />
                                     </StackPanel>
                                 </Grid>
                             </Border>
@@ -229,62 +321,110 @@
                                     <Button.Shadow>
                                         <ThemeShadow />
                                     </Button.Shadow>
-                                    <StackPanel Spacing="8" Orientation="Horizontal" HorizontalAlignment="Center">
-                                        <FontIcon Glyph="&#xE748;" FontSize="16"/>
-                                        <TextBlock Text="切换账户"/>
+                                    <StackPanel
+                                        HorizontalAlignment="Center"
+                                        Orientation="Horizontal"
+                                        Spacing="8">
+                                        <FontIcon FontSize="16" Glyph="&#xE748;" />
+                                        <TextBlock Text="切换账户" />
                                     </StackPanel>
                                     <Button.Flyout>
                                         <Flyout Placement="Bottom">
                                             <StackPanel MinWidth="320" Spacing="8">
-                                                <TextBlock Text="当前登录" Style="{StaticResource BodyStrongTextBlockStyle}" Margin="8,4,0,4"/>
-                                                <Grid Margin="0,6" Padding="8,8" Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}" CornerRadius="8">
+                                                <TextBlock
+                                                    Margin="8,4,0,4"
+                                                    Style="{StaticResource BodyStrongTextBlockStyle}"
+                                                    Text="当前登录" />
+                                                <Grid
+                                                    Margin="0,6"
+                                                    Padding="8,8"
+                                                    Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}"
+                                                    CornerRadius="8">
                                                     <Grid.ColumnDefinitions>
-                                                        <ColumnDefinition Width="Auto"/>
-                                                        <ColumnDefinition Width="*"/>
-                                                        <ColumnDefinition Width="Auto"/>
+                                                        <ColumnDefinition Width="Auto" />
+                                                        <ColumnDefinition Width="*" />
+                                                        <ColumnDefinition Width="Auto" />
                                                     </Grid.ColumnDefinitions>
-                                                    <PersonPicture ProfilePicture="{x:Bind ViewModel.CurrentAccount.AvatarUrl, Mode=OneWay}" Width="32" Height="32" Margin="0,0,12,0"/>
+                                                    <PersonPicture
+                                                        Width="32"
+                                                        Height="32"
+                                                        Margin="0,0,12,0"
+                                                        ProfilePicture="{x:Bind ViewModel.CurrentAccount.AvatarUrl, Mode=OneWay}" />
                                                     <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                                        <TextBlock Text="{x:Bind ViewModel.CurrentAccount.Nickname, Mode=OneWay}" FontSize="14" FontWeight="SemiBold"/>
-                                                        <TextBlock Text="{x:Bind ViewModel.CurrentAccount.GameUidDisplay, Mode=OneWay}" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                                                        <TextBlock
+                                                            FontSize="14"
+                                                            FontWeight="SemiBold"
+                                                            Text="{x:Bind ViewModel.CurrentAccount.Nickname, Mode=OneWay}" />
+                                                        <TextBlock
+                                                            FontSize="12"
+                                                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                                            Text="{x:Bind ViewModel.CurrentAccount.GameUidDisplay, Mode=OneWay}" />
                                                     </StackPanel>
-                                                    <TextBlock Grid.Column="2" Text="当前" VerticalAlignment="Center"
-                                                               Foreground="{ThemeResource AccentFillColorDefaultBrush}" FontSize="12" FontWeight="SemiBold"/>
+                                                    <TextBlock
+                                                        Grid.Column="2"
+                                                        VerticalAlignment="Center"
+                                                        FontSize="12"
+                                                        FontWeight="SemiBold"
+                                                        Foreground="{ThemeResource AccentFillColorDefaultBrush}"
+                                                        Text="当前" />
                                                 </Grid>
 
-                                                <StackPanel Spacing="4" Visibility="{x:Bind ViewModel.HasSavedAccounts, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
-                                                    <TextBlock Text="已保存的其他账户" Style="{StaticResource BodyStrongTextBlockStyle}" Margin="8,8,0,4"/>
-                                                    <ListView ItemsSource="{x:Bind ViewModel.SavedAccounts, Mode=OneWay}" SelectionMode="None">
-                                                        <ListView.ItemTemplate>
-                                                            <DataTemplate x:DataType="models:AccountInfo">
-                                                                <Grid Margin="0,4" Padding="0,4">
-                                                                    <Grid.ColumnDefinitions>
-                                                                        <ColumnDefinition Width="Auto"/>
-                                                                        <ColumnDefinition Width="*"/>
-                                                                        <ColumnDefinition Width="Auto"/>
-                                                                        <ColumnDefinition Width="Auto"/>
-                                                                    </Grid.ColumnDefinitions>
-                                                                    <PersonPicture ProfilePicture="{x:Bind AvatarUrl}" Width="32" Height="32" Margin="0,0,12,0"/>
-                                                                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                                                        <TextBlock Text="{x:Bind Nickname}" FontSize="14" FontWeight="SemiBold"/>
-                                                                        <TextBlock Text="{x:Bind GameUidDisplay}" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
-                                                                    </StackPanel>
-                                                                    <Button Grid.Column="2" Content="切换" FontSize="12" Margin="0,0,4,0"
-                                                                            Click="OnSwitchAccountClicked"/>
-                                                                    <Button Grid.Column="3" Padding="6,4" Background="Transparent" BorderThickness="0"
-                                                                            Click="OnDeleteSavedAccountClicked" Tag="{Binding GameUid}">
-                                                                        <FontIcon Glyph="&#xE74D;" FontSize="12" Foreground="{ThemeResource SystemFillColorCriticalBrush}"/>
-                                                                    </Button>
-                                                                </Grid>
-                                                            </DataTemplate>
-                                                        </ListView.ItemTemplate>
-                                                    </ListView>
-                                                </StackPanel>
-                                                <MenuFlyoutSeparator/>
-                                                <Button Command="{x:Bind ViewModel.AddAccountCommand}" HorizontalAlignment="Stretch">
+                                                <TextBlock
+                                                    Margin="8,8,0,4"
+                                                    Style="{StaticResource BodyStrongTextBlockStyle}"
+                                                    Text="已保存的账户" />
+                                                <ListView ItemsSource="{x:Bind ViewModel.SavedAccounts, Mode=OneWay}" SelectionMode="None">
+                                                    <ListView.ItemTemplate>
+                                                        <DataTemplate x:DataType="models:AccountInfo">
+                                                            <Grid Margin="0,4" Padding="0,4">
+                                                                <Grid.ColumnDefinitions>
+                                                                    <ColumnDefinition Width="Auto" />
+                                                                    <ColumnDefinition Width="*" />
+                                                                    <ColumnDefinition Width="Auto" />
+                                                                    <ColumnDefinition Width="Auto" />
+                                                                </Grid.ColumnDefinitions>
+                                                                <PersonPicture
+                                                                    Width="32"
+                                                                    Height="32"
+                                                                    Margin="0,0,12,0"
+                                                                    ProfilePicture="{x:Bind AvatarUrl}" />
+                                                                <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                                                    <TextBlock
+                                                                        FontSize="14"
+                                                                        FontWeight="SemiBold"
+                                                                        Text="{x:Bind Nickname}" />
+                                                                    <TextBlock
+                                                                        FontSize="12"
+                                                                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                                                        Text="{x:Bind GameUidDisplay}" />
+                                                                </StackPanel>
+                                                                <Button
+                                                                    Grid.Column="2"
+                                                                    Margin="0,0,4,0"
+                                                                    Click="OnSwitchAccountClicked"
+                                                                    Content="切换"
+                                                                    FontSize="12" />
+                                                                <Button
+                                                                    Grid.Column="3"
+                                                                    Padding="6,4"
+                                                                    Background="Transparent"
+                                                                    BorderThickness="0"
+                                                                    Click="OnDeleteSavedAccountClicked"
+                                                                    Tag="{Binding GameUid}">
+                                                                    <FontIcon
+                                                                        FontSize="12"
+                                                                        Foreground="{ThemeResource SystemFillColorCriticalBrush}"
+                                                                        Glyph="&#xE74D;" />
+                                                                </Button>
+                                                            </Grid>
+                                                        </DataTemplate>
+                                                    </ListView.ItemTemplate>
+                                                </ListView>
+                                                <MenuFlyoutSeparator />
+                                                <Button HorizontalAlignment="Stretch" Command="{x:Bind ViewModel.AddAccountCommand}">
                                                     <StackPanel Orientation="Horizontal" Spacing="8">
-                                                        <FontIcon Glyph="&#xE710;" FontSize="12"/>
-                                                        <TextBlock Text="添加新账户"/>
+                                                        <FontIcon FontSize="12" Glyph="&#xE710;" />
+                                                        <TextBlock Text="添加新账户" />
                                                     </StackPanel>
                                                 </Button>
                                             </StackPanel>
@@ -292,214 +432,220 @@
                                     </Button.Flyout>
                                 </Button>
 
-                                <Button Style="{StaticResource ActionButtonStyle}"
-                                        Translation="0,0,32"
-                                        Command="{x:Bind ViewModel.LoadUserInfoCommand}"
-                                        IsEnabled="{x:Bind ViewModel.IsLoadingUserInfo, Mode=OneWay, Converter={StaticResource BoolNegationConverter}}">
+                                <Button
+                                    Command="{x:Bind ViewModel.LoadUserInfoCommand}"
+                                    Style="{StaticResource ActionButtonStyle}"
+                                    Translation="0,0,32">
                                     <Button.Shadow>
                                         <ThemeShadow />
                                     </Button.Shadow>
-                                    <StackPanel Spacing="8" Orientation="Horizontal" HorizontalAlignment="Center">
-                                        <FontIcon Glyph="&#xE72C;" FontSize="16"/>
-                                        <TextBlock Text="刷新信息"/>
+                                    <StackPanel
+                                        HorizontalAlignment="Center"
+                                        Orientation="Horizontal"
+                                        Spacing="8">
+                                        <FontIcon FontSize="16" Glyph="&#xE72C;" />
+                                        <TextBlock Text="刷新信息" />
                                     </StackPanel>
                                 </Button>
 
-                                <Button Style="{StaticResource ActionButtonStyle}"
-                                        Translation="0,0,32"
-                                        Command="{x:Bind ViewModel.OpenGenshinDataCommand}">
+                                <Button
+                                    Command="{x:Bind ViewModel.OpenGenshinDataCommand}"
+                                    Style="{StaticResource ActionButtonStyle}"
+                                    Translation="0,0,32">
                                     <Button.Shadow>
                                         <ThemeShadow />
                                     </Button.Shadow>
-                                    <StackPanel Spacing="8" Orientation="Horizontal" HorizontalAlignment="Center">
-                                        <FontIcon Glyph="&#xEB9E;" FontSize="16"/>
-                                        <TextBlock Text="旅行札记"/>
+                                    <StackPanel
+                                        HorizontalAlignment="Center"
+                                        Orientation="Horizontal"
+                                        Spacing="8">
+                                        <FontIcon FontSize="16" Glyph="&#xEB9E;" />
+                                        <TextBlock Text="旅行札记" />
                                     </StackPanel>
                                 </Button>
 
-                                <Button Style="{StaticResource ActionButtonStyle}"
-                                        Translation="0,0,32"
-                                        Click="OnGachaAnalysisClicked">
+                                <Button
+                                    Click="OnGachaAnalysisClicked"
+                                    Style="{StaticResource ActionButtonStyle}"
+                                    Translation="0,0,32">
                                     <Button.Shadow>
                                         <ThemeShadow />
                                     </Button.Shadow>
-                                    <StackPanel Spacing="8" Orientation="Horizontal" HorizontalAlignment="Center">
-                                        <FontIcon Glyph="&#xE9D2;" FontSize="16"/>
-                                        <TextBlock Text="抽卡分析"/>
-                                    </StackPanel>
-                                </Button>
-                                
-                                <Button Style="{StaticResource ActionButtonStyle}"
-                                        Translation="0,0,32"
-                                        Command="{x:Bind ViewModel.OpenSecurityCenterCommand}">
-                                    <Button.Shadow>
-                                        <ThemeShadow />
-                                    </Button.Shadow>
-                                    <StackPanel Spacing="8" Orientation="Horizontal" HorizontalAlignment="Center">
-                                        <FontIcon Glyph="&#xE72E;" FontSize="16"/>
-                                        <TextBlock Text="账号安全"/>
-                                    </StackPanel>
-                                </Button>
-                                
-                                <Button Style="{StaticResource ActionButtonStyle}"
-                                        Translation="0,0,32"
-                                        Command="{x:Bind ViewModel.LockAccountCommand}">
-                                    <Button.Shadow>
-                                        <ThemeShadow />
-                                    </Button.Shadow>
-                                    <StackPanel Spacing="8" Orientation="Horizontal" HorizontalAlignment="Center">
-                                        <FontIcon Glyph="&#xE7BA;" FontSize="16" Foreground="{ThemeResource SystemFillColorCriticalBrush}"/>
-                                        <TextBlock Text="冻结账号" Foreground="{ThemeResource SystemFillColorCriticalBrush}"/>
+                                    <StackPanel
+                                        HorizontalAlignment="Center"
+                                        Orientation="Horizontal"
+                                        Spacing="8">
+                                        <FontIcon FontSize="16" Glyph="&#xE9D2;" />
+                                        <TextBlock Text="抽卡分析" />
                                     </StackPanel>
                                 </Button>
 
-                                <Button Style="{StaticResource ActionButtonStyle}"
-                                        Translation="0,0,32"
-                                        Command="{x:Bind ViewModel.CopyCookieCommand}">
+                                <Button
+                                    Command="{x:Bind ViewModel.OpenSecurityCenterCommand}"
+                                    Style="{StaticResource ActionButtonStyle}"
+                                    Translation="0,0,32">
                                     <Button.Shadow>
                                         <ThemeShadow />
                                     </Button.Shadow>
-                                    <StackPanel Spacing="8" Orientation="Horizontal" HorizontalAlignment="Center">
-                                        <FontIcon Glyph="&#xE8C8;" FontSize="16"/>
-                                        <TextBlock Text="复制 Cookie"/>
+                                    <StackPanel
+                                        HorizontalAlignment="Center"
+                                        Orientation="Horizontal"
+                                        Spacing="8">
+                                        <FontIcon FontSize="16" Glyph="&#xE72E;" />
+                                        <TextBlock Text="账号安全" />
                                     </StackPanel>
                                 </Button>
 
-                                <Button Style="{StaticResource ActionButtonStyle}"
-                                        Translation="0,0,32"
-                                        Click="OnDeleteCurrentAccountClicked">
+                                <Button
+                                    Command="{x:Bind ViewModel.LockAccountCommand}"
+                                    Style="{StaticResource ActionButtonStyle}"
+                                    Translation="0,0,32">
                                     <Button.Shadow>
                                         <ThemeShadow />
                                     </Button.Shadow>
-                                    <StackPanel Spacing="8" Orientation="Horizontal" HorizontalAlignment="Center">
-                                        <FontIcon Glyph="&#xE74D;" FontSize="16" Foreground="{ThemeResource SystemFillColorCriticalBrush}"/>
-                                        <TextBlock Text="删除账号" Foreground="{ThemeResource SystemFillColorCriticalBrush}"/>
+                                    <StackPanel
+                                        HorizontalAlignment="Center"
+                                        Orientation="Horizontal"
+                                        Spacing="8">
+                                        <FontIcon
+                                            FontSize="16"
+                                            Foreground="{ThemeResource SystemFillColorCriticalBrush}"
+                                            Glyph="&#xE7BA;" />
+                                        <TextBlock Foreground="{ThemeResource SystemFillColorCriticalBrush}" Text="冻结账号" />
                                     </StackPanel>
                                 </Button>
 
-                                <Button Style="{StaticResource ActionButtonStyle}"
-                                        Translation="0,0,32"
-                                        Command="{x:Bind ViewModel.LogoutCommand}">
+                                <Button
+                                    Command="{x:Bind ViewModel.CopyCookieCommand}"
+                                    Style="{StaticResource ActionButtonStyle}"
+                                    Translation="0,0,32">
                                     <Button.Shadow>
                                         <ThemeShadow />
                                     </Button.Shadow>
-                                    <StackPanel Spacing="8" Orientation="Horizontal" HorizontalAlignment="Center">
-                                        <FontIcon Glyph="&#xE7E8;" FontSize="16" Foreground="{ThemeResource SystemFillColorCriticalBrush}"/>
-                                        <TextBlock Text="退出登录" Foreground="{ThemeResource SystemFillColorCriticalBrush}"/>
+                                    <StackPanel
+                                        HorizontalAlignment="Center"
+                                        Orientation="Horizontal"
+                                        Spacing="8">
+                                        <FontIcon FontSize="16" Glyph="&#xE8C8;" />
+                                        <TextBlock Text="复制 Cookie" />
+                                    </StackPanel>
+                                </Button>
+
+                                <Button
+                                    Click="OnDeleteCurrentAccountClicked"
+                                    Style="{StaticResource ActionButtonStyle}"
+                                    Translation="0,0,32">
+                                    <Button.Shadow>
+                                        <ThemeShadow />
+                                    </Button.Shadow>
+                                    <StackPanel
+                                        HorizontalAlignment="Center"
+                                        Orientation="Horizontal"
+                                        Spacing="8">
+                                        <FontIcon
+                                            FontSize="16"
+                                            Foreground="{ThemeResource SystemFillColorCriticalBrush}"
+                                            Glyph="&#xE74D;" />
+                                        <TextBlock Foreground="{ThemeResource SystemFillColorCriticalBrush}" Text="删除账号" />
+                                    </StackPanel>
+                                </Button>
+
+                                <Button
+                                    Command="{x:Bind ViewModel.LogoutCommand}"
+                                    Style="{StaticResource ActionButtonStyle}"
+                                    Translation="0,0,32">
+                                    <Button.Shadow>
+                                        <ThemeShadow />
+                                    </Button.Shadow>
+                                    <StackPanel
+                                        HorizontalAlignment="Center"
+                                        Orientation="Horizontal"
+                                        Spacing="8">
+                                        <FontIcon
+                                            FontSize="16"
+                                            Foreground="{ThemeResource SystemFillColorCriticalBrush}"
+                                            Glyph="&#xE7E8;" />
+                                        <TextBlock Foreground="{ThemeResource SystemFillColorCriticalBrush}" Text="退出登录" />
                                     </StackPanel>
                                 </Button>
                             </StackPanel>
                         </StackPanel>
 
                         <StackPanel Grid.Column="1" Spacing="24">
-                            <Border Style="{StaticResource CardBorderStyle}"
-                                    Translation="0,0,32"
-                                    Visibility="{x:Bind ViewModel.UserFullInfo, Mode=OneWay, Converter={StaticResource NullToVisibilityConverter}}">
+                            <Border
+                                Style="{StaticResource CardBorderStyle}"
+                                Translation="0,0,32"
+                                Visibility="{x:Bind ViewModel.UserFullInfo, Mode=OneWay, Converter={StaticResource NullToVisibilityConverter}}">
                                 <Border.Shadow>
                                     <ThemeShadow />
                                 </Border.Shadow>
                                 <StackPanel Spacing="16">
                                     <StackPanel Orientation="Horizontal" Spacing="8">
-                                        <FontIcon Glyph="&#xE90A;" FontSize="16" Foreground="{ThemeResource AccentFillColorDefaultBrush}"/>
-                                        <TextBlock Text="社区动态" Style="{StaticResource BodyStrongTextBlockStyle}"/>
+                                        <FontIcon
+                                            FontSize="16"
+                                            Foreground="{ThemeResource AccentFillColorDefaultBrush}"
+                                            Glyph="&#xE90A;" />
+                                        <TextBlock Style="{StaticResource BodyStrongTextBlockStyle}" Text="社区动态" />
                                     </StackPanel>
 
                                     <Grid ColumnSpacing="8">
                                         <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="*"/>
-                                            <ColumnDefinition Width="*"/>
-                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="*" />
                                         </Grid.ColumnDefinitions>
 
-                                        <StackPanel Grid.Column="0" Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}" Padding="12" CornerRadius="4">
-                                            <TextBlock Text="获赞数" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
-                                            <TextBlock FontSize="20" FontWeight="SemiBold" Margin="0,4,0,0">
-                                                <Run Text="{x:Bind ViewModel.UserFullInfo.data.user_info.achieve, Mode=OneWay, Converter={StaticResource DictionarySafeConverter}, ConverterParameter=like_num}"/>
+                                        <StackPanel
+                                            Grid.Column="0"
+                                            Padding="12"
+                                            Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}"
+                                            CornerRadius="4">
+                                            <TextBlock
+                                                FontSize="12"
+                                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                                Text="获赞数" />
+                                            <TextBlock
+                                                Margin="0,4,0,0"
+                                                FontSize="20"
+                                                FontWeight="SemiBold">
+                                                <Run Text="{x:Bind ViewModel.UserFullInfo.data.user_info.achieve, Mode=OneWay, Converter={StaticResource DictionarySafeConverter}, ConverterParameter=like_num}" />
                                             </TextBlock>
                                         </StackPanel>
 
-                                        <StackPanel Grid.Column="1" Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}" Padding="12" CornerRadius="4">
-                                            <TextBlock Text="发帖数" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
-                                            <TextBlock FontSize="20" FontWeight="SemiBold" Margin="0,4,0,0">
-                                                <Run Text="{x:Bind ViewModel.UserFullInfo.data.user_info.achieve, Mode=OneWay, Converter={StaticResource DictionarySafeConverter}, ConverterParameter=post_num}"/>
+                                        <StackPanel
+                                            Grid.Column="1"
+                                            Padding="12"
+                                            Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}"
+                                            CornerRadius="4">
+                                            <TextBlock
+                                                FontSize="12"
+                                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                                Text="发帖数" />
+                                            <TextBlock
+                                                Margin="0,4,0,0"
+                                                FontSize="20"
+                                                FontWeight="SemiBold">
+                                                <Run Text="{x:Bind ViewModel.UserFullInfo.data.user_info.achieve, Mode=OneWay, Converter={StaticResource DictionarySafeConverter}, ConverterParameter=post_num}" />
                                             </TextBlock>
                                         </StackPanel>
 
-                                        <StackPanel Grid.Column="2" Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}" Padding="12" CornerRadius="4">
-                                            <TextBlock Text="回复数" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
-                                            <TextBlock FontSize="20" FontWeight="SemiBold" Margin="0,4,0,0">
-                                                <Run Text="{x:Bind ViewModel.UserFullInfo.data.user_info.achieve, Mode=OneWay, Converter={StaticResource DictionarySafeConverter}, ConverterParameter=replypost_num}"/>
+                                        <StackPanel
+                                            Grid.Column="2"
+                                            Padding="12"
+                                            Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}"
+                                            CornerRadius="4">
+                                            <TextBlock
+                                                FontSize="12"
+                                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                                Text="回复数" />
+                                            <TextBlock
+                                                Margin="0,4,0,0"
+                                                FontSize="20"
+                                                FontWeight="SemiBold">
+                                                <Run Text="{x:Bind ViewModel.UserFullInfo.data.user_info.achieve, Mode=OneWay, Converter={StaticResource DictionarySafeConverter}, ConverterParameter=replypost_num}" />
                                             </TextBlock>
                                         </StackPanel>
                                     </Grid>
-                                </StackPanel>
-                            </Border>
-
-                            <Border Style="{StaticResource CardBorderStyle}"
-                                    Translation="0,0,32">
-                                <Border.Shadow>
-                                    <ThemeShadow />
-                                </Border.Shadow>
-                                <StackPanel Spacing="16">
-                                    <StackPanel Orientation="Horizontal" Spacing="8">
-                                        <FontIcon Glyph="&#xE7FC;" FontSize="16" Foreground="{ThemeResource AccentFillColorDefaultBrush}"/>
-                                        <TextBlock Text="绑定角色" Style="{StaticResource BodyStrongTextBlockStyle}"/>
-                                    </StackPanel>
-
-                                    <StackPanel Spacing="12"
-                                                Visibility="{x:Bind ViewModel.CurrentAccount.HasBoundRole, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
-                                        <ItemsControl ItemsSource="{x:Bind ViewModel.GameRolesInfo.data.list, Mode=OneWay}">
-                                            <ItemsControl.ItemTemplate>
-                                                <DataTemplate>
-                                                    <Grid Margin="0,0,0,12">
-                                                        <Grid.ColumnDefinitions>
-                                                            <ColumnDefinition Width="Auto"/>
-                                                            <ColumnDefinition Width="*"/>
-                                                            <ColumnDefinition Width="Auto"/>
-                                                            <ColumnDefinition Width="Auto"/>
-                                                        </Grid.ColumnDefinitions>
-
-                                                        <Border Width="40" Height="40" CornerRadius="20" Background="{ThemeResource SolidBackgroundFillColorBaseBrush}" BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}" BorderThickness="1">
-                                                            <FontIcon Glyph="&#xE7F4;" FontSize="16" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
-                                                        </Border>
-
-                                                        <StackPanel Grid.Column="1" Margin="12,0,0,0" VerticalAlignment="Center">
-                                                            <TextBlock Text="{Binding nickname}" FontWeight="Medium"/>
-                                                            <TextBlock FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}">
-                                                                <Run Text="{Binding region_name}"/>
-                                                                <Run Text=" | Lv."/>
-                                                                <Run Text="{Binding level}"/>
-                                                            </TextBlock>
-                                                        </StackPanel>
-
-                                                        <TextBlock Grid.Column="2" Text="{Binding game_uid}"
-                                                                   VerticalAlignment="Center"
-                                                                   Margin="0,0,6,0"
-                                                                   Foreground="{ThemeResource TextFillColorTertiaryBrush}"
-                                                                   FontSize="12" FontFamily="Consolas, Monospace"/>
-
-                                                        <Button Grid.Column="3" Width="28" Height="28" Padding="0"
-                                                                Background="Transparent" BorderThickness="0"
-                                                                VerticalAlignment="Center"
-                                                                Tag="{Binding game_uid}"
-                                                                Click="OnCopyGameUidClicked"
-                                                                ToolTipService.ToolTip="复制 UID">
-                                                            <FontIcon Glyph="&#xE8C8;" FontSize="12" Foreground="{ThemeResource TextFillColorTertiaryBrush}"/>
-                                                        </Button>
-                                                    </Grid>
-                                                </DataTemplate>
-                                            </ItemsControl.ItemTemplate>
-                                        </ItemsControl>
-                                    </StackPanel>
-
-                                    <StackPanel Orientation="Horizontal" Spacing="12" Padding="12"
-                                                Visibility="{x:Bind ViewModel.CurrentAccount.HasBoundRole, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=Inverse}">
-                                        <FontIcon Glyph="&#xE7F4;" FontSize="24" Foreground="{ThemeResource TextFillColorTertiaryBrush}" VerticalAlignment="Center"/>
-                                        <StackPanel VerticalAlignment="Center">
-                                            <TextBlock Text="暂无绑定角色" FontSize="14" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
-                                            <TextBlock Text="请在米游社或游戏中绑定角色后刷新" FontSize="12" Foreground="{ThemeResource TextFillColorTertiaryBrush}"/>
-                                        </StackPanel>
-                                    </StackPanel>
                                 </StackPanel>
                             </Border>
 
@@ -507,73 +653,104 @@
                                 <Border.Shadow>
                                     <ThemeShadow />
                                 </Border.Shadow>
-                                <StackPanel Spacing="18">
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="*"/>
-                                            <ColumnDefinition Width="Auto"/>
-                                        </Grid.ColumnDefinitions>
-                                        <StackPanel Spacing="4">
-                                            <TextBlock Text="游戏时长" Style="{StaticResource BodyStrongTextBlockStyle}"/>
-                                            <TextBlock Text="近 30 天游玩统计" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                                <StackPanel Spacing="16">
+                                    <StackPanel Orientation="Horizontal" Spacing="8">
+                                        <FontIcon
+                                            FontSize="16"
+                                            Foreground="{ThemeResource AccentFillColorDefaultBrush}"
+                                            Glyph="&#xE7FC;" />
+                                        <TextBlock Style="{StaticResource BodyStrongTextBlockStyle}" Text="绑定角色" />
+                                    </StackPanel>
+
+                                    <StackPanel Spacing="12" Visibility="{x:Bind ViewModel.CurrentAccount.HasBoundRole, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
+                                        <ItemsControl ItemsSource="{x:Bind ViewModel.GameRolesInfo.data.list, Mode=OneWay}">
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Grid Margin="0,0,0,12">
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="Auto" />
+                                                            <ColumnDefinition Width="*" />
+                                                            <ColumnDefinition Width="Auto" />
+                                                            <ColumnDefinition Width="Auto" />
+                                                        </Grid.ColumnDefinitions>
+
+                                                        <Border
+                                                            Width="40"
+                                                            Height="40"
+                                                            Background="{ThemeResource SolidBackgroundFillColorBaseBrush}"
+                                                            BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}"
+                                                            BorderThickness="1"
+                                                            CornerRadius="20">
+                                                            <FontIcon
+                                                                FontSize="16"
+                                                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                                                Glyph="&#xE7F4;" />
+                                                        </Border>
+
+                                                        <StackPanel
+                                                            Grid.Column="1"
+                                                            Margin="12,0,0,0"
+                                                            VerticalAlignment="Center">
+                                                            <TextBlock FontWeight="Medium" Text="{Binding nickname}" />
+                                                            <TextBlock FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}">
+                                                                <Run Text="{Binding region_name}" />
+                                                                <Run Text=" | Lv." />
+                                                                <Run Text="{Binding level}" />
+                                                            </TextBlock>
+                                                        </StackPanel>
+
+                                                        <TextBlock
+                                                            Grid.Column="2"
+                                                            Margin="0,0,6,0"
+                                                            VerticalAlignment="Center"
+                                                            FontFamily="Consolas, Monospace"
+                                                            FontSize="12"
+                                                            Foreground="{ThemeResource TextFillColorTertiaryBrush}"
+                                                            Text="{Binding game_uid}" />
+
+                                                        <Button
+                                                            Grid.Column="3"
+                                                            Width="28"
+                                                            Height="28"
+                                                            Padding="0"
+                                                            VerticalAlignment="Center"
+                                                            Background="Transparent"
+                                                            BorderThickness="0"
+                                                            Click="OnCopyGameUidClicked"
+                                                            Tag="{Binding game_uid}"
+                                                            ToolTipService.ToolTip="复制 UID">
+                                                            <FontIcon
+                                                                FontSize="12"
+                                                                Foreground="{ThemeResource TextFillColorTertiaryBrush}"
+                                                                Glyph="&#xE8C8;" />
+                                                        </Button>
+                                                    </Grid>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </StackPanel>
+
+                                    <StackPanel
+                                        Padding="12"
+                                        Orientation="Horizontal"
+                                        Spacing="12"
+                                        Visibility="{x:Bind ViewModel.CurrentAccount.HasBoundRole, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=Inverse}">
+                                        <FontIcon
+                                            VerticalAlignment="Center"
+                                            FontSize="24"
+                                            Foreground="{ThemeResource TextFillColorTertiaryBrush}"
+                                            Glyph="&#xE7F4;" />
+                                        <StackPanel VerticalAlignment="Center">
+                                            <TextBlock
+                                                FontSize="14"
+                                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                                Text="暂无绑定角色" />
+                                            <TextBlock
+                                                FontSize="12"
+                                                Foreground="{ThemeResource TextFillColorTertiaryBrush}"
+                                                Text="请在米游社或游戏中绑定角色后刷新" />
                                         </StackPanel>
-                                        <Border Grid.Column="1"
-                                                Background="{ThemeResource SystemFillColorSuccessBrush}"
-                                                CornerRadius="12"
-                                                Padding="8,3"
-                                                VerticalAlignment="Top"
-                                                Visibility="{x:Bind ControlPanelViewModel.IsGameRunning, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
-                                            <TextBlock Text="游戏中" FontSize="11" Foreground="White" FontWeight="SemiBold"/>
-                                        </Border>
-                                    </Grid>
-
-                                    <Grid ColumnSpacing="12">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="*"/>
-                                            <ColumnDefinition Width="*"/>
-                                        </Grid.ColumnDefinitions>
-                                        <Border Grid.Column="0" Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}" CornerRadius="8" Padding="14">
-                                            <StackPanel Spacing="4">
-                                                <TextBlock Text="总时长" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
-                                                <TextBlock Text="{x:Bind ControlPanelViewModel.WeeklyStats.TotalHoursFormatted, Mode=OneWay}" FontSize="28" FontWeight="SemiBold" Foreground="{ThemeResource AccentFillColorDefaultBrush}"/>
-                                            </StackPanel>
-                                        </Border>
-                                        <Border Grid.Column="1" Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}" CornerRadius="8" Padding="14">
-                                            <StackPanel Spacing="4">
-                                                <TextBlock Text="日均时长" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
-                                                <TextBlock Text="{x:Bind ControlPanelViewModel.WeeklyStats.AverageHoursFormatted, Mode=OneWay}" FontSize="28" FontWeight="SemiBold"/>
-                                            </StackPanel>
-                                        </Border>
-                                    </Grid>
-
-                                    <Grid MinHeight="120">
-                                        <ScrollViewer MaxHeight="220" VerticalScrollBarVisibility="Auto" Padding="0,0,8,0">
-                                            <ItemsControl ItemsSource="{x:Bind ControlPanelViewModel.WeeklyStats.DailyRecords, Mode=OneWay}">
-                                                <ItemsControl.ItemTemplate>
-                                                    <DataTemplate x:DataType="models:GamePlayTimeRecord">
-                                                        <Grid Margin="0,6" Padding="10,8" Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}" CornerRadius="6">
-                                                            <Grid.ColumnDefinitions>
-                                                                <ColumnDefinition Width="*"/>
-                                                                <ColumnDefinition Width="Auto"/>
-                                                            </Grid.ColumnDefinitions>
-                                                            <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="12">
-                                                                <TextBlock Text="{x:Bind DayOfWeek}" FontSize="13" Width="36" FontWeight="SemiBold"/>
-                                                                <TextBlock Text="{x:Bind DisplayDate}" FontSize="13" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
-                                                            </StackPanel>
-                                                            <TextBlock Grid.Column="1" Text="{x:Bind DisplayTime}" FontSize="13" FontWeight="SemiBold"/>
-                                                        </Grid>
-                                                    </DataTemplate>
-                                                </ItemsControl.ItemTemplate>
-                                            </ItemsControl>
-                                        </ScrollViewer>
-
-                                        <TextBlock Text="近 30 天暂无游戏记录"
-                                                   FontSize="14"
-                                                   Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                                                   HorizontalAlignment="Center"
-                                                   VerticalAlignment="Center"
-                                                   Visibility="{x:Bind ControlPanelViewModel.WeeklyStats.DailyRecords.Count, Converter={StaticResource EmptyCountToVisibilityConverter}, Mode=OneWay}"/>
-                                    </Grid>
+                                    </StackPanel>
                                 </StackPanel>
                             </Border>
                         </StackPanel>
@@ -582,4 +759,4 @@
             </StackPanel>
         </ScrollViewer>
     </Grid>
-</Page>
+</Page> 
