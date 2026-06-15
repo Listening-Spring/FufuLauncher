@@ -20,12 +20,12 @@
 
             <ResourceDictionary.ThemeDictionaries>
                 <ResourceDictionary x:Key="Light">
-                    <SolidColorBrush x:Key="CustomPanelBackgroundBrush" Color="{ThemeResource CardBackgroundFillColorDefault}" />
+                    <SolidColorBrush x:Key="CustomPanelBackgroundBrush" Color="#D9101010" />
                     <AcrylicBrush
                         x:Key="IosGlassBrush"
                         FallbackColor="#CC000000"
-                        TintColor="#FFFFFF"
-                        TintOpacity="0.1" />
+                        TintColor="#000000"
+                        TintOpacity="0.15" />
                 </ResourceDictionary>
 
                 <ResourceDictionary x:Key="Default">
