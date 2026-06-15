@@ -111,7 +111,6 @@ public partial class ControlPanelModel : ObservableObject
             {
                 var isRunning = Process.GetProcessesByName("YuanShen").Any() || Process.GetProcessesByName("GenshinImpact").Any();
 
-                
                 if (App.MainWindow?.DispatcherQueue != null)
                 {
                     App.MainWindow.DispatcherQueue.TryEnqueue(() =>
@@ -121,7 +120,7 @@ public partial class ControlPanelModel : ObservableObject
                             IsGameRunning = isRunning;
                             if (isRunning)
                             {
-                                UpdateAndSavePlayTime(5);
+                                UpdateAndSavePlayTime(20);
                                 if (WeeklyStats?.DailyRecords != null)
                                 {
                                     var today = DateTime.Today;
@@ -131,7 +130,7 @@ public partial class ControlPanelModel : ObservableObject
                                         todayRecord = new GamePlayTimeRecord { Date = today, PlayTimeSeconds = 0 };
                                         WeeklyStats.DailyRecords.Insert(0, todayRecord);
                                     }
-                                    todayRecord.PlayTimeSeconds += 5;
+                                    todayRecord.PlayTimeSeconds += 20;
                                 }
                             }
                         }
@@ -146,7 +145,7 @@ public partial class ControlPanelModel : ObservableObject
             {
                 Debug.WriteLine($"游戏监控外层异常: {ex.Message}");
             }
-            await Task.Delay(5000, token);
+            await Task.Delay(20000, token);
         }
     }
 

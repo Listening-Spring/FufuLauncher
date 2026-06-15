@@ -150,9 +150,12 @@ namespace FufuLauncher.Services
 
         private async Task<int> WaitGenshinStartAsync()
         {
-            int timeoutMs = 180000;
+            int timeoutMs = 60000;
             int elapsedMs = 0;
             int delayMs = 1000;
+
+            var exeNames = await GameExeManager.GetExeNamesAsync();
+            var processNames = exeNames.Select(Path.GetFileNameWithoutExtension).ToList();
 
             while (elapsedMs < timeoutMs)
             {
@@ -162,8 +165,7 @@ namespace FufuLauncher.Services
                 var processes = Process.GetProcesses();
                 foreach (var process in processes)
                 {
-                    if (process.ProcessName.Equals("GenshinImpact", StringComparison.OrdinalIgnoreCase) ||
-                        process.ProcessName.Equals("YuanShen", StringComparison.OrdinalIgnoreCase))
+                    if (processNames.Any(name => process.ProcessName.Equals(name, StringComparison.OrdinalIgnoreCase)))
                     {
                         await Task.Delay(2000);
                         return process.Id;
@@ -171,7 +173,7 @@ namespace FufuLauncher.Services
                 }
             }
     
-            Trace.WriteLine("[启动流程] 警告：等待游戏主程序超时 (3分钟)");
+            Trace.WriteLine("[启动流程] 警告：等待游戏主程序超时 (1分钟)");
             return 0;
         }
 

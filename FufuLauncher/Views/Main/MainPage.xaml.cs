@@ -104,6 +104,29 @@ public sealed partial class MainPage : Page
             }
         }
         
+        private void LaunchButton_PointerEntered(object sender, PointerRoutedEventArgs e)
+        {
+            AnimateLaunchButtonHoverOpacity(1.0);
+        }
+
+        private void LaunchButton_PointerExited(object sender, PointerRoutedEventArgs e)
+        {
+            AnimateLaunchButtonHoverOpacity(0.0);
+        }
+
+        private void AnimateLaunchButtonHoverOpacity(double targetOpacity)
+        {
+            if (LaunchButtonHoverLayer == null) return;
+
+            var storyboard = new Storyboard();
+            var duration = new Duration(TimeSpan.FromMilliseconds(200));
+            var easing = new CubicEase { EasingMode = EasingMode.EaseOut };
+
+            storyboard.Children.Add(CreateDoubleAnimation(LaunchButtonHoverLayer, "Opacity", targetOpacity, duration, easing));
+
+            storyboard.Begin();
+        }
+        
         private async void AnnouncementBell_Click(object sender, RoutedEventArgs e)
         {
             try

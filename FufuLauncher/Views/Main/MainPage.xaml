@@ -1151,6 +1151,7 @@
             </StackPanel>
 
             <Button
+                x:Name="LaunchButton"
                 Grid.Row="1"
                 Grid.Column="1"
                 Margin="0,0,32,32"
@@ -1162,7 +1163,9 @@
                 Command="{x:Bind ViewModel.LaunchGameCommand}"
                 CornerRadius="24"
                 IsEnabled="{x:Bind ViewModel.IsLaunchButtonEnabled, Mode=OneWay}"
-                Translation="0,0,48">
+                Translation="0,0,48"
+                PointerEntered="LaunchButton_PointerEntered"
+                PointerExited="LaunchButton_PointerExited">
 
                 <Button.ContextFlyout>
                     <MenuFlyout>
@@ -1187,6 +1190,13 @@
                         BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
                         BorderThickness="1"
                         CornerRadius="24" />
+
+                    <Border
+                        x:Name="LaunchButtonHoverLayer"
+                        Background="#26FFFFFF"
+                        CornerRadius="24"
+                        Opacity="0"
+                        IsHitTestVisible="False" />
 
                     <Border
                         x:Name="LaunchButtonOverlayBorder"

@@ -151,10 +151,19 @@ namespace FufuLauncher.ViewModels
         [ObservableProperty] private bool _isGameRunning;
         [ObservableProperty] private string _launchButtonIcon = "\uE768";
         [ObservableProperty] private bool _isBackgroundToggleEnabled = true;
+        
+        private List<string> _cachedProcessNames;
 
-        private const string TargetProcessName = "yuanshen";
-        private const string TargetProcessNameAlt = "GenshinImpact";
-        private static readonly TimeSpan GameProcessCheckInterval = TimeSpan.FromSeconds(1);
+        private async Task<List<string>> GetTargetProcessNamesAsync()
+        {
+            if (_cachedProcessNames == null)
+            {
+                var exeNames = await FufuLauncher.Helpers.GameExeManager.GetExeNamesAsync();
+                _cachedProcessNames = exeNames.Select(System.IO.Path.GetFileNameWithoutExtension).ToList();
+            }
+            return _cachedProcessNames;
+        }
+        
         private CancellationTokenSource _gameMonitoringCts;
         private bool _cachedGameRunning;
         private DateTimeOffset _lastGameProcessCheck = DateTimeOffset.MinValue;
@@ -412,6 +421,7 @@ namespace FufuLauncher.ViewModels
         
         private async Task RefreshSettingsAsync()
         {
+            _cachedProcessNames = null;
             var isInternationalObj = await _localSettingsService.ReadSettingAsync("IsInternationalAccount");
             _isInternationalAccount = isInternationalObj != null && isInternationalObj.ToString().ToLower() == "true";
             Debug.WriteLine($"[MainViewModel] 配置刷新: {_isInternationalAccount}");
@@ -1234,11 +1244,35 @@ private void QuickSwitchPreset(PresetModel targetPreset)
 
         private async Task ForceRefreshGameStateAsync()
         {
-            bool actualState = CheckGameProcessRunning(forceRefresh: true);
+            bool actualState = await CheckGameProcessRunningAsync(forceRefresh: true);
             if (actualState != IsGameRunning)
             {
                 await SetGameRunningStateAsync(actualState);
             }
+        }
+        
+        private async Task<bool> CheckGameProcessRunningAsync(bool forceRefresh = false)
+        {
+            var now = DateTimeOffset.UtcNow;
+            var currentInterval = IsGameRunning ? TimeSpan.FromSeconds(15) : TimeSpan.FromSeconds(1);
+
+            if (!forceRefresh && now - _lastGameProcessCheck < currentInterval)
+            {
+                return _cachedGameRunning;
+            }
+
+            try
+            {
+                var processNames = await GetTargetProcessNamesAsync();
+                _cachedGameRunning = processNames.Any(HasRunningProcess);
+            }
+            catch
+            {
+                _cachedGameRunning = false;
+            }
+
+            _lastGameProcessCheck = now;
+            return _cachedGameRunning;
         }
 
         public async Task LoadDailyNoteAsync()
@@ -1301,26 +1335,6 @@ private void QuickSwitchPreset(PresetModel targetPreset)
                 Debug.WriteLine($"[DailyNote] 加载便签数据失败: {ex.Message}");
             }
         }
-        private bool CheckGameProcessRunning(bool forceRefresh = false)
-        {
-            var now = DateTimeOffset.UtcNow;
-            if (!forceRefresh && now - _lastGameProcessCheck < GameProcessCheckInterval)
-            {
-                return _cachedGameRunning;
-            }
-
-            try
-            {
-                _cachedGameRunning = HasRunningProcess(TargetProcessName) || HasRunningProcess(TargetProcessNameAlt);
-            }
-            catch
-            {
-                _cachedGameRunning = false;
-            }
-
-            _lastGameProcessCheck = now;
-            return _cachedGameRunning;
-        }
 
         private static bool HasRunningProcess(string processName)
         {
@@ -1367,9 +1381,14 @@ private void QuickSwitchPreset(PresetModel targetPreset)
         var savedPathObj = await _localSettingsService.ReadSettingAsync("GameInstallationPath");
         var gamePath = savedPathObj?.ToString()?.Trim('"')?.Trim();
 
-        var processes = Process.GetProcessesByName(TargetProcessName)
-            .Concat(Process.GetProcessesByName(TargetProcessNameAlt))
-            .ToList();
+        var exeNames = await FufuLauncher.Helpers.GameExeManager.GetExeNamesAsync();
+        var processNames = exeNames.Select(System.IO.Path.GetFileNameWithoutExtension).ToList();
+
+        var processes = new List<Process>();
+        foreach (var name in processNames)
+        {
+            processes.AddRange(Process.GetProcessesByName(name));
+        }
 
         if (processes.Count == 0)
         {
@@ -1444,7 +1463,7 @@ private void QuickSwitchPreset(PresetModel targetPreset)
             {
                 try
                 {
-                    bool currentState = CheckGameProcessRunning();
+                    bool currentState = await CheckGameProcessRunningAsync();
 
                     if (currentState != lastState || currentState != IsGameRunning)
                     {
@@ -1462,7 +1481,8 @@ private void QuickSwitchPreset(PresetModel targetPreset)
                     Debug.WriteLine($"进程监控错误: {ex.Message}");
                 }
                 
-                await Task.Delay(GameProcessCheckInterval, token);
+                int checkDelay = IsGameRunning ? 15000 : 1000;
+                await Task.Delay(checkDelay, token);
             }
         }
     }
