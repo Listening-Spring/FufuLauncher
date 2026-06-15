@@ -154,7 +154,7 @@ namespace FufuLauncher.ViewModels
 
         private const string TargetProcessName = "yuanshen";
         private const string TargetProcessNameAlt = "GenshinImpact";
-        private static readonly TimeSpan GameProcessCheckInterval = TimeSpan.FromSeconds(15);
+        private static readonly TimeSpan GameProcessCheckInterval = TimeSpan.FromSeconds(1);
         private CancellationTokenSource _gameMonitoringCts;
         private bool _cachedGameRunning;
         private DateTimeOffset _lastGameProcessCheck = DateTimeOffset.MinValue;
@@ -1162,12 +1162,7 @@ private void QuickSwitchPreset(PresetModel targetPreset)
 
                 if (result.Success)
                 {
-                    for (int i = 0; i < 10; i++)
-                    {
-                        await Task.Delay(300);
-                        await ForceRefreshGameStateAsync();
-                        if (IsGameRunning) break;
-                    }
+                    await ForceRefreshGameStateAsync();
                 }
                 else
                 {
