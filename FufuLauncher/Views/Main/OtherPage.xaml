@@ -63,6 +63,7 @@
             <Setter Property="FontWeight" Value="SemiBold"/>
             <Setter Property="Foreground" Value="{ThemeResource SafeSecondaryTextBrush}"/>
             <Setter Property="Margin" Value="4,0,0,8"/>
+            <Setter Property="FontFamily" Value="{StaticResource AppGlobalFont}"/>
         </Style>
         </ResourceDictionary>
     </Page.Resources>
@@ -85,7 +86,7 @@
                         VerticalAlignment="Top">
 
                 <StackPanel Spacing="4" Margin="0,0,0,12">
-                    <TextBlock Text="其他设置" Style="{StaticResource TitleTextBlockStyle}"/>
+                    <TextBlock Text="其他设置" Style="{StaticResource TitleTextBlockStyle}" FontFamily="{StaticResource AppGlobalFont}"/>
                 </StackPanel>
 
                 <StackPanel>
@@ -111,8 +112,8 @@
                             <FontIcon Glyph="&#xE74C;" FontSize="20" Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}" Margin="0,0,16,0"/>
                             
                             <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                <TextBlock Text="附加程序启动" Style="{StaticResource BodyStrongTextBlockStyle}"/>
-                                <TextBlock Text="随游戏自动启动指定的 .exe 程序" Style="{StaticResource CaptionTextBlockStyle}" Opacity="0.6"/>
+                                <TextBlock Text="附加程序启动" Style="{StaticResource BodyStrongTextBlockStyle}" FontFamily="{StaticResource AppGlobalFont}"/>
+                                <TextBlock Text="随游戏自动启动指定的 .exe 程序" Style="{StaticResource CaptionTextBlockStyle}" Opacity="0.6" FontFamily="{StaticResource AppGlobalFont}"/>
                             </StackPanel>
                             
                             <ToggleSwitch Grid.Column="2" IsOn="{x:Bind ViewModel.IsAdditionalProgramEnabled, Mode=TwoWay}" Margin="0"/>
@@ -188,8 +189,8 @@
                             <FontIcon Glyph="&#xE92E;" FontSize="20" Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}" Margin="0,0,16,0"/>
 
                             <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                <TextBlock Text="连点器" Style="{StaticResource BodyStrongTextBlockStyle}"/>
-                                <TextBlock Text="按住触发键、鼠标左键或鼠标右键以模拟高频点击" Style="{StaticResource CaptionTextBlockStyle}" Opacity="0.6"/>
+                                <TextBlock Text="连点器" Style="{StaticResource BodyStrongTextBlockStyle}" FontFamily="{StaticResource AppGlobalFont}"/>
+                                <TextBlock Text="按住触发键、鼠标左键或鼠标右键以模拟高频点击" Style="{StaticResource CaptionTextBlockStyle}" Opacity="0.6" FontFamily="{StaticResource AppGlobalFont}"/>
                             </StackPanel>
 
                             <ToggleSwitch Grid.Column="2" IsOn="{x:Bind ViewModel.IsAutoClickerEnabled, Mode=TwoWay}" Margin="0"/>
@@ -215,7 +216,7 @@
                                 </Grid.RowDefinitions>
 
                                 <StackPanel Grid.Row="0" Grid.ColumnSpan="2" Spacing="8">
-                                    <TextBlock Text="连点模式" Style="{StaticResource BodyStrongTextBlockStyle}"/>
+                                    <TextBlock Text="连点模式" Style="{StaticResource BodyStrongTextBlockStyle}" FontFamily="{StaticResource AppGlobalFont}"/>
                                     <StackPanel Orientation="Horizontal" Spacing="8">
                                         <ToggleSwitch Header="鼠标左键"
                                                       IsOn="{x:Bind ViewModel.IsMouseLeftClickerEnabled, Mode=TwoWay}"
@@ -240,7 +241,8 @@
                                              VerticalAlignment="Bottom"/>
                                               
                                     <Button Grid.Column="1"
-                                            Content="&#xE765;" FontFamily="{ThemeResource SymbolThemeFontFamily}"
+                                            Content="&#xE765;"
+                                            FontFamily="{ThemeResource SymbolThemeFontFamily}"
                                             ToolTipService.ToolTip="点击录制"
                                             Command="{x:Bind ViewModel.RecordTriggerKeyCommand}"
                                             VerticalAlignment="Bottom"/>
@@ -257,9 +259,10 @@
                                              IsReadOnly="True" 
                                              PlaceholderText="无"
                                              VerticalAlignment="Bottom"/>
-                                                       
+                                        
                                     <Button Grid.Column="1" 
-                                            Content="&#xE765;" FontFamily="{ThemeResource SymbolThemeFontFamily}"
+                                            Content="&#xE765;"
+                                            FontFamily="{ThemeResource SymbolThemeFontFamily}"
                                             ToolTipService.ToolTip="点击录制"
                                             Command="{x:Bind ViewModel.RecordStopKeyCommand}"
                                             VerticalAlignment="Bottom"/>
@@ -276,9 +279,10 @@
                                              IsReadOnly="True" 
                                              PlaceholderText="无"
                                              VerticalAlignment="Bottom"/>
-                                                      
+                                
                                     <Button Grid.Column="1" 
-                                            Content="&#xE765;" FontFamily="{ThemeResource SymbolThemeFontFamily}"
+                                            Content="&#xE765;"
+                                            FontFamily="{ThemeResource SymbolThemeFontFamily}"
                                             ToolTipService.ToolTip="点击录制"
                                             Command="{x:Bind ViewModel.RecordClickKeyCommand}"
                                             VerticalAlignment="Bottom"/>
@@ -311,8 +315,8 @@
                         <FontIcon Glyph="&#xE774;" FontSize="20" Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}" Margin="0,0,16,0"/>
 
                         <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                            <TextBlock Text="浏览器" Style="{StaticResource BodyStrongTextBlockStyle}"/>
-                            <TextBlock Text="打开一个支持置顶的独立悬浮浏览器" Style="{StaticResource CaptionTextBlockStyle}" Opacity="0.6"/>
+                            <TextBlock Text="浏览器" Style="{StaticResource BodyStrongTextBlockStyle}" FontFamily="{StaticResource AppGlobalFont}"/>
+                            <TextBlock Text="打开一个支持置顶的独立悬浮浏览器" Style="{StaticResource CaptionTextBlockStyle}" Opacity="0.6" FontFamily="{StaticResource AppGlobalFont}"/>
                         </StackPanel>
 
                         <Button Grid.Column="2" Command="{x:Bind ViewModel.OpenBrowserCommand}">
