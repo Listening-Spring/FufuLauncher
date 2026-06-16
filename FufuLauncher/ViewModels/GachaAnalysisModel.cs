@@ -1292,7 +1292,7 @@ public partial class GachaAnalysisModel : ObservableObject
     //}
 
     [RelayCommand]
-    private async Task FetchFromMiYouSheAsync()
+    private async Task FetchFromMiYouSheAsync(bool incremental)
     {
         
         string gameUid = _currentUid;
@@ -1352,7 +1352,7 @@ public partial class GachaAnalysisModel : ObservableObject
         _currentUid = gameUid;
 
         IsFetching = true;
-        CrawlerStatus = "正在生成认证密钥...";
+        CrawlerStatus = incremental ? "正在生成认证密钥（增量更新）..." : "正在生成认证密钥（全量更新）...";
 
         try
         {
@@ -1371,28 +1371,34 @@ public partial class GachaAnalysisModel : ObservableObject
             void OnProgress(string pool, int count) =>
                 App.MainWindow.DispatcherQueue.TryEnqueue(() => CrawlerStatus = $"正在获取{pool}记录... (已获取 {count} 条)");
 
+            long charEndId = incremental ? GetNewestLogId(_cachedCharacterLogs) : 0;
+            long weaponEndId = incremental ? GetNewestLogId(_cachedWeaponLogs) : 0;
+            long chronicledEndId = incremental ? GetNewestLogId(_cachedChronicledLogs) : 0;
+            long noviceEndId = incremental ? GetNewestLogId(_cachedNoviceLogs) : 0;
+            long standardEndId = incremental ? GetNewestLogId(_cachedStandardLogs) : 0;
+
             CrawlerStatus = "正在获取角色活动记录...";
-            var charLogs = await _gachaService.FetchGachaLogAsync(baseUrl, "301", count => OnProgress("角色活动", count));
+            var charLogs = await _gachaService.FetchGachaLogAsync(baseUrl, "301", count => OnProgress("角色活动", count), charEndId);
             foreach (var l in charLogs) l.Uid = gameUid;
             _cachedCharacterLogs = MergeLogs(_cachedCharacterLogs, charLogs);
 
             CrawlerStatus = $"角色活动 {charLogs.Count} 条，正在获取武器活动记录...";
-            var weaponLogs = await _gachaService.FetchGachaLogAsync(baseUrl, "302", count => OnProgress("武器活动", count));
+            var weaponLogs = await _gachaService.FetchGachaLogAsync(baseUrl, "302", count => OnProgress("武器活动", count), weaponEndId);
             foreach (var l in weaponLogs) l.Uid = gameUid;
             _cachedWeaponLogs = MergeLogs(_cachedWeaponLogs, weaponLogs);
 
             CrawlerStatus = $"武器活动 {weaponLogs.Count} 条，正在获取集录祈愿记录...";
-            var chronicledLogs = await _gachaService.FetchGachaLogAsync(baseUrl, "500", count => OnProgress("集录祈愿", count));
+            var chronicledLogs = await _gachaService.FetchGachaLogAsync(baseUrl, "500", count => OnProgress("集录祈愿", count), chronicledEndId);
             foreach (var l in chronicledLogs) l.Uid = gameUid;
             _cachedChronicledLogs = MergeLogs(_cachedChronicledLogs, chronicledLogs);
 
             CrawlerStatus = $"集录祈愿 {chronicledLogs.Count} 条，正在获取新手祈愿记录...";
-            var noviceLogs = await _gachaService.FetchGachaLogAsync(baseUrl, "100", count => OnProgress("新手祈愿", count));
+            var noviceLogs = await _gachaService.FetchGachaLogAsync(baseUrl, "100", count => OnProgress("新手祈愿", count), noviceEndId);
             foreach (var l in noviceLogs) l.Uid = gameUid;
             _cachedNoviceLogs = MergeLogs(_cachedNoviceLogs, noviceLogs);
 
             CrawlerStatus = $"新手祈愿 {noviceLogs.Count} 条，正在获取常驻祈愿记录...";
-            var standardLogs = await _gachaService.FetchGachaLogAsync(baseUrl, "200", count => OnProgress("常驻祈愿", count));
+            var standardLogs = await _gachaService.FetchGachaLogAsync(baseUrl, "200", count => OnProgress("常驻祈愿", count), standardEndId);
             foreach (var l in standardLogs) l.Uid = gameUid;
             _cachedStandardLogs = MergeLogs(_cachedStandardLogs, standardLogs);
 
@@ -1798,6 +1804,17 @@ private async Task ImportUigfAsync()
                     log.RankType = byIdRankMeta.Rank;
             }
         }
+    }
+
+    private static long GetNewestLogId(List<GachaLogItem> logs)
+    {
+        if (logs == null || logs.Count == 0) return 0;
+        long max = 0;
+        foreach (var log in logs)
+        {
+            if (long.TryParse(log.Id, out var id) && id > max) max = id;
+        }
+        return max;
     }
 
     private static string GetNormalizedGachaType(string gachaType) => gachaType switch
@@ -2211,7 +2228,7 @@ private async Task ImportUigfAsync()
             var count301 = allPools.Count(p => p.poolType == "301");
             var count302 = allPools.Count(p => p.poolType == "302");
             var count500 = allPools.Count(p => p.poolType == "500");
-            CrawlerStatus = $"卡池元数据更新完成 (角色{count301}条, 武器{count302}条, 集录{count500}条)";
+            CrawlerStatus = $"卡池元数据更新完成（共 {allPools.Count} 个历史卡池：角色 {count301}、武器 {count302}、集录 {count500}）";
 
             if (_cachedCharacterLogs.Count + _cachedWeaponLogs.Count > 0)
             {

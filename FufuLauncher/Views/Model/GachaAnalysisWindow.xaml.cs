@@ -738,6 +738,21 @@ namespace FufuLauncher.Views
 
         private async void OnMiYouSheLoginClick(object sender, RoutedEventArgs e)
         {
+            await PerformMiYouSheFetchAsync(incremental: false);
+        }
+
+        private async void OnMiYouSheFullUpdateClick(object sender, RoutedEventArgs e)
+        {
+            await PerformMiYouSheFetchAsync(incremental: false);
+        }
+
+        private async void OnMiYouSheIncrementalUpdateClick(object sender, RoutedEventArgs e)
+        {
+            await PerformMiYouSheFetchAsync(incremental: true);
+        }
+
+        private async Task PerformMiYouSheFetchAsync(bool incremental)
+        {
             var localSettingsService = App.GetService<ILocalSettingsService>();
             var isOsObj = await localSettingsService.ReadSettingAsync("IsInternationalAccount");
             bool isInternational = isOsObj is bool isOs && isOs;
@@ -777,7 +792,7 @@ namespace FufuLauncher.Views
                 return;
             }
 
-            ViewModel.FetchFromMiYouSheCommand.Execute(null);
+            ViewModel.FetchFromMiYouSheCommand.Execute(incremental);
         }
 
         private async void OnUrlFetchClick(object sender, RoutedEventArgs e)

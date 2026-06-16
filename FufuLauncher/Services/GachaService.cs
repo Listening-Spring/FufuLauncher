@@ -89,11 +89,12 @@ public class GachaService
         return null;
     }
 
-    public async Task<List<GachaLogItem>> FetchGachaLogAsync(string baseUrl, string gachaType, Action<int> onPageFetched = null)
+    public async Task<List<GachaLogItem>> FetchGachaLogAsync(string baseUrl, string gachaType, Action<int> onPageFetched = null, long knownEndId = 0)
     {
         var allItems = new List<GachaLogItem>();
         string endId = "0";
         int page = 1;
+        bool reachedKnown = false;
         const int maxRetry = 3;
         int[] retryDelays = { 2000, 4000, 6000 };
 
@@ -146,13 +147,45 @@ public class GachaService
                         break;
                     }
 
-                    Debug.WriteLine($"[Gacha] type={gachaType} page={page} 获取 {response.Data.List.Count} 条, end_id={response.Data.List.Last().Id}");
-                    allItems.AddRange(response.Data.List);
-                    endId = response.Data.List.Last().Id;
-                    page++;
-                    onPageFetched?.Invoke(allItems.Count);
-                    await Task.Delay(500);
-                    gotData = true;
+                    Debug.WriteLine($"[Gacha] type={gachaType} page={page} 获取 {response.Data.List.Count} 条, end_id={response.Data.List.Last().Id}{(knownEndId > 0 ? $", 增量基线={knownEndId}" : "")}");
+
+                    if (knownEndId > 0)
+                    {
+                        bool reachedBoundary = false;
+                        foreach (var item in response.Data.List)
+                        {
+                            if (long.TryParse(item.Id, out var itemId) && itemId <= knownEndId)
+                            {
+                                reachedBoundary = true;
+                                break;
+                            }
+                            allItems.Add(item);
+                        }
+
+                        endId = response.Data.List.Last().Id;
+                        onPageFetched?.Invoke(allItems.Count);
+                        await Task.Delay(500);
+
+                        if (reachedBoundary)
+                        {
+                            reachedKnown = true;
+                            Debug.WriteLine($"[Gacha] type={gachaType} 增量更新到达已知记录边界，提前结束");
+                        }
+                        else
+                        {
+                            page++;
+                        }
+                        gotData = true;
+                    }
+                    else
+                    {
+                        allItems.AddRange(response.Data.List);
+                        endId = response.Data.List.Last().Id;
+                        page++;
+                        onPageFetched?.Invoke(allItems.Count);
+                        await Task.Delay(500);
+                        gotData = true;
+                    }
                     break;
                 }
                 catch (Exception ex)
@@ -167,7 +200,7 @@ public class GachaService
                 }
             }
 
-            if (reachedEnd || !gotData) break;
+            if (reachedEnd || !gotData || reachedKnown) break;
         }
 
         allItems.Reverse();
