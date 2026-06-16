@@ -1381,8 +1381,8 @@ private void QuickSwitchPreset(PresetModel targetPreset)
         var savedPathObj = await _localSettingsService.ReadSettingAsync("GameInstallationPath");
         var gamePath = savedPathObj?.ToString()?.Trim('"')?.Trim();
 
-        var exeNames = await FufuLauncher.Helpers.GameExeManager.GetExeNamesAsync();
-        var processNames = exeNames.Select(System.IO.Path.GetFileNameWithoutExtension).ToList();
+        var exeNames = await Helpers.GameExeManager.GetExeNamesAsync();
+        var processNames = exeNames.Select(Path.GetFileNameWithoutExtension).ToList();
 
         var processes = new List<Process>();
         foreach (var name in processNames)

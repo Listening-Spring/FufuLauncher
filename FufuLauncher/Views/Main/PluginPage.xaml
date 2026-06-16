@@ -27,8 +27,8 @@
             <Setter Property="BorderBrush" Value="{ThemeResource CardStrokeColorDefaultBrush}"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="CornerRadius" Value="14"/>
-            <Setter Property="Padding" Value="16"/>
-            <Setter Property="Margin" Value="0,0,0,10"/>
+            <Setter Property="Padding" Value="24"/>
+            <Setter Property="Margin" Value="0,0,0,16"/>
         </Style>
 
         <Style x:Key="SafeCommandBarStyle" TargetType="CommandBar">
@@ -54,7 +54,7 @@
             <DoubleAnimation Storyboard.TargetName="RootLayoutGrid"
                              Storyboard.TargetProperty="Opacity"
                              From="1" To="0" Duration="0:0:0.3">
-                <DoubleAnimation.EasingFunction>
+                 <DoubleAnimation.EasingFunction>
                     <CubicEase EasingMode="EaseIn"/>
                 </DoubleAnimation.EasingFunction>
             </DoubleAnimation>
@@ -84,7 +84,7 @@
 
         <Grid Grid.Row="0" Margin="0,0,0,16">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/> 
+                 <ColumnDefinition Width="Auto"/> 
                 <ColumnDefinition Width="*"/>    
                 <ColumnDefinition Width="Auto"/> 
             </Grid.ColumnDefinitions>
@@ -117,7 +117,7 @@
 
             <AppBarButton Label="自由视角怎么用" 
                   Click="OnFreeCamHelpClick">
-                <AppBarButton.Icon>
+                 <AppBarButton.Icon>
                     <FontIcon Glyph="&#xE9CE;"/>
                 </AppBarButton.Icon>
             </AppBarButton>
@@ -142,10 +142,12 @@
             Grid.Row="2"
             ItemsSource="{x:Bind ViewModel.Plugins, Mode=OneWay}"
             SelectionMode="None"  Padding="0,12,0,0">
-            
             <ListView.ItemTemplate>
                 <DataTemplate x:DataType="models:PluginItem">
-                    <Grid Height="Auto" Padding="12,12" CornerRadius="4" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" Margin="0,0,0,8">
+                    <Grid Style="{StaticResource SafePluginCardStyle}" Translation="0,0,32">
+                        <Grid.Shadow>
+                            <ThemeShadow/>
+                        </Grid.Shadow>
                         <Grid.ContextFlyout>
                             <MenuFlyout>
                                 <MenuFlyoutItem Text="重命名文件夹" Click="OnRenameClick" Tag="{x:Bind}"/>
@@ -161,7 +163,8 @@
                             <ColumnDefinition Width="Auto"/> 
                         </Grid.ColumnDefinitions>
 
-                        <FontIcon Glyph="&#xE74C;" FontFamily="Segoe MDL2 Assets" FontSize="24" 
+                        <FontIcon Glyph="&#xE74C;"
+                                  FontFamily="Segoe MDL2 Assets" FontSize="24" 
                                   Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" 
                                   Margin="0,0,16,0" VerticalAlignment="Center"/>
 
@@ -240,8 +243,7 @@
                         HorizontalAlignment="Center" 
                         VerticalAlignment="Bottom"
                         Spacing="8">
-                <FontIcon Glyph="&#xE7BA;"
-                          FontFamily="Segoe MDL2 Assets" 
+                <FontIcon Glyph="&#xE7BA;" FontFamily="Segoe MDL2 Assets" 
                           Foreground="{ThemeResource SystemFillColorCautionBrush}"
                           FontSize="14"/>
                 <TextBlock Text="请自行辨别插件安全性，对于因使用插件造成的任何损失，开发者概不负责" 
