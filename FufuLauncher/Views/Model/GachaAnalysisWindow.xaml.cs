@@ -1,4 +1,4 @@
-﻿using FufuLauncher.Contracts.Services;
+using FufuLauncher.Contracts.Services;
 using FufuLauncher.Helpers;
 using FufuLauncher.Models;
 using FufuLauncher.Services;
@@ -385,6 +385,34 @@ namespace FufuLauncher.Views
                 });
             };
 
+            ViewModel.OnRequireReLoginAsync = async (message) =>
+            {
+                var tcs = new TaskCompletionSource();
+                DispatcherQueue.TryEnqueue(async () =>
+                {
+                    try
+                    {
+                        var dialog = new ContentDialog
+                        {
+                            Title = "需要登录目标账户",
+                            Content = message,
+                            PrimaryButtonText = "前往登录",
+                            CloseButtonText = "取消",
+                            DefaultButton = ContentDialogButton.Primary,
+                            XamlRoot = Content.XamlRoot
+                        };
+                        var result = await dialog.ShowAsync();
+                        if (result == ContentDialogResult.Primary && App.MainWindow is MainWindow mainWindow)
+                            await mainWindow.NavigateToAccountPageAsync();
+                    }
+                    finally
+                    {
+                        tcs.TrySetResult();
+                    }
+                });
+                await tcs.Task;
+            };
+
             ViewModel.PropertyChanged += (s, e) =>
             {
                 if (e.PropertyName == nameof(ViewModel.IsDataLoaded) && ViewModel.IsDataLoaded)
@@ -512,6 +540,69 @@ namespace FufuLauncher.Views
             }
 
             UpdateTabIndicator();
+        }
+
+        private void OnListViewModeClick(object sender, RoutedEventArgs e)
+        {
+            if (!ViewModel.IsCardViewMode)
+            {
+                ListViewModeButton.IsChecked = true;
+                return;
+            }
+
+            ViewModel.IsCardViewMode = false;
+            DispatcherQueue.TryEnqueue(() => PlayOverviewTransition(OverviewListScrollViewer));
+        }
+
+        private void OnCardViewModeClick(object sender, RoutedEventArgs e)
+        {
+            if (ViewModel.IsCardViewMode)
+            {
+                CardViewModeButton.IsChecked = true;
+                return;
+            }
+
+            ViewModel.IsCardViewMode = true;
+            DispatcherQueue.TryEnqueue(() => PlayOverviewTransition(OverviewCardScrollViewer));
+        }
+
+        private void PlayOverviewTransition(UIElement target)
+        {
+            if (target == null) return;
+
+            if (target.RenderTransform is not CompositeTransform transform)
+            {
+                transform = new CompositeTransform();
+                target.RenderTransform = transform;
+                target.RenderTransformOrigin = new Point(0.5, 0.5);
+            }
+
+            target.Opacity = 0;
+            transform.TranslateY = 20;
+            transform.ScaleX = 0.985;
+            transform.ScaleY = 0.985;
+
+            var storyboard = new Storyboard();
+            AddViewModeAnimation(storyboard, target, "Opacity", 0, 1, 0, 320);
+            AddViewModeAnimation(storyboard, transform, "TranslateY", 20, 0, 0, 380);
+            AddViewModeAnimation(storyboard, transform, "ScaleX", 0.985, 1, 0, 380);
+            AddViewModeAnimation(storyboard, transform, "ScaleY", 0.985, 1, 0, 380);
+            storyboard.Begin();
+        }
+
+        private static void AddViewModeAnimation(Storyboard storyboard, DependencyObject target, string property, double from, double to, int delayMs, int durationMs)
+        {
+            var animation = new DoubleAnimation
+            {
+                From = from,
+                To = to,
+                BeginTime = TimeSpan.FromMilliseconds(delayMs),
+                Duration = new Duration(TimeSpan.FromMilliseconds(durationMs)),
+                EasingFunction = new CubicEase { EasingMode = EasingMode.EaseOut }
+            };
+            Storyboard.SetTarget(animation, target);
+            Storyboard.SetTargetProperty(animation, property);
+            storyboard.Children.Add(animation);
         }
 
         private void PlayAnalysisChartAnimations()

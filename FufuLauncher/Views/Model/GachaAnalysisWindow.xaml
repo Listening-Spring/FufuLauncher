@@ -1,4 +1,4 @@
-﻿<Window
+<Window
     x:Class="FufuLauncher.Views.GachaAnalysisWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -19,6 +19,26 @@
 
     <Grid x:Name="RootGrid" Background="Transparent">
         <Grid.Resources>
+          <ResourceDictionary>
+            <ResourceDictionary.ThemeDictionaries>
+                <ResourceDictionary x:Key="Light">
+                    <AcrylicBrush x:Key="SafeGlassBrush" FallbackColor="#E5FFFFFF" TintColor="#FFFFFF" TintOpacity="0.6" />
+                    <SolidColorBrush x:Key="SafeCardBrush" Color="#0A000000" />
+                    <SolidColorBrush x:Key="SafeBorderBrush" Color="#1A000000" />
+                    <SolidColorBrush x:Key="SafeTextBrush" Color="#FF000000" />
+                    <SolidColorBrush x:Key="SafeSecondaryTextBrush" Color="#99000000" />
+                    <AcrylicBrush x:Key="GachaHeaderGlassBrush" FallbackColor="#F2FFFFFF" TintColor="#FFFFFF" TintOpacity="0.55" />
+                </ResourceDictionary>
+                <ResourceDictionary x:Key="Default">
+                    <AcrylicBrush x:Key="SafeGlassBrush" FallbackColor="#CC000000" TintColor="#000000" TintOpacity="0.15" />
+                    <SolidColorBrush x:Key="SafeCardBrush" Color="#14FFFFFF" />
+                    <SolidColorBrush x:Key="SafeBorderBrush" Color="#20FFFFFF" />
+                    <SolidColorBrush x:Key="SafeTextBrush" Color="White" />
+                    <SolidColorBrush x:Key="SafeSecondaryTextBrush" Color="#B3FFFFFF" />
+                    <AcrylicBrush x:Key="GachaHeaderGlassBrush" FallbackColor="#CC1A1A1A" TintColor="#000000" TintOpacity="0.25" />
+                </ResourceDictionary>
+            </ResourceDictionary.ThemeDictionaries>
+
             <ThemeShadow x:Key="SharedShadow"/>
             
             <helpers:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
@@ -144,7 +164,59 @@
                     <TextBlock Grid.Column="2" Text="{x:Bind DisplayValue}" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}" VerticalAlignment="Center"/>
                 </Grid>
             </DataTemplate>
-            
+
+            <!-- 卡片格子视图：单个抽卡角色/武器卡片 -->
+            <DataTemplate x:Key="GachaCardTemplate" x:DataType="models:GachaDisplayItem">
+                <Grid Width="118" Height="178" Margin="6">
+                    <Grid.Shadow>
+                        <ThemeShadow/>
+                    </Grid.Shadow>
+                    <Border CornerRadius="14"
+                            Background="{ThemeResource SafeCardBrush}"
+                            BorderBrush="{ThemeResource SafeBorderBrush}"
+                            BorderThickness="1"
+                            Translation="0,0,24">
+                        <Border.RenderTransform>
+                            <ScaleTransform x:Name="CardScale" ScaleX="1" ScaleY="1" CenterX="59" CenterY="89"/>
+                        </Border.RenderTransform>
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <Grid CornerRadius="14,14,0,0" Background="{Binding RarityBackground}">
+                                <Image Source="{Binding ImageUrl}" Stretch="UniformToFill"/>
+                                <Image Source="{Binding ElementUrl}" Width="22" Height="22" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="6"/>
+                                <Border HorizontalAlignment="Right" VerticalAlignment="Top" Margin="6"
+                                        CornerRadius="9" Padding="6,1"
+                                        Background="{Binding PityStatusBrush}"
+                                        Visibility="{Binding PityStatus, Converter={StaticResource PityStatusToVisibilityConverter}}">
+                                    <TextBlock Text="{Binding PityStatusText}" FontSize="9" Foreground="White" FontWeight="SemiBold"/>
+                                </Border>
+                                <Border VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0,0,8,8"
+                                        CornerRadius="11" Padding="8,2"
+                                        Background="#B3000000">
+                                    <StackPanel Orientation="Horizontal" Spacing="2" VerticalAlignment="Center">
+                                        <TextBlock Text="{x:Bind Count}" FontWeight="Bold" FontSize="14" Foreground="{Binding Count, Converter={StaticResource CountToColorConverter}}"/>
+                                        <TextBlock Text="抽" FontSize="10" Foreground="#CCFFFFFF" VerticalAlignment="Bottom" Margin="0,0,0,1"/>
+                                    </StackPanel>
+                                </Border>
+                            </Grid>
+
+                            <StackPanel Grid.Row="1" Padding="8,6,8,8" Spacing="4">
+                                <TextBlock Text="{x:Bind Name}" FontWeight="SemiBold" FontSize="12.5"
+                                           Foreground="{ThemeResource SafeTextBrush}"
+                                           TextTrimming="CharacterEllipsis" TextAlignment="Center" HorizontalAlignment="Center"/>
+                                <ProgressBar Maximum="{x:Bind PityMaximum}" Value="{x:Bind Count}" Foreground="{x:Bind ProgressBarColor}" Height="4" CornerRadius="2"/>
+                                <TextBlock Text="{x:Bind Time}" FontSize="9.5" Foreground="{ThemeResource SafeSecondaryTextBrush}" HorizontalAlignment="Center"/>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+                </Grid>
+            </DataTemplate>
+
+          </ResourceDictionary>
         </Grid.Resources>
 
 <Grid Height="56" HorizontalAlignment="Stretch" VerticalAlignment="Top" Background="Transparent">
@@ -296,6 +368,32 @@
                                   Width="150"
                                   IsEnabled="{Binding ViewModel.IsFetching, Converter={StaticResource BoolInverter}}"
                                   SelectionChanged="OnUidComboBoxSelectionChanged"/>
+                        
+                        <Border CornerRadius="8" Padding="3"
+                                Background="{ThemeResource SafeCardBrush}"
+                                BorderBrush="{ThemeResource SafeBorderBrush}" BorderThickness="1"
+                                VerticalAlignment="Center"
+                                Visibility="{Binding ViewModel.IsOverviewSelected, Converter={StaticResource BoolToVisibilityConverter}}">
+                            <StackPanel Orientation="Horizontal" Spacing="2">
+                                <ToggleButton x:Name="ListViewModeButton"
+                                              IsChecked="{x:Bind ViewModel.IsListViewMode, Mode=OneWay}"
+                                              Click="OnListViewModeClick"
+                                              Padding="8,4" MinWidth="0"
+                                              Background="Transparent" BorderThickness="0"
+                                              ToolTipService.ToolTip="列表视图">
+                                    <FontIcon Glyph="&#xE8FD;" FontSize="15"/>
+                                </ToggleButton>
+                                <ToggleButton x:Name="CardViewModeButton"
+                                              IsChecked="{x:Bind ViewModel.IsCardViewMode, Mode=OneWay}"
+                                              Click="OnCardViewModeClick"
+                                              Padding="8,4" MinWidth="0"
+                                              Background="Transparent" BorderThickness="0"
+                                              ToolTipService.ToolTip="卡片视图">
+                                    <FontIcon Glyph="&#xE80A;" FontSize="15"/>
+                                </ToggleButton>
+                            </StackPanel>
+                        </Border>
+
                         <Button IsEnabled="{Binding ViewModel.IsFetching, Converter={StaticResource BoolInverter}}">
                             <StackPanel Orientation="Horizontal" Spacing="8">
                                 <FontIcon Glyph="&#xE72C;" FontSize="14"/>
@@ -376,13 +474,14 @@
                 </Grid>
 
                 <ScrollViewer Grid.Row="1"
+                              x:Name="OverviewListScrollViewer"
                               HorizontalScrollBarVisibility="Auto"
                               HorizontalScrollMode="Enabled"
                               VerticalScrollBarVisibility="Disabled"
                               VerticalScrollMode="Disabled"
                               PointerWheelChanged="OnHorizontalScrollViewerPointerWheelChanged"
                               Padding="0,0,18,16"
-                              Visibility="{Binding ViewModel.IsOverviewSelected, Converter={StaticResource BoolToVisibilityConverter}}">
+                              Visibility="{Binding ViewModel.ShowOverviewList, Converter={StaticResource BoolToVisibilityConverter}}">
                     <ScrollViewer.Transitions>
                         <TransitionCollection>
                             <EntranceThemeTransition FromVerticalOffset="12"/>
@@ -659,6 +758,233 @@
                                 </ScrollViewer>
                             </Grid>
                         </Border>
+
+                    </StackPanel>
+                </ScrollViewer>
+                
+                <ScrollViewer Grid.Row="1"
+                              x:Name="OverviewCardScrollViewer"
+                              HorizontalScrollBarVisibility="Disabled"
+                              HorizontalScrollMode="Disabled"
+                              VerticalScrollBarVisibility="Auto"
+                              VerticalScrollMode="Enabled"
+                              Padding="0,0,16,16"
+                              Visibility="{Binding ViewModel.ShowOverviewCards, Converter={StaticResource BoolToVisibilityConverter}}">
+                    <ScrollViewer.Transitions>
+                        <TransitionCollection>
+                            <EntranceThemeTransition FromVerticalOffset="16"/>
+                        </TransitionCollection>
+                    </ScrollViewer.Transitions>
+                    <StackPanel x:Name="OverviewCardRoot" Spacing="20">
+
+                        <!-- 角色活动 -->
+                        <StackPanel Spacing="12">
+                            <Grid Padding="20,16" CornerRadius="14"
+                                  Background="{ThemeResource SafeGlassBrush}"
+                                  BorderBrush="{ThemeResource SafeBorderBrush}" BorderThickness="1"
+                                  Shadow="{StaticResource SharedShadow}" Translation="0,0,24">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0" VerticalAlignment="Center" Spacing="2">
+                                    <TextBlock Text="角色活动" FontSize="18" FontWeight="Bold" Foreground="{ThemeResource SafeTextBrush}"/>
+                                    <StackPanel Orientation="Horizontal" Spacing="14">
+                                        <TextBlock FontSize="12" Foreground="{ThemeResource SafeSecondaryTextBrush}"><Run Text="共 "/><Run Text="{x:Bind ViewModel.CharacterStats.TotalCount, Mode=OneWay}"/><Run Text=" 抽"/></TextBlock>
+                                        <TextBlock FontSize="12" Foreground="{ThemeResource SafeSecondaryTextBrush}"><Run Text="五星已垫 "/><Run Text="{x:Bind ViewModel.CharacterStats.CurrentPity, Mode=OneWay}" FontWeight="Bold" Foreground="{ThemeResource AccentFillColorDefaultBrush}"/></TextBlock>
+                                        <TextBlock FontSize="12" Foreground="{ThemeResource SafeSecondaryTextBrush}"><Run Text="四星已垫 "/><Run Text="{x:Bind ViewModel.CharacterStats.CurrentPity4, Mode=OneWay}" FontWeight="Bold"/></TextBlock>
+                                    </StackPanel>
+                                </StackPanel>
+                                <ToggleButton Grid.Column="1" Content="显示四星" VerticalAlignment="Center"
+                                              IsChecked="{x:Bind ViewModel.IsCharacterFourStarVisible, Mode=TwoWay}"/>
+                            </Grid>
+                            <GridView ItemsSource="{x:Bind ViewModel.CharacterFiveStars, Mode=OneWay}"
+                                      ItemTemplate="{StaticResource GachaCardTemplate}"
+                                      SelectionMode="None" IsItemClickEnabled="False" Padding="0">
+                                <GridView.ItemContainerStyle>
+                                    <Style TargetType="GridViewItem">
+                                        <Setter Property="Padding" Value="0"/>
+                                        <Setter Property="Margin" Value="0"/>
+                                        <Setter Property="MinWidth" Value="0"/>
+                                        <Setter Property="MinHeight" Value="0"/>
+                                    </Style>
+                                </GridView.ItemContainerStyle>
+                            </GridView>
+                            <GridView ItemsSource="{x:Bind ViewModel.CharacterFourStars, Mode=OneWay}"
+                                      ItemTemplate="{StaticResource GachaCardTemplate}"
+                                      SelectionMode="None" IsItemClickEnabled="False" Padding="0"
+                                      Visibility="{Binding ViewModel.IsCharacterFourStarVisible, Converter={StaticResource BoolToVisibilityConverter}}">
+                                <GridView.ItemContainerStyle>
+                                    <Style TargetType="GridViewItem">
+                                        <Setter Property="Padding" Value="0"/>
+                                        <Setter Property="Margin" Value="0"/>
+                                        <Setter Property="MinWidth" Value="0"/>
+                                        <Setter Property="MinHeight" Value="0"/>
+                                    </Style>
+                                </GridView.ItemContainerStyle>
+                            </GridView>
+                            <StackPanel HorizontalAlignment="Center" Spacing="8" Margin="0,12"
+                                        Visibility="{Binding ViewModel.ShowCharacterNoRecords, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
+                                <FontIcon Glyph="&#xE9D2;" FontSize="28" Foreground="{ThemeResource SafeSecondaryTextBrush}"/>
+                                <TextBlock Text="暂无记录" FontSize="13" Foreground="{ThemeResource SafeSecondaryTextBrush}"/>
+                            </StackPanel>
+                        </StackPanel>
+                        
+                        <StackPanel Spacing="12">
+                            <Grid Padding="20,16" CornerRadius="14"
+                                  Background="{ThemeResource SafeGlassBrush}"
+                                  BorderBrush="{ThemeResource SafeBorderBrush}" BorderThickness="1"
+                                  Shadow="{StaticResource SharedShadow}" Translation="0,0,24">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0" VerticalAlignment="Center" Spacing="2">
+                                    <TextBlock Text="武器活动" FontSize="18" FontWeight="Bold" Foreground="{ThemeResource SafeTextBrush}"/>
+                                    <StackPanel Orientation="Horizontal" Spacing="14">
+                                        <TextBlock FontSize="12" Foreground="{ThemeResource SafeSecondaryTextBrush}"><Run Text="共 "/><Run Text="{x:Bind ViewModel.WeaponStats.TotalCount, Mode=OneWay}"/><Run Text=" 抽"/></TextBlock>
+                                        <TextBlock FontSize="12" Foreground="{ThemeResource SafeSecondaryTextBrush}"><Run Text="五星已垫 "/><Run Text="{x:Bind ViewModel.WeaponStats.CurrentPity, Mode=OneWay}" FontWeight="Bold" Foreground="{ThemeResource AccentFillColorDefaultBrush}"/></TextBlock>
+                                        <TextBlock FontSize="12" Foreground="{ThemeResource SafeSecondaryTextBrush}"><Run Text="四星已垫 "/><Run Text="{x:Bind ViewModel.WeaponStats.CurrentPity4, Mode=OneWay}" FontWeight="Bold"/></TextBlock>
+                                    </StackPanel>
+                                </StackPanel>
+                                <ToggleButton Grid.Column="1" Content="显示四星" VerticalAlignment="Center"
+                                              IsChecked="{x:Bind ViewModel.IsWeaponFourStarVisible, Mode=TwoWay}"/>
+                            </Grid>
+                            <GridView ItemsSource="{x:Bind ViewModel.WeaponFiveStars, Mode=OneWay}"
+                                      ItemTemplate="{StaticResource GachaCardTemplate}"
+                                      SelectionMode="None" IsItemClickEnabled="False" Padding="0">
+                                <GridView.ItemContainerStyle>
+                                    <Style TargetType="GridViewItem">
+                                        <Setter Property="Padding" Value="0"/>
+                                        <Setter Property="Margin" Value="0"/>
+                                        <Setter Property="MinWidth" Value="0"/>
+                                        <Setter Property="MinHeight" Value="0"/>
+                                    </Style>
+                                </GridView.ItemContainerStyle>
+                            </GridView>
+                            <GridView ItemsSource="{x:Bind ViewModel.WeaponFourStars, Mode=OneWay}"
+                                      ItemTemplate="{StaticResource GachaCardTemplate}"
+                                      SelectionMode="None" IsItemClickEnabled="False" Padding="0"
+                                      Visibility="{Binding ViewModel.IsWeaponFourStarVisible, Converter={StaticResource BoolToVisibilityConverter}}">
+                                <GridView.ItemContainerStyle>
+                                    <Style TargetType="GridViewItem">
+                                        <Setter Property="Padding" Value="0"/>
+                                        <Setter Property="Margin" Value="0"/>
+                                        <Setter Property="MinWidth" Value="0"/>
+                                        <Setter Property="MinHeight" Value="0"/>
+                                    </Style>
+                                </GridView.ItemContainerStyle>
+                            </GridView>
+                            <StackPanel HorizontalAlignment="Center" Spacing="8" Margin="0,12"
+                                        Visibility="{Binding ViewModel.ShowWeaponNoRecords, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
+                                <FontIcon Glyph="&#xE9D2;" FontSize="28" Foreground="{ThemeResource SafeSecondaryTextBrush}"/>
+                                <TextBlock Text="暂无记录" FontSize="13" Foreground="{ThemeResource SafeSecondaryTextBrush}"/>
+                            </StackPanel>
+                        </StackPanel>
+                        
+                        <StackPanel Spacing="12">
+                            <Grid Padding="20,16" CornerRadius="14"
+                                  Background="{ThemeResource SafeGlassBrush}"
+                                  BorderBrush="{ThemeResource SafeBorderBrush}" BorderThickness="1"
+                                  Shadow="{StaticResource SharedShadow}" Translation="0,0,24">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0" VerticalAlignment="Center" Spacing="2">
+                                    <TextBlock Text="集录祈愿" FontSize="18" FontWeight="Bold" Foreground="{ThemeResource SafeTextBrush}"/>
+                                    <StackPanel Orientation="Horizontal" Spacing="14">
+                                        <TextBlock FontSize="12" Foreground="{ThemeResource SafeSecondaryTextBrush}"><Run Text="共 "/><Run Text="{x:Bind ViewModel.ChronicledStats.TotalCount, Mode=OneWay}"/><Run Text=" 抽"/></TextBlock>
+                                        <TextBlock FontSize="12" Foreground="{ThemeResource SafeSecondaryTextBrush}"><Run Text="五星已垫 "/><Run Text="{x:Bind ViewModel.ChronicledStats.CurrentPity, Mode=OneWay}" FontWeight="Bold" Foreground="{ThemeResource AccentFillColorDefaultBrush}"/></TextBlock>
+                                        <TextBlock FontSize="12" Foreground="{ThemeResource SafeSecondaryTextBrush}"><Run Text="四星已垫 "/><Run Text="{x:Bind ViewModel.ChronicledStats.CurrentPity4, Mode=OneWay}" FontWeight="Bold"/></TextBlock>
+                                    </StackPanel>
+                                </StackPanel>
+                                <ToggleButton Grid.Column="1" Content="显示四星" VerticalAlignment="Center"
+                                              IsChecked="{x:Bind ViewModel.IsChronicledFourStarVisible, Mode=TwoWay}"/>
+                            </Grid>
+                            <GridView ItemsSource="{x:Bind ViewModel.ChronicledFiveStars, Mode=OneWay}"
+                                      ItemTemplate="{StaticResource GachaCardTemplate}"
+                                      SelectionMode="None" IsItemClickEnabled="False" Padding="0">
+                                <GridView.ItemContainerStyle>
+                                    <Style TargetType="GridViewItem">
+                                        <Setter Property="Padding" Value="0"/>
+                                        <Setter Property="Margin" Value="0"/>
+                                        <Setter Property="MinWidth" Value="0"/>
+                                        <Setter Property="MinHeight" Value="0"/>
+                                    </Style>
+                                </GridView.ItemContainerStyle>
+                            </GridView>
+                            <GridView ItemsSource="{x:Bind ViewModel.ChronicledFourStars, Mode=OneWay}"
+                                      ItemTemplate="{StaticResource GachaCardTemplate}"
+                                      SelectionMode="None" IsItemClickEnabled="False" Padding="0"
+                                      Visibility="{Binding ViewModel.IsChronicledFourStarVisible, Converter={StaticResource BoolToVisibilityConverter}}">
+                                <GridView.ItemContainerStyle>
+                                    <Style TargetType="GridViewItem">
+                                        <Setter Property="Padding" Value="0"/>
+                                        <Setter Property="Margin" Value="0"/>
+                                        <Setter Property="MinWidth" Value="0"/>
+                                        <Setter Property="MinHeight" Value="0"/>
+                                    </Style>
+                                </GridView.ItemContainerStyle>
+                            </GridView>
+                            <StackPanel HorizontalAlignment="Center" Spacing="8" Margin="0,12"
+                                        Visibility="{Binding ViewModel.ShowChronicledNoRecords, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
+                                <FontIcon Glyph="&#xE9D2;" FontSize="28" Foreground="{ThemeResource SafeSecondaryTextBrush}"/>
+                                <TextBlock Text="暂无记录" FontSize="13" Foreground="{ThemeResource SafeSecondaryTextBrush}"/>
+                            </StackPanel>
+                        </StackPanel>
+                        
+                        <StackPanel Spacing="12">
+                            <Grid Padding="20,16" CornerRadius="14"
+                                  Background="{ThemeResource SafeGlassBrush}"
+                                  BorderBrush="{ThemeResource SafeBorderBrush}" BorderThickness="1"
+                                  Shadow="{StaticResource SharedShadow}" Translation="0,0,24">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0" VerticalAlignment="Center" Spacing="2">
+                                    <TextBlock Text="常驻祈愿" FontSize="18" FontWeight="Bold" Foreground="{ThemeResource SafeTextBrush}"/>
+                                    <StackPanel Orientation="Horizontal" Spacing="14">
+                                        <TextBlock FontSize="12" Foreground="{ThemeResource SafeSecondaryTextBrush}"><Run Text="共 "/><Run Text="{x:Bind ViewModel.StandardStats.TotalCount, Mode=OneWay}"/><Run Text=" 抽"/></TextBlock>
+                                        <TextBlock FontSize="12" Foreground="{ThemeResource SafeSecondaryTextBrush}"><Run Text="五星已垫 "/><Run Text="{x:Bind ViewModel.StandardStats.CurrentPity, Mode=OneWay}" FontWeight="Bold" Foreground="{ThemeResource AccentFillColorDefaultBrush}"/></TextBlock>
+                                        <TextBlock FontSize="12" Foreground="{ThemeResource SafeSecondaryTextBrush}"><Run Text="四星已垫 "/><Run Text="{x:Bind ViewModel.StandardStats.CurrentPity4, Mode=OneWay}" FontWeight="Bold"/></TextBlock>
+                                    </StackPanel>
+                                </StackPanel>
+                                <ToggleButton Grid.Column="1" Content="显示四星" VerticalAlignment="Center"
+                                              IsChecked="{x:Bind ViewModel.IsStandardFourStarVisible, Mode=TwoWay}"/>
+                            </Grid>
+                            <GridView ItemsSource="{x:Bind ViewModel.StandardFiveStars, Mode=OneWay}"
+                                      ItemTemplate="{StaticResource GachaCardTemplate}"
+                                      SelectionMode="None" IsItemClickEnabled="False" Padding="0">
+                                <GridView.ItemContainerStyle>
+                                    <Style TargetType="GridViewItem">
+                                        <Setter Property="Padding" Value="0"/>
+                                        <Setter Property="Margin" Value="0"/>
+                                        <Setter Property="MinWidth" Value="0"/>
+                                        <Setter Property="MinHeight" Value="0"/>
+                                    </Style>
+                                </GridView.ItemContainerStyle>
+                            </GridView>
+                            <GridView ItemsSource="{x:Bind ViewModel.StandardFourStars, Mode=OneWay}"
+                                      ItemTemplate="{StaticResource GachaCardTemplate}"
+                                      SelectionMode="None" IsItemClickEnabled="False" Padding="0"
+                                      Visibility="{Binding ViewModel.IsStandardFourStarVisible, Converter={StaticResource BoolToVisibilityConverter}}">
+                                <GridView.ItemContainerStyle>
+                                    <Style TargetType="GridViewItem">
+                                        <Setter Property="Padding" Value="0"/>
+                                        <Setter Property="Margin" Value="0"/>
+                                        <Setter Property="MinWidth" Value="0"/>
+                                        <Setter Property="MinHeight" Value="0"/>
+                                    </Style>
+                                </GridView.ItemContainerStyle>
+                            </GridView>
+                            <StackPanel HorizontalAlignment="Center" Spacing="8" Margin="0,12"
+                                        Visibility="{Binding ViewModel.ShowStandardNoRecords, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
+                                <FontIcon Glyph="&#xE9D2;" FontSize="28" Foreground="{ThemeResource SafeSecondaryTextBrush}"/>
+                                <TextBlock Text="暂无记录" FontSize="13" Foreground="{ThemeResource SafeSecondaryTextBrush}"/>
+                            </StackPanel>
+                        </StackPanel>
 
                     </StackPanel>
                 </ScrollViewer>

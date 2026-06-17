@@ -58,7 +58,7 @@
                 <Setter Property="Foreground" Value="{ThemeResource SafeTextBrush}"/>
                 <Setter Property="BorderBrush" Value="{ThemeResource CardStrokeColorDefaultBrush}"/>
                 <Setter Property="BorderThickness" Value="1"/>
-                <Setter Property="Padding" Value="12,6"/>
+                <Setter Property="Padding" Value="14,6"/>
                 <Setter Property="FontSize" Value="12"/>
                 <Setter Property="Height" Value="32"/>
                 <Setter Property="CornerRadius" Value="10"/>
@@ -68,14 +68,49 @@
                 <Setter Property="Background" Value="{ThemeResource SafeGlassBrush}"/>
                 <Setter Property="BorderBrush" Value="{ThemeResource CardStrokeColorDefaultBrush}"/>
                 <Setter Property="BorderThickness" Value="1"/>
-                <Setter Property="CornerRadius" Value="14"/>
-                <Setter Property="Padding" Value="24"/>
-                <Setter Property="Margin" Value="0,0,0,16"/>
+                <Setter Property="CornerRadius" Value="16"/>
+                <Setter Property="Padding" Value="28,24,28,24"/>
+                <Setter Property="Margin" Value="0,0,0,18"/>
             </Style>
             
             <Style x:Key="SettingItemStyle" TargetType="StackPanel">
                 <Setter Property="Spacing" Value="8"/>
                 <Setter Property="Margin" Value="0,12,0,0"/>
+            </Style>
+            
+            <Style x:Key="SectionTitleStyle" TargetType="TextBlock" BasedOn="{StaticResource SubtitleTextBlockStyle}">
+                <Setter Property="VerticalAlignment" Value="Center"/>
+                <Setter Property="FontWeight" Value="SemiBold"/>
+            </Style>
+            
+            <Style x:Key="SectionAccentBarStyle" TargetType="Border">
+                <Setter Property="Width" Value="4"/>
+                <Setter Property="Height" Value="22"/>
+                <Setter Property="CornerRadius" Value="2"/>
+                <Setter Property="VerticalAlignment" Value="Center"/>
+                <Setter Property="Background" Value="{ThemeResource AccentFillColorDefaultBrush}"/>
+            </Style>
+            
+            <Style x:Key="SectionHeaderPanelStyle" TargetType="StackPanel">
+                <Setter Property="Orientation" Value="Horizontal"/>
+                <Setter Property="Spacing" Value="12"/>
+                <Setter Property="Margin" Value="0,0,0,20"/>
+            </Style>
+            
+            <Style x:Key="SettingLabelStyle" TargetType="TextBlock" BasedOn="{StaticResource BodyStrongTextBlockStyle}">
+                <Setter Property="FontSize" Value="14"/>
+            </Style>
+            
+            <Style x:Key="SettingCaptionStyle" TargetType="TextBlock" BasedOn="{StaticResource CaptionTextBlockStyle}">
+                <Setter Property="Opacity" Value="0.7"/>
+                <Setter Property="TextWrapping" Value="Wrap"/>
+            </Style>
+            
+            <Style x:Key="SettingDividerStyle" TargetType="Border">
+                <Setter Property="Height" Value="1"/>
+                <Setter Property="Margin" Value="0,20,0,4"/>
+                <Setter Property="Background" Value="{ThemeResource CardStrokeColorDefaultBrush}"/>
+                <Setter Property="Opacity" Value="0.6"/>
             </Style>
         </ResourceDictionary>
     </Page.Resources>
@@ -172,20 +207,21 @@
 
         <ScrollViewer x:Name="SettingsScrollViewer"
                       Grid.Column="1"
-                      Padding="12 0 12 12"
+                      Padding="20,4,20,16"
                       VerticalScrollBarVisibility="Auto"
                       HorizontalScrollMode="Disabled"
                       ViewChanged="SettingsScrollViewer_ViewChanged">
-            <StackPanel Spacing="0">
+            <StackPanel Spacing="0" MaxWidth="860" HorizontalAlignment="Stretch">
                 
                 <Border x:Name="AppearanceItem" Style="{StaticResource SettingsCardStyle}" Translation="0,0,32">
                     <Border.Shadow>
                         <ThemeShadow/>
                     </Border.Shadow>
                     <StackPanel>
-                        <TextBlock Text="外观与个性化" 
-                                   Style="{ThemeResource SubtitleTextBlockStyle}"
-                                   Margin="0,0,0,16"/>
+                        <StackPanel Style="{StaticResource SectionHeaderPanelStyle}">
+                            <Border Style="{StaticResource SectionAccentBarStyle}"/>
+                            <TextBlock Text="外观与个性化" Style="{StaticResource SectionTitleStyle}"/>
+                        </StackPanel>
                         
                         <TextBlock Text="应用主题" 
                                    Style="{ThemeResource BodyStrongTextBlockStyle}"
@@ -413,9 +449,10 @@
                         <ThemeShadow/>
                     </Border.Shadow>
                     <StackPanel>
-                        <TextBlock Text="主页文字样式" 
-                                   Style="{ThemeResource SubtitleTextBlockStyle}"
-                                   Margin="0,0,0,16"/>
+                        <StackPanel Style="{StaticResource SectionHeaderPanelStyle}">
+                            <Border Style="{StaticResource SectionAccentBarStyle}"/>
+                            <TextBlock Text="主页文字样式" Style="{StaticResource SectionTitleStyle}"/>
+                        </StackPanel>
                         
                         <TextBlock Text="游戏资讯卡片文字颜色与透明度" 
                                    Style="{ThemeResource BodyStrongTextBlockStyle}"
@@ -457,9 +494,10 @@
                         <ThemeShadow/>
                     </Border.Shadow>
                     <StackPanel>
-                        <TextBlock Text="语言与区域" 
-                                   Style="{ThemeResource SubtitleTextBlockStyle}"
-                                   Margin="0,0,0,16"/>
+                        <StackPanel Style="{StaticResource SectionHeaderPanelStyle}">
+                            <Border Style="{StaticResource SectionAccentBarStyle}"/>
+                            <TextBlock Text="语言与区域" Style="{StaticResource SectionTitleStyle}"/>
+                        </StackPanel>
                         
                         <TextBlock Text="应用显示语言" 
                                    Style="{ThemeResource BodyStrongTextBlockStyle}"
@@ -491,9 +529,10 @@
                         <ThemeShadow/>
                     </Border.Shadow>
                     <StackPanel>
-                        <TextBlock Text="游戏启动配置" 
-                                   Style="{ThemeResource SubtitleTextBlockStyle}"
-                                   Margin="0,0,0,16"/>
+                        <StackPanel Style="{StaticResource SectionHeaderPanelStyle}">
+                            <Border Style="{StaticResource SectionAccentBarStyle}"/>
+                            <TextBlock Text="游戏启动配置" Style="{StaticResource SectionTitleStyle}"/>
+                        </StackPanel>
                         
                         <TextBlock Text="启动窗口模式" 
                                    Style="{ThemeResource BodyStrongTextBlockStyle}"
@@ -640,9 +679,10 @@
                         <ThemeShadow/>
                     </Border.Shadow>
                     <StackPanel>
-                        <TextBlock Text="背景与视觉效果" 
-                                   Style="{ThemeResource SubtitleTextBlockStyle}"
-                                   Margin="0,0,0,16"/>
+                        <StackPanel Style="{StaticResource SectionHeaderPanelStyle}">
+                            <Border Style="{StaticResource SectionAccentBarStyle}"/>
+                            <TextBlock Text="背景与视觉效果" Style="{StaticResource SectionTitleStyle}"/>
+                        </StackPanel>
                         
                         <ToggleSwitch Header="启用自定义背景"
                                       OffContent="已禁用"
@@ -776,9 +816,10 @@
                         <ThemeShadow/>
                     </Border.Shadow>
                     <StackPanel>
-                        <TextBlock Text="窗口效果" 
-                                   Style="{ThemeResource SubtitleTextBlockStyle}"
-                                   Margin="0,0,0,16"/>
+                        <StackPanel Style="{StaticResource SectionHeaderPanelStyle}">
+                            <Border Style="{StaticResource SectionAccentBarStyle}"/>
+                            <TextBlock Text="窗口效果" Style="{StaticResource SectionTitleStyle}"/>
+                        </StackPanel>
                         
                         <TextBlock Text="窗口背景材质" 
                                    Style="{ThemeResource BodyStrongTextBlockStyle}"
@@ -813,9 +854,10 @@
                         <ThemeShadow/>
                     </Border.Shadow>
                     <StackPanel>
-                        <TextBlock Text="启动音效" 
-                                   Style="{ThemeResource SubtitleTextBlockStyle}"
-                                   Margin="0,0,0,16"/>
+                        <StackPanel Style="{StaticResource SectionHeaderPanelStyle}">
+                            <Border Style="{StaticResource SectionAccentBarStyle}"/>
+                            <TextBlock Text="启动音效" Style="{StaticResource SectionTitleStyle}"/>
+                        </StackPanel>
                         
                         <ToggleSwitch Header="启用游戏启动音效"
                                       OffContent="已禁用"
@@ -856,9 +898,10 @@
                     </Border.Shadow>
                     <StackPanel>
                         <StackPanel Spacing="12">
-                            <TextBlock Text="签到配置"
-                                       Style="{ThemeResource SubtitleTextBlockStyle}"
-                                       Margin="0,0,0,16"/>
+                            <StackPanel Style="{StaticResource SectionHeaderPanelStyle}">
+                                <Border Style="{StaticResource SectionAccentBarStyle}"/>
+                                <TextBlock Text="签到配置" Style="{StaticResource SectionTitleStyle}"/>
+                            </StackPanel>
 
                             <StackPanel Spacing="12">
                                 <ToggleSwitch Header="游戏签到"
@@ -1039,9 +1082,10 @@
                         <ThemeShadow/>
                     </Border.Shadow>
                     <StackPanel>
-                        <TextBlock Text="高级选项" 
-                                   Style="{ThemeResource SubtitleTextBlockStyle}"
-                                   Margin="0,0,0,16"/>
+                        <StackPanel Style="{StaticResource SectionHeaderPanelStyle}">
+                            <Border Style="{StaticResource SectionAccentBarStyle}"/>
+                            <TextBlock Text="高级选项" Style="{StaticResource SectionTitleStyle}"/>
+                        </StackPanel>
                         
                         <ToggleSwitch Header="启用 BetterGI 联动"
                                       OffContent="已禁用"
@@ -1156,9 +1200,10 @@
                         <ThemeShadow/>
                     </Border.Shadow>
                     <StackPanel>
-                        <TextBlock Text="检查更新" 
-                                   Style="{ThemeResource SubtitleTextBlockStyle}"
-                                   Margin="0,0,0,16"/>
+                        <StackPanel Style="{StaticResource SectionHeaderPanelStyle}">
+                            <Border Style="{StaticResource SectionAccentBarStyle}"/>
+                            <TextBlock Text="检查更新" Style="{StaticResource SectionTitleStyle}"/>
+                        </StackPanel>
         
                         <TextBlock Text="版本更新" 
                                    Style="{ThemeResource BodyStrongTextBlockStyle}"
@@ -1182,18 +1227,21 @@
                         <ThemeShadow/>
                     </Border.Shadow>
                     <StackPanel Spacing="10">
-                        <TextBlock Text="关于" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
+                        <StackPanel Style="{StaticResource SectionHeaderPanelStyle}">
+                            <Border Style="{StaticResource SectionAccentBarStyle}"/>
+                            <TextBlock Text="关于" Style="{StaticResource SectionTitleStyle}"/>
+                        </StackPanel>
                         <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" 
                                 BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" 
                                 BorderThickness="1" 
-                                CornerRadius="4"
+                                CornerRadius="10"
                                 Padding="16">
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*"/>
                                     <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
-                                <StackPanel Spacing="4">
+                                <StackPanel Spacing="4" VerticalAlignment="Center">
                                     <TextBlock Text="FufuLauncher" Style="{ThemeResource BodyTextBlockStyle}"/>
                                     <TextBlock Text="{x:Bind ViewModel.AppVersion, Mode=OneWay}"
                                                Style="{ThemeResource CaptionTextBlockStyle}" 
@@ -1202,6 +1250,7 @@
                                 
                                 <Button Grid.Column="1" 
                                         Content="关于我们" 
+                                        VerticalAlignment="Center"
                                         Click="OnOpenAboutWindowClick"/>
                             </Grid>
                         </Border>
@@ -1225,7 +1274,10 @@
                         <ThemeShadow/>
                     </Border.Shadow>
                     <StackPanel Spacing="10">
-                        <TextBlock Text="开发者许可认证" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
+                        <StackPanel Style="{StaticResource SectionHeaderPanelStyle}">
+                            <Border Style="{StaticResource SectionAccentBarStyle}"/>
+                            <TextBlock Text="开发者许可认证" Style="{StaticResource SectionTitleStyle}"/>
+                        </StackPanel>
                         <TextBlock Text="通过开发者许可认证获取部分特殊功能的使用权限" Style="{ThemeResource CaptionTextBlockStyle}" Foreground="{ThemeResource SafeSecondaryTextBrush}"/>
                         
                         <Button Content="进行开发者许可认证" 

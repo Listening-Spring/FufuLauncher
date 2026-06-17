@@ -60,7 +60,6 @@ public partial class GachaAnalysisModel : ObservableObject
     private string _uidBeforeAddNew = "";
     private int _refreshVersion;
     private bool _analysisDashboardDirty = true;
-
     [ObservableProperty] private string _gachaUrl;
     [ObservableProperty] private string _crawlerStatus = "等待获取数据...";
     [ObservableProperty] private bool _isFetching;
@@ -69,7 +68,6 @@ public partial class GachaAnalysisModel : ObservableObject
     [ObservableProperty] private GachaStatistic _weaponStats = new() { PoolName = "武器活动" };
     [ObservableProperty] private GachaStatistic _chronicledStats = new() { PoolName = "集录祈愿" };
     [ObservableProperty] private GachaStatistic _standardStats = new() { PoolName = "常驻祈愿" };
-
     [ObservableProperty] private ObservableCollection<GachaDisplayItem> _characterFiveStars = new();
     [ObservableProperty] private ObservableCollection<GachaDisplayItem> _weaponFiveStars = new();
     [ObservableProperty] private ObservableCollection<GachaDisplayItem> _chronicledFiveStars = new();
@@ -78,26 +76,20 @@ public partial class GachaAnalysisModel : ObservableObject
     [ObservableProperty] private ObservableCollection<GachaDisplayItem> _weaponFourStars = new();
     [ObservableProperty] private ObservableCollection<GachaDisplayItem> _chronicledFourStars = new();
     [ObservableProperty] private ObservableCollection<GachaDisplayItem> _standardFourStars = new();
-    
     [ObservableProperty] private ObservableCollection<ScrapedMetadata> _characterMetadataPreview = new();
     [ObservableProperty] private ObservableCollection<ScrapedMetadata> _weaponMetadataPreview = new();
     [ObservableProperty] private ObservableCollection<string> _knownUids = new();
     [ObservableProperty] private ObservableCollection<string> _uidComboItems = new();
     [ObservableProperty] private string _selectedUid = "";
-
-    // 添加四星视图的控制开关
     [ObservableProperty] private bool _isCharacterFourStarVisible;
     [ObservableProperty] private bool _isWeaponFourStarVisible;
     [ObservableProperty] private bool _isChronicledFourStarVisible;
     [ObservableProperty] private bool _isStandardFourStarVisible;
-
-    // 四星分割线显示条件
+    
     public bool ShowCharacterFourDivider => IsCharacterFourStarVisible && CharacterFourStars?.Count > 0;
     public bool ShowWeaponFourDivider => IsWeaponFourStarVisible && WeaponFourStars?.Count > 0;
     public bool ShowChronicledFourDivider => IsChronicledFourStarVisible && ChronicledFourStars?.Count > 0;
     public bool ShowStandardFourDivider => IsStandardFourStarVisible && StandardFourStars?.Count > 0;
-
-    // "暂无记录"显示条件
     public bool ShowCharacterNoRecords => CharacterStats?.FiveStarCount == 0 && (!IsCharacterFourStarVisible || CharacterFourStars?.Count == 0);
     public bool ShowWeaponNoRecords => WeaponStats?.FiveStarCount == 0 && (!IsWeaponFourStarVisible || WeaponFourStars?.Count == 0);
     public bool ShowChronicledNoRecords => ChronicledStats?.FiveStarCount == 0 && (!IsChronicledFourStarVisible || ChronicledFourStars?.Count == 0);
@@ -110,6 +102,10 @@ public partial class GachaAnalysisModel : ObservableObject
     [ObservableProperty] private bool _isAnalysisLoading;
     [ObservableProperty] private bool _isAnalysisReady;
     [ObservableProperty] private GachaAnalysisDashboard _analysisDashboard = GachaAnalysisDashboard.Empty();
+    [ObservableProperty] private bool _isCardViewMode;
+    public bool IsListViewMode => !IsCardViewMode;
+    public bool ShowOverviewList => IsOverviewSelected && !IsCardViewMode;
+    public bool ShowOverviewCards => IsOverviewSelected && IsCardViewMode;
 
     public bool IsAnalysisSelected => !IsOverviewSelected;
     public bool ShowAnalysisLoading => IsAnalysisSelected && IsAnalysisLoading;
@@ -120,6 +116,7 @@ public partial class GachaAnalysisModel : ObservableObject
     public Func<IntPtr> GetWindowHandle;
     public Func<string, string, Task<bool>> OnUidMismatchAsync;
     public Func<string, string, string, Task> OnShowConfirmDialogAsync;
+    public Func<string, Task> OnRequireReLoginAsync;
 
     public GachaAnalysisModel(ILocalSettingsService localSettingsService, AccountManager accountManager)
     {
@@ -1294,18 +1291,14 @@ public partial class GachaAnalysisModel : ObservableObject
     [RelayCommand]
     private async Task FetchFromMiYouSheAsync(bool incremental)
     {
-        
+        // 当前登录账户的游戏 UID（来自账号管理）
+        var loggedInAccount = _accountManager.GetActiveAccountEntry();
+        var loggedInUid = loggedInAccount?.GameUid ?? "";
+
+        // 目标抽卡账户 UID：优先使用当前选中的存档 UID，没有则使用登录账户的 UID
         string gameUid = _currentUid;
         if (string.IsNullOrEmpty(gameUid))
-        {
-            try
-            {
-                var accountManager = App.GetService<AccountManager>();
-                var activeAccount = accountManager.GetActiveAccountEntry();
-                gameUid = activeAccount?.GameUid ?? "";
-            }
-            catch { }
-        }
+            gameUid = loggedInUid;
 
         if (string.IsNullOrEmpty(gameUid))
         {
@@ -1314,12 +1307,21 @@ public partial class GachaAnalysisModel : ObservableObject
             return;
         }
 
-
         var activeId = _accountManager.ActiveAccountId;
         if (activeId == null)
         {
             CrawlerStatus = "请先登录米游社账号后重试";
             OnErrorAction?.Invoke(CrawlerStatus);
+            return;
+        }
+
+        if (!string.IsNullOrEmpty(loggedInUid) && loggedInUid != gameUid)
+        {
+            CrawlerStatus = $"当前登录账户 UID {loggedInUid} 与目标账户 UID {gameUid} 不一致，请登录到目标账户";
+            if (OnRequireReLoginAsync != null)
+                await OnRequireReLoginAsync($"当前登录的米游社账户为 UID {loggedInUid}，而你正在更新 UID {gameUid} 的记录。\n请先登录到 UID {gameUid} 对应的账户后再试。");
+            else
+                OnErrorAction?.Invoke(CrawlerStatus);
             return;
         }
 
@@ -1362,7 +1364,10 @@ public partial class GachaAnalysisModel : ObservableObject
             {
                 CrawlerStatus = "认证密钥生成失败，请重新登录后重试";
                 IsFetching = false;
-                OnErrorAction?.Invoke(CrawlerStatus);
+                if (OnRequireReLoginAsync != null)
+                    await OnRequireReLoginAsync($"UID {gameUid} 的认证密钥生成失败，登录凭证可能已过期。\n请重新登录后再试。");
+                else
+                    OnErrorAction?.Invoke(CrawlerStatus);
                 return;
             }
 
@@ -2502,6 +2507,15 @@ private async Task ImportUigfAsync()
         OnPropertyChanged(nameof(IsAnalysisSelected));
         OnPropertyChanged(nameof(ShowAnalysisLoading));
         OnPropertyChanged(nameof(ShowAnalysisContent));
+        OnPropertyChanged(nameof(ShowOverviewList));
+        OnPropertyChanged(nameof(ShowOverviewCards));
+    }
+
+    partial void OnIsCardViewModeChanged(bool value)
+    {
+        OnPropertyChanged(nameof(IsListViewMode));
+        OnPropertyChanged(nameof(ShowOverviewList));
+        OnPropertyChanged(nameof(ShowOverviewCards));
     }
 
     partial void OnIsAnalysisLoadingChanged(bool value)
