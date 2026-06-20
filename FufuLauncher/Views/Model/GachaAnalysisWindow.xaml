@@ -58,7 +58,7 @@
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
 
-                    <Border Width="48" Height="48" CornerRadius="6" Background="{ThemeResource ControlFillColorDefaultBrush}">
+                    <Border Width="48" Height="48" CornerRadius="6" Background="{Binding RarityBackground}">
                         <Grid>
                             <Image Source="{Binding ImageUrl}" Stretch="UniformToFill"/>
                             <Image Source="{Binding ElementUrl}" Width="16" Height="16" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="2"/>
@@ -728,7 +728,7 @@
                                         <GridView ItemsSource="{x:Bind ViewModel.CharacterMetadataPreview, Mode=OneWay}" SelectionMode="None">
                                             <GridView.ItemTemplate>
                                                 <DataTemplate x:DataType="models:ScrapedMetadata">
-                                                    <Grid Width="90" Height="110" Margin="4" CornerRadius="6" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1" Shadow="{StaticResource SharedShadow}" Translation="0,0,8">
+                                                    <Grid Width="90" Height="110" Margin="4" CornerRadius="6" Background="{Binding RarityBackground}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1" Shadow="{StaticResource SharedShadow}" Translation="0,0,8">
                                                         <Image Source="{Binding ImgSrc}" Stretch="UniformToFill" Margin="0,0,0,24"/>
                                                         <Image Source="{Binding ElementSrc}" Width="18" Height="18" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="4"/>
                                                         <Grid VerticalAlignment="Bottom" Height="24" Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}">
@@ -745,7 +745,7 @@
                                         <GridView ItemsSource="{x:Bind ViewModel.WeaponMetadataPreview, Mode=OneWay}" SelectionMode="None">
                                             <GridView.ItemTemplate>
                                                 <DataTemplate x:DataType="models:ScrapedMetadata">
-                                                    <Grid Width="90" Height="110" Margin="4" CornerRadius="6" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1" Shadow="{StaticResource SharedShadow}" Translation="0,0,8">
+                                                    <Grid Width="90" Height="110" Margin="4" CornerRadius="6" Background="{Binding RarityBackground}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1" Shadow="{StaticResource SharedShadow}" Translation="0,0,8">
                                                         <Image Source="{Binding ImgSrc}" Stretch="UniformToFill" Margin="0,0,0,24"/>
                                                         <Grid VerticalAlignment="Bottom" Height="24" Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}">
                                                             <TextBlock Text="{x:Bind Name}" FontSize="11" HorizontalAlignment="Center" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"/>
