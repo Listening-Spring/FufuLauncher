@@ -28,6 +28,7 @@
                         TintOpacity="0.6" />
                     <SolidColorBrush x:Key="CardButtonBackgroundBrush" Color="#0D000000" />
                     <SolidColorBrush x:Key="CardButtonHoverBrush" Color="#14000000" />
+                    <SolidColorBrush x:Key="BannerOverlayButtonBackgroundBrush" Color="#99FFFFFF" />
                 </ResourceDictionary>
 
                 <ResourceDictionary x:Key="Default">
@@ -39,6 +40,7 @@
                         TintOpacity="0.15" />
                     <SolidColorBrush x:Key="CardButtonBackgroundBrush" Color="#1AFFFFFF" />
                     <SolidColorBrush x:Key="CardButtonHoverBrush" Color="#26FFFFFF" />
+                    <SolidColorBrush x:Key="BannerOverlayButtonBackgroundBrush" Color="#99000000" />
                 </ResourceDictionary>
             </ResourceDictionary.ThemeDictionaries>
 
@@ -265,7 +267,7 @@
                                     Padding="4,4"
                                     HorizontalAlignment="Left"
                                     VerticalAlignment="Center"
-                                    Background="#99000000"
+                                    Background="{ThemeResource BannerOverlayButtonBackgroundBrush}"
                                     BorderThickness="0"
                                     Click="BannerPrev_Click"
                                     CornerRadius="4"
@@ -283,7 +285,7 @@
                                     Padding="4,4"
                                     HorizontalAlignment="Right"
                                     VerticalAlignment="Center"
-                                    Background="#99000000"
+                                    Background="{ThemeResource BannerOverlayButtonBackgroundBrush}"
                                     BorderThickness="0"
                                     Click="BannerNext_Click"
                                     CornerRadius="4"
@@ -301,7 +303,7 @@
                                     Padding="6,2"
                                     HorizontalAlignment="Right"
                                     VerticalAlignment="Bottom"
-                                    Background="#99000000"
+                                    Background="{ThemeResource BannerOverlayButtonBackgroundBrush}"
                                     BorderThickness="0"
                                     Command="{Binding ToggleInfoCardCommand}"
                                     CornerRadius="4"
