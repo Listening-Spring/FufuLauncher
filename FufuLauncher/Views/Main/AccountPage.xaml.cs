@@ -57,6 +57,11 @@ public sealed partial class AccountPage : Page
     #endregion
 
     #region 页面加载与动画
+    private void Page_Unloaded(object sender, RoutedEventArgs e)
+    {
+        ViewModel.Cleanup();
+    }
+
     private async void Page_Loaded(object sender, RoutedEventArgs e)
     {
         EntranceStoryboard.Begin();
@@ -237,10 +242,7 @@ public sealed partial class AccountPage : Page
             try
             {
                 if (ViewModel.SwitchAccountCommand is IAsyncRelayCommand<AccountInfo> asyncCmd)
-                {
                     await asyncCmd.ExecuteAsync(account);
-                    _notificationService.Show("账户登录成功", $"已登录到 {account.Nickname}", NotificationType.Success, 3000);
-                }
             }
             catch (Exception ex)
             {

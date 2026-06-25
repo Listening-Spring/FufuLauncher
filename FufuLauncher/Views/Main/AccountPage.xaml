@@ -9,6 +9,7 @@
     xmlns:models="using:FufuLauncher.Models"
     x:Name="RootPage"
     Loaded="Page_Loaded"
+    Unloaded="Page_Unloaded"
     mc:Ignorable="d">
 
     <Page.Resources>
@@ -1069,7 +1070,7 @@
                                         Grid.Row="1"
                                         VerticalScrollBarVisibility="Auto"
                                         Visibility="{x:Bind ViewModel.CurrentAccount.HasBoundRole, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
-                                        <ItemsControl ItemsSource="{x:Bind ViewModel.GameRolesInfo.data.list, Mode=OneWay}">
+                                        <ItemsControl ItemsSource="{x:Bind ViewModel.BoundRoles, Mode=OneWay}">
 
                                             <ItemsControl.ItemTemplate>
                                                 <DataTemplate>

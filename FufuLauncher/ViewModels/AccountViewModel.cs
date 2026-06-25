@@ -23,9 +23,21 @@ public partial class AccountViewModel : ObservableRecipient
     private readonly ILocalSettingsService _localSettingsService;
     private readonly IUserInfoService _userInfoService;
     private readonly INavigationService _navigationService;
+    private readonly INotificationService _notificationService;
     private readonly Microsoft.UI.Dispatching.DispatcherQueue _dispatcherQueue;
     private const int MaxAccounts = 4;
     private readonly AccountManager _accountManager;
+    private int _loadVersion;
+    private string? _lastNotifiedAccountId;
+    private volatile bool _isDisposed;
+    #endregion
+
+    #region 生命周期
+    public void Cleanup()
+    {
+        _isDisposed = true;
+        Interlocked.Increment(ref _loadVersion); 
+    }
     #endregion
 
     #region 属性
@@ -55,6 +67,9 @@ public partial class AccountViewModel : ObservableRecipient
     public string CommunityLikeCount => UserFullInfo?.data?.user_info?.achieve?["like_num"]?.ToString() ?? "-";
     public string CommunityPostCount => UserFullInfo?.data?.user_info?.achieve?["post_num"]?.ToString() ?? "-";
     public string CommunityReplyCount => UserFullInfo?.data?.user_info?.achieve?["replypost_num"]?.ToString() ?? "-";
+
+
+    public List<GameRoleInfo>? BoundRoles => GameRolesInfo?.data?.list;
 
     #endregion
 
@@ -99,16 +114,18 @@ public partial class AccountViewModel : ObservableRecipient
         ILocalSettingsService localSettingsService,
         IUserInfoService userInfoService,
         INavigationService navigationService,
+        INotificationService notificationService,
         AccountManager accountManager)
     {
         _localSettingsService = localSettingsService;
         _userInfoService = userInfoService;
         _navigationService = navigationService;
+        _notificationService = notificationService;
         _dispatcherQueue = App.MainWindow.DispatcherQueue;
         _accountManager = accountManager;
         LoginCommand = new AsyncRelayCommand(LoginAsync);
         LogoutCommand = new AsyncRelayCommand(LogoutAsync);
-        LoadUserInfoCommand = new AsyncRelayCommand(LoadUserInfoAsync);
+        LoadUserInfoCommand = new AsyncRelayCommand(async () => await LoadUserInfoAsync());
         OpenGenshinDataCommand = new AsyncRelayCommand(OpenGenshinDataAsync);
         CopyCookieCommand = new AsyncRelayCommand(CopyCookieAsync);
         AddAccountCommand = new AsyncRelayCommand(AddNewAccountAsync);
@@ -159,10 +176,9 @@ public partial class AccountViewModel : ObservableRecipient
             RunOnUIThread(() => StatusMessage = $"删除失败: {ex.Message}");
         }
     }
-    public async Task LoadUserInfoAsync()
+    public async Task<bool> LoadUserInfoAsync()
     {
-        if (IsLoadingUserInfo) return;
-
+        var myVersion = Interlocked.Increment(ref _loadVersion);
         try
         {
             IsLoadingUserInfo = true;
@@ -174,7 +190,7 @@ public partial class AccountViewModel : ObservableRecipient
             {
                 Debug.WriteLine("[LoadUserInfo] 无活跃账户");
                 RunOnUIThread(() => StatusMessage = "请先登录");
-                return;
+                return false;
             }
 
             var cookies = await _accountManager.LoadCookiesAsync(activeId);
@@ -183,7 +199,7 @@ public partial class AccountViewModel : ObservableRecipient
             {
                 Debug.WriteLine("[LoadUserInfo] 无法读取账户数据");
                 RunOnUIThread(() => StatusMessage = "请先登录");
-                return;
+                return false;
             }
 
 
@@ -204,6 +220,12 @@ public partial class AccountViewModel : ObservableRecipient
 
             var newRolesInfo = await rolesTask;
             var newUserFullInfo = await userInfoTask;
+
+            if (myVersion != _loadVersion)
+            {
+                Debug.WriteLine($"[LoadUserInfo][{entry.Id}] 结果已过期(v{myVersion}→{_loadVersion})，丢弃");
+                return false;
+            }
 
 
             GameRolesInfo = newRolesInfo;
@@ -244,7 +266,7 @@ public partial class AccountViewModel : ObservableRecipient
                 StatusMessage = hasBoundRole ? "账户已登录" : "账户已登录（未绑定角色）";
             });
             Debug.WriteLine($"[LoadUserInfo] 用户信息已更新，HasBoundRole={hasBoundRole}");
-
+            return true;
         }
         catch (Exception ex)
         {
@@ -255,6 +277,7 @@ public partial class AccountViewModel : ObservableRecipient
                 GameRolesInfo = null;
                 UserFullInfo = null;
             });
+            return false;
         }
         finally
         {
@@ -269,6 +292,11 @@ public partial class AccountViewModel : ObservableRecipient
         OnPropertyChanged(nameof(CommunityLikeCount));
         OnPropertyChanged(nameof(CommunityPostCount));
         OnPropertyChanged(nameof(CommunityReplyCount));
+    }
+
+    partial void OnGameRolesInfoChanged(GameRolesResponse? value)
+    {
+        OnPropertyChanged(nameof(BoundRoles));
     }
 
     #endregion
@@ -373,7 +401,11 @@ public partial class AccountViewModel : ObservableRecipient
 
         RunOnUIThread(() => CurrentAccount = info);
 
-        await LoadUserInfoAsync();
+        var loaded = await LoadUserInfoAsync();
+        if (!loaded)
+        {
+            
+        }
     }
     private async Task OpenGenshinDataAsync()
     {
@@ -419,11 +451,13 @@ public partial class AccountViewModel : ObservableRecipient
 
     private void RunOnUIThread(Action action)
     {
-        if (_dispatcherQueue == null) return;
+        if (_isDisposed || _dispatcherQueue == null) return;
         if (_dispatcherQueue.HasThreadAccess)
-            action();
+        {
+            if (!_isDisposed) action();
+        }
         else
-            _dispatcherQueue.TryEnqueue(() => action());
+            _dispatcherQueue.TryEnqueue(() => { if (!_isDisposed) action(); });
     }
     #endregion
 
@@ -542,7 +576,8 @@ public partial class AccountViewModel : ObservableRecipient
     {
         try
         {
-
+    
+            Interlocked.Increment(ref _loadVersion);
             await _accountManager.LogoutAsync();
 
 
@@ -554,6 +589,7 @@ public partial class AccountViewModel : ObservableRecipient
                 LoginButtonText = "登录米游社";
                 StatusMessage = "已退出登录";
             });
+            _lastNotifiedAccountId = null;
 
            
             RefreshSavedAccountsList();
@@ -571,8 +607,21 @@ public partial class AccountViewModel : ObservableRecipient
         RunOnUIThread(() => { GameRolesInfo = null; UserFullInfo = null; });
         await _accountManager.SwitchAccountAsync(targetAccount.AccountId);
         await LoadActiveAccountAsync(targetAccount.AccountId);
+
+
+        if (_accountManager.ActiveAccountId != targetAccount.AccountId)
+            return;
+
+        if (_lastNotifiedAccountId == targetAccount.AccountId)
+            return;
+
+        if (UserFullInfo?.data == null && GameRolesInfo?.data == null)
+            return;
+
+        _lastNotifiedAccountId = targetAccount.AccountId;
         RefreshSavedAccountsList();
-        RunOnUIThread(() => StatusMessage = "账户切换成功");
+        RunOnUIThread(() => StatusMessage = "账户登录成功");
+        _notificationService.Show("账户登录成功", $"已登录到 {targetAccount.Nickname}", NotificationType.Success, 3000);
     }
     private async Task AddNewAccountAsync()
     {
