@@ -373,7 +373,7 @@ public partial class AccountViewModel : ObservableRecipient
 
         RunOnUIThread(() => CurrentAccount = info);
 
-        _ = LoadUserInfoAsync();
+        await LoadUserInfoAsync();
     }
     private async Task OpenGenshinDataAsync()
     {
