@@ -10,6 +10,7 @@ using FufuLauncher.Services;
 using FufuLauncher.Services.Background;
 using FufuLauncher.ViewModels;
 using FufuLauncher.Views;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -87,6 +88,13 @@ public partial class App : Application
         {
             Host = Microsoft.Extensions.Hosting.Host.CreateDefaultBuilder()
                 .UseContentRoot(AppContext.BaseDirectory)
+                .ConfigureHostConfiguration(config =>
+                {
+                    config.AddInMemoryCollection(new Dictionary<string, string?>
+                    {
+                        ["hostBuilder:reloadConfigOnChange"] = "false"
+                    });
+                })
                 .ConfigureServices((context, services) =>
                 {
                     services.AddTransient<ActivationHandler<LaunchActivatedEventArgs>, DefaultActivationHandler>();
@@ -487,26 +495,25 @@ public partial class App : Application
                     mediaPlayer.Source = MediaSource.CreateFromUri(new Uri(path));
                     mediaPlayer.Volume = 0.7;
 
-                    mediaPlayer.MediaEnded += (s, e) => mediaPlayer.Dispose();
-
-                    mediaPlayer.MediaFailed += (s, e) =>
+                    int disposed = 0;
+                    void DisposeOnce()
                     {
-                        Debug.WriteLine($"启动语音播放失败: {e.ErrorMessage}");
-                        mediaPlayer.Dispose();
-                    };
+                        if (Interlocked.Exchange(ref disposed, 1) == 0)
+                        {
+                            try { mediaPlayer.Dispose(); } catch { }
+                        }
+                    }
 
+                    mediaPlayer.MediaEnded += (s, e) => DisposeOnce();
+                    mediaPlayer.MediaFailed += (s, e) => DisposeOnce();
                     mediaPlayer.Play();
 
                     var timer = _mainDispatcherQueue.CreateTimer();
                     timer.Interval = TimeSpan.FromSeconds(30);
                     timer.Tick += (s, e) =>
                     {
-                        try
-                        {
-                            mediaPlayer?.Dispose();
-                        }
-                        catch { }
                         timer.Stop();
+                        DisposeOnce();
                     };
                     timer.Start();
                 }
