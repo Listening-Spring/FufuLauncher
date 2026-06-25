@@ -344,6 +344,14 @@ public sealed partial class AccountPage : Page
     }
     #endregion
 
+    #region 右侧高度自适应
+    private void LeftColumnGrid_SizeChanged(object sender, SizeChangedEventArgs e)
+    {
+        if (e.NewSize.Height > 100)
+            RightGrid.Height = e.NewSize.Height;
+    }
+    #endregion
+
     #region 其他 UI 操作
     private void OnGachaAnalysisClicked(object sender, RoutedEventArgs e)
     {
