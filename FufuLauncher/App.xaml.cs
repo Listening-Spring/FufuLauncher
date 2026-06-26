@@ -148,6 +148,7 @@ public partial class App : Application
                     services.AddTransient<OtherViewModel>();
                     services.AddTransient<OtherPage>();
                     services.AddSingleton<IAutoClickerService, AutoClickerService>();
+                    services.AddSingleton<IScreenshotService, ScreenshotService>();
                     services.AddTransient<AgreementViewModel>();
                     services.AddTransient<AgreementPage>();
                     services.AddSingleton<IUpdateService, UpdateService>();

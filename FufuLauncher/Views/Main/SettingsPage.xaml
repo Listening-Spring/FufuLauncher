@@ -188,6 +188,11 @@
                         <FontIcon Glyph="&#xE713;" FontFamily="Segoe MDL2 Assets" />
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
+                <NavigationViewItem Content="截图设置" Tag="ScreenshotSettingsItem">
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE722;" FontFamily="Segoe MDL2 Assets" />
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
                 <NavigationViewItem Content="检查更新" Tag="UpdateItem">
                     <NavigationViewItem.Icon>
                         <FontIcon Glyph="&#xE895;" FontFamily="Segoe MDL2 Assets" />
@@ -1246,6 +1251,73 @@
                                 <TextBlock Text="更新成就数据库资源" />
                             </StackPanel>
                         </Button>
+                    </StackPanel>
+                </Border>
+
+                <Border x:Name="ScreenshotSettingsItem" Style="{StaticResource SettingsCardStyle}" Translation="0,0,32">
+                    <Border.Shadow>
+                        <ThemeShadow />
+                    </Border.Shadow>
+                    <StackPanel>
+                        <StackPanel Style="{StaticResource SectionHeaderPanelStyle}">
+                            <Border Style="{StaticResource SectionAccentBarStyle}" />
+                            <TextBlock Text="截图设置" Style="{StaticResource SectionTitleStyle}" />
+                        </StackPanel>
+
+                        <ToggleSwitch Header="启用游戏内截图"
+                                      OffContent="已禁用"
+                                      OnContent="已启用"
+                                      IsOn="{x:Bind ViewModel.IsScreenshotEnabled, Mode=TwoWay}"
+                                      Margin="0,16,0,0" />
+                        <TextBlock Text="启动游戏后通过快捷键截取游戏窗口画面，不会包含其他窗口内容"
+                                   Style="{ThemeResource CaptionTextBlockStyle}"
+                                   Opacity="0.7"
+                                   Margin="0,0,0,0" />
+
+                        <TextBlock Text="截图快捷键" Style="{ThemeResource BodyStrongTextBlockStyle}" FontSize="14"
+                                   Margin="0,20,0,0" />
+                        <TextBlock Text="点击下方按钮后按下想要的快捷键组合（支持 Ctrl/Alt/Shift + 按键）"
+                                   Style="{ThemeResource CaptionTextBlockStyle}"
+                                   Opacity="0.7"
+                                   Margin="0,2,0,8" />
+                        <StackPanel Orientation="Horizontal" Spacing="12">
+                            <Button x:Name="ScreenshotHotkeyButton"
+                                    Content="{x:Bind ViewModel.ScreenshotHotkey, Mode=OneWay}"
+                                    Click="OnScreenshotHotkeyButtonClick"
+                                    MinWidth="120"
+                                    Style="{StaticResource PresetButtonStyle}" />
+                            <TextBlock x:Name="HotkeyRecordingHint"
+                                       Text="正在录制，请按下快捷键..."
+                                       VerticalAlignment="Center"
+                                       Visibility="Collapsed"
+                                       Foreground="{ThemeResource SystemAccentColor}" />
+                        </StackPanel>
+
+                        <TextBlock Text="截图保存位置" Style="{ThemeResource BodyStrongTextBlockStyle}" FontSize="14"
+                                   Margin="0,20,0,0" />
+                        <TextBlock Text="自定义截图文件的保存目录，默认保存到 文档/FufuScreenshots"
+                                   Style="{ThemeResource CaptionTextBlockStyle}"
+                                   Opacity="0.7"
+                                   Margin="0,2,0,8" />
+                        <StackPanel Orientation="Horizontal" Spacing="12">
+                            <TextBlock Text="{x:Bind ViewModel.ScreenshotSavePath, Mode=OneWay}"
+                                       VerticalAlignment="Center"
+                                       MaxWidth="300"
+                                       TextTrimming="CharacterEllipsis"
+                                       Opacity="0.8" />
+                            <Button Content="浏览"
+                                    Command="{x:Bind ViewModel.SelectScreenshotFolderCommand}"
+                                    Style="{StaticResource PresetButtonStyle}" />
+                            <Button Content="清除"
+                                    Command="{x:Bind ViewModel.ClearScreenshotFolderCommand}"
+                                    Visibility="{x:Bind ViewModel.HasScreenshotSavePath, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"
+                                    Style="{StaticResource PresetButtonStyle}" />
+                        </StackPanel>
+
+                        <Button Content="打开截图文件夹"
+                                Command="{x:Bind ViewModel.OpenScreenshotFolderCommand}"
+                                Margin="0,16,0,0"
+                                Style="{StaticResource PresetButtonStyle}" />
                     </StackPanel>
                 </Border>
 

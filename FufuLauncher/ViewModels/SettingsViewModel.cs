@@ -154,10 +154,38 @@ namespace FufuLauncher.ViewModels
         [ObservableProperty] private string _currentBackgroundApiUrl = "";
         
         [ObservableProperty] private string _launchButtonOverlayColor = "#0078D7";
-[ObservableProperty] private bool _isCpuUsageWarningEnabled = true;
+        [ObservableProperty] private bool _isCpuUsageWarningEnabled = true;
         [ObservableProperty] private double _cpuUsageWarningThreshold = ProcessCpuUsageMonitor.DefaultCpuThreshold;
 
         [ObservableProperty] private bool _isRedeemCodeNotificationEnabled = true;
+        
+        [ObservableProperty] private bool _isScreenshotEnabled;
+        [ObservableProperty] private string _screenshotHotkey = "F12";
+        [ObservableProperty] private string _screenshotSavePath;
+        [ObservableProperty] private bool _hasScreenshotSavePath;
+
+        partial void OnIsScreenshotEnabledChanged(bool value)
+        {
+            if (_isInitializing) return;
+            _ = _localSettingsService.SaveSettingAsync("IsScreenshotEnabled", value);
+        }
+
+        partial void OnScreenshotHotkeyChanged(string value)
+        {
+            if (_isInitializing) return;
+            _ = _localSettingsService.SaveSettingAsync("ScreenshotHotkey", value);
+        }
+
+        partial void OnScreenshotSavePathChanged(string value)
+        {
+            if (_isInitializing) return;
+            HasScreenshotSavePath = !string.IsNullOrEmpty(value);
+            _ = _localSettingsService.SaveSettingAsync("ScreenshotSavePath", value);
+        }
+
+        public IAsyncRelayCommand SelectScreenshotFolderCommand { get; }
+        public IAsyncRelayCommand ClearScreenshotFolderCommand { get; }
+        public IAsyncRelayCommand OpenScreenshotFolderCommand { get; }
 
         partial void OnIsRedeemCodeNotificationEnabledChanged(bool value)
         {
@@ -508,6 +536,10 @@ namespace FufuLauncher.ViewModels
 
             DownloadLatestBackgroundImageCommand = new AsyncRelayCommand(DownloadLatestBackgroundImageAsync);
             DownloadLatestBackgroundVideoCommand = new AsyncRelayCommand(DownloadLatestBackgroundVideoAsync);
+
+            SelectScreenshotFolderCommand = new AsyncRelayCommand(SelectScreenshotFolderAsync);
+            ClearScreenshotFolderCommand = new AsyncRelayCommand(ClearScreenshotFolderAsync);
+            OpenScreenshotFolderCommand = new AsyncRelayCommand(OpenScreenshotFolderAsync);
         }
         
         private async Task ClearCustomBackgroundAsync()
@@ -524,6 +556,59 @@ namespace FufuLauncher.ViewModels
             {
                 Debug.WriteLine($"清除自定义背景失败: {ex.Message}");
             }
+        }
+
+        private async Task SelectScreenshotFolderAsync()
+        {
+            try
+            {
+                var folder = await _filePickerService.PickFolderAsync();
+                if (!string.IsNullOrEmpty(folder))
+                {
+                    ScreenshotSavePath = folder;
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"选择截图文件夹失败: {ex.Message}");
+            }
+        }
+
+        private async Task ClearScreenshotFolderAsync()
+        {
+            ScreenshotSavePath = null;
+            HasScreenshotSavePath = false;
+            await _localSettingsService.SaveSettingAsync<string>("ScreenshotSavePath", null);
+        }
+
+        private async Task OpenScreenshotFolderAsync()
+        {
+            var path = ScreenshotSavePath;
+            if (string.IsNullOrEmpty(path))
+            {
+                path = Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                    "FufuScreenshots");
+            }
+
+            if (Directory.Exists(path))
+            {
+                Process.Start(new ProcessStartInfo
+                {
+                    FileName = path,
+                    UseShellExecute = true
+                });
+            }
+            else
+            {
+                Directory.CreateDirectory(path);
+                Process.Start(new ProcessStartInfo
+                {
+                    FileName = path,
+                    UseShellExecute = true
+                });
+            }
+            await Task.CompletedTask;
         }
 
         private async Task DownloadLatestBackgroundImageAsync()
@@ -942,6 +1027,17 @@ var cpuWarningThresholdJson = await _localSettingsService.ReadSettingAsync(Proce
 
             var redeemNotifyJson = await _localSettingsService.ReadSettingAsync("IsRedeemCodeNotificationEnabled");
             IsRedeemCodeNotificationEnabled = redeemNotifyJson == null || Convert.ToBoolean(redeemNotifyJson);
+
+            // 截图设置
+            var screenshotEnabledJson = await _localSettingsService.ReadSettingAsync("IsScreenshotEnabled");
+            IsScreenshotEnabled = screenshotEnabledJson != null && Convert.ToBoolean(screenshotEnabledJson);
+
+            var screenshotHotkeyJson = await _localSettingsService.ReadSettingAsync("ScreenshotHotkey");
+            ScreenshotHotkey = screenshotHotkeyJson?.ToString() ?? "F12";
+
+            var screenshotPathJson = await _localSettingsService.ReadSettingAsync("ScreenshotSavePath");
+            ScreenshotSavePath = screenshotPathJson?.ToString();
+            HasScreenshotSavePath = !string.IsNullOrEmpty(ScreenshotSavePath);
 
             var customExeJson = await _localSettingsService.ReadSettingAsync(GameExeManager.CustomExeNameKey);
             CustomGameExeName = customExeJson?.ToString() ?? string.Empty;
