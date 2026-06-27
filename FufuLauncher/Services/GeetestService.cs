@@ -169,7 +169,7 @@ public sealed class GeetestService
             appWindow.TitleBar.ExtendsContentIntoTitleBar = true;
             appWindow.TitleBar.ButtonBackgroundColor = Colors.Transparent;
             appWindow.TitleBar.ButtonInactiveBackgroundColor = Colors.Transparent;
-            appWindow.Resize(new SizeInt32(400, 450));
+            appWindow.Resize(new SizeInt32(1270, 720));
 
             AppWindow mainAppWindow = App.MainWindow.AppWindow;
             PointInt32 mainPos = mainAppWindow.Position;
