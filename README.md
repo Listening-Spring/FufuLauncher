@@ -41,12 +41,16 @@
 * 请在使用项目前安装 **.NET 8.0** 或以上任意版本和 **Webview2** 运行时
 * 本项目仅供学习交流使用，请支持官方正版游戏。
 
-[![Star History Chart](https://api.star-history.com/svg?repos=CodeCubist/FufuLauncher&type=date&legend=top-left)](https://www.star-history.com/#CodeCubist/FufuLauncher&type=date&legend=top-left)
+## 赞助商
 
 ### [<img src="https://avatars.githubusercontent.com/u/34448643" alt="SignPath" width="48" /> 代码签名由 SignPath 提供](https://signpath.org)
 
 免费代码签名由 [SignPath.io](https://about.signpath.io) 提供，证书由 [SignPath Foundation](https://signpath.org) 提供。
 
-**投稿者与审稿人**
+## 投稿者与审稿人
 
 <a href="https://github.com/FufuLauncher/FufuLauncher/graphs/contributors"><img src="https://contrib.rocks/image?repo=FufuLauncher/FufuLauncher" /></a>
+
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=CodeCubist/FufuLauncher&type=date&legend=top-left)](https://www.star-history.com/#CodeCubist/FufuLauncher&type=date&legend=top-left)
