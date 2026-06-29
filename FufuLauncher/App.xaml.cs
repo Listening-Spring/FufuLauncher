@@ -22,6 +22,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.Windows.AppLifecycle;
 using Windows.Media.Core;
 using Windows.Media.Playback;
+using System.Net.Sockets;
 using Sentry;
 
 namespace FufuLauncher;
@@ -199,8 +200,17 @@ public partial class App : Application
     private void TaskScheduler_UnobservedTaskException(object? sender, UnobservedTaskExceptionEventArgs e)
     {
         e.SetObserved();
-        LogException(e.Exception, "UnobservedTaskException");
         
+        var baseEx = e.Exception?.GetBaseException();
+        if (baseEx is SocketException
+            || baseEx is ObjectDisposedException
+            || baseEx is OperationCanceledException)
+        {
+            System.Diagnostics.Debug.WriteLine($"[UnobservedTask] 已忽略的后台异常: {baseEx.GetType().Name}: {baseEx.Message}");
+            return;
+        }
+
+        LogException(e.Exception, "UnobservedTaskException");
         ShowCrashDialog("后台异步任务异常", e.Exception);
     }
     

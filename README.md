@@ -5,7 +5,7 @@
 
 ### 一个原神的第三方启动工具，支持游戏注入、自动签到和一些实用小功能。
 
-#### [官方网站](https://philia093.xyz/)
+#### [官方网站](https://fu1.fun/)
 
 #### [注入模块开源地址](https://github.com/CodeCubist/FufuLauncher.UnlockerIsland)
 
