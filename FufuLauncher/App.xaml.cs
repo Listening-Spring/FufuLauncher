@@ -143,6 +143,7 @@ public partial class App : Application
                     services.AddSingleton<IHoyolabRoleResolverService, HoyolabRoleResolverService>();
                     services.AddSingleton<IUnifiedCheckinService, UnifiedCheckinService>();
                     services.AddSingleton<DailyNoteCardService>();
+                    services.AddSingleton<IDeviceFingerprintService, Services.MiHoYo.DeviceFingerprintService>();
                     services.AddSingleton<BlankViewModel>();
                     services.AddTransient<BlankPage>();
                     services.AddSingleton<ILauncherService, LauncherService>();

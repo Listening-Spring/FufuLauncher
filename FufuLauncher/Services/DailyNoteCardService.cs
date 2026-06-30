@@ -6,6 +6,8 @@ Licensed under the MIT License.
 // By kyxsan.
 // Licensed under the MIT License.
 
+using FufuLauncher.Services.MiHoYo;
+
 namespace FufuLauncher.Services;
 
 public class DailyNoteCardService
