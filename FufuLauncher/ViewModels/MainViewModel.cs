@@ -1340,7 +1340,7 @@ private void QuickSwitchPreset(PresetModel targetPreset)
         private async Task<bool> CheckGameProcessRunningAsync(bool forceRefresh = false)
         {
             var now = DateTimeOffset.UtcNow;
-            var currentInterval = IsGameRunning ? TimeSpan.FromSeconds(15) : TimeSpan.FromSeconds(1);
+            var currentInterval = IsGameRunning ? TimeSpan.FromSeconds(1) : TimeSpan.FromSeconds(1);
 
             if (!forceRefresh && now - _lastGameProcessCheck < currentInterval)
             {
@@ -1599,7 +1599,7 @@ private void QuickSwitchPreset(PresetModel targetPreset)
                     Debug.WriteLine($"进程监控错误: {ex.Message}");
                 }
                 
-                int checkDelay = IsGameRunning ? 15000 : 1000;
+                int checkDelay = IsGameRunning ? 1000 : 1000;
                 await Task.Delay(checkDelay, token);
             }
         }
