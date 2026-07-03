@@ -908,6 +908,29 @@
                                        Opacity="0.7"
                                        Margin="0,2,0,8" />
                         </StackPanel>
+                        <StackPanel Margin="0,16,0,0">
+                            <ToggleSwitch Header="页面遮罩半透明模式"
+                                          OffContent="不透明"
+                                          OnContent="半透明"
+                                          IsOn="{x:Bind ViewModel.IsPageOverlaySemiTransparentEnabled, Mode=TwoWay}" />
+                            <TextBlock Text="开启后页面遮罩将以半透明方式显示，可透出背景图片"
+                                       Style="{ThemeResource CaptionTextBlockStyle}"
+                                       Opacity="0.7"
+                                       Margin="0,2,0,4" />
+                            <StackPanel Orientation="Horizontal" Spacing="12" VerticalAlignment="Center"
+                                        Visibility="{x:Bind ViewModel.IsPageOverlaySemiTransparentEnabled, Mode=OneWay}">
+                                <TextBlock Text="遮罩透明度"
+                                           Style="{ThemeResource BodyStrongTextBlockStyle}"
+                                           FontSize="14"
+                                           VerticalAlignment="Center" />
+                                <Slider x:Name="PageOverlayOpacitySlider" Width="220" Minimum="0.1" Maximum="1"
+                                        StepFrequency="0.05"
+                                        Value="{x:Bind ViewModel.PageOverlayTargetOpacity, Mode=TwoWay}" />
+                                <TextBlock
+                                    Text="{Binding Value, ElementName=PageOverlayOpacitySlider, Converter={StaticResource StringFormatConverter}, ConverterParameter='{}{0:P0}'}"
+                                    VerticalAlignment="Center" />
+                            </StackPanel>
+                        </StackPanel>
                     </StackPanel>
                 </Border>
 
@@ -946,6 +969,17 @@
                                  IsOpen="True"
                                  IsClosable="False"
                                  Margin="0,12,0,0" />
+
+                        <StackPanel Margin="0,16,0,0">
+                            <ToggleSwitch Header="显示侧边栏汉堡按钮"
+                                          OffContent="隐藏"
+                                          OnContent="显示"
+                                          IsOn="{x:Bind ViewModel.IsHamburgerButtonEnabled, Mode=TwoWay}" />
+                            <TextBlock Text="开启后侧边栏顶部显示展开/收起按钮，可展开侧边栏查看完整菜单文字"
+                                       Style="{ThemeResource CaptionTextBlockStyle}"
+                                       Opacity="0.7"
+                                       Margin="0,2,0,8" />
+                        </StackPanel>
                     </StackPanel>
                 </Border>
 

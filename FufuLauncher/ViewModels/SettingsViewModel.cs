@@ -110,6 +110,9 @@ namespace FufuLauncher.ViewModels
         [ObservableProperty] private bool _isMinWindowSizeLimitEnabled = true;
         [ObservableProperty] private double _globalBackgroundImageOpacity = 1.0;
         [ObservableProperty] private bool _isAcrylicOverlayEnabled;
+        [ObservableProperty] private bool _isPageOverlaySemiTransparentEnabled;
+        [ObservableProperty] private double _pageOverlayTargetOpacity = 0.7;
+        [ObservableProperty] private bool _isHamburgerButtonEnabled;
         
         [ObservableProperty] private bool _isHideGameNewsCardEnabled;
         [ObservableProperty] private bool _isHideCheckinCardEnabled;
@@ -818,6 +821,33 @@ namespace FufuLauncher.ViewModels
             WeakReferenceMessenger.Default.Send(new OverlayStyleChangedMessage(value));
         }
 
+        partial void OnIsPageOverlaySemiTransparentEnabledChanged(bool value)
+        {
+            if (_isInitializing) return;
+            _ = _localSettingsService.SaveSettingAsync("IsPageOverlaySemiTransparentEnabled", value);
+            WeakReferenceMessenger.Default.Send(new PageOverlayOpacityModeChangedMessage(value));
+        }
+
+        partial void OnPageOverlayTargetOpacityChanged(double value)
+        {
+            if (_isInitializing) return;
+            var clamped = Math.Clamp(value, 0.1, 1.0);
+            if (Math.Abs(clamped - value) > 0.0001)
+            {
+                PageOverlayTargetOpacity = clamped;
+                return;
+            }
+            _ = _localSettingsService.SaveSettingAsync("PageOverlayTargetOpacity", clamped);
+            WeakReferenceMessenger.Default.Send(new PageOverlayTargetOpacityChangedMessage(clamped));
+        }
+
+        partial void OnIsHamburgerButtonEnabledChanged(bool value)
+        {
+            if (_isInitializing) return;
+            _ = _localSettingsService.SaveSettingAsync("IsHamburgerButtonEnabled", value);
+            WeakReferenceMessenger.Default.Send(new HamburgerButtonVisibilityChangedMessage(value));
+        }
+
         private long GetDirectorySize(DirectoryInfo d)
         {
             long size = 0;
@@ -1042,6 +1072,18 @@ namespace FufuLauncher.ViewModels
             
             var acrylicOverlayJson = await _localSettingsService.ReadSettingAsync("IsAcrylicOverlayEnabled");
             IsAcrylicOverlayEnabled = acrylicOverlayJson != null && Convert.ToBoolean(acrylicOverlayJson);
+
+            var pageOverlaySemiTransparentJson = await _localSettingsService.ReadSettingAsync("IsPageOverlaySemiTransparentEnabled");
+            IsPageOverlaySemiTransparentEnabled = pageOverlaySemiTransparentJson != null && Convert.ToBoolean(pageOverlaySemiTransparentJson);
+
+            var pageOverlayTargetOpacityJson = await _localSettingsService.ReadSettingAsync("PageOverlayTargetOpacity");
+            if (pageOverlayTargetOpacityJson != null && double.TryParse(pageOverlayTargetOpacityJson.ToString(), out var pageOverlayOpacity))
+                PageOverlayTargetOpacity = Math.Clamp(pageOverlayOpacity, 0.1, 1.0);
+            else
+                PageOverlayTargetOpacity = 0.7;
+
+            var hamburgerButtonJson = await _localSettingsService.ReadSettingAsync("IsHamburgerButtonEnabled");
+            IsHamburgerButtonEnabled = hamburgerButtonJson != null && Convert.ToBoolean(hamburgerButtonJson);
             
             var launchOverlayColorJson = await _localSettingsService.ReadSettingAsync("LaunchButtonOverlayColor");
             LaunchButtonOverlayColor = launchOverlayColorJson?.ToString() ?? "#0078D7";

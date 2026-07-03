@@ -85,6 +85,8 @@
                         IsPaneToggleButtonVisible="False"
                         SelectionChanged="NavigationView_SelectionChanged"
                         Loaded="NavigationView_Loaded"
+                        PaneOpened="NavigationView_PaneOpened"
+                        PaneClosed="NavigationView_PaneClosed"
                         OpenPaneLength="150"
                         CompactPaneLength="60"
                         Background="{x:Null}"
