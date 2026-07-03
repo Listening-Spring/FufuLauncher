@@ -145,6 +145,10 @@ namespace FufuLauncher.ViewModels
 
         [ObservableProperty] private bool _useInjection;
 
+        [ObservableProperty] private string _injectionModule = "DLL";
+        [ObservableProperty] private ObservableCollection<InjectionModuleInfo> _availableInjectionModules = new();
+        public IRelayCommand<InjectionModuleInfo> SelectInjectionModuleCommand { get; }
+
         [ObservableProperty] private bool _preferVideoBackground = true;
 
         [ObservableProperty] private SolidColorBrush _gameNewsCardTextBrush = new(Microsoft.UI.Colors.White);
@@ -257,6 +261,9 @@ namespace FufuLauncher.ViewModels
             
             OpenPresetManagerCommand = new AsyncRelayCommand(OpenPresetManagerAsync);
             QuickSwitchPresetCommand = new RelayCommand<PresetModel>(QuickSwitchPreset);
+            SelectInjectionModuleCommand = new RelayCommand<InjectionModuleInfo>(SelectInjectionModule);
+
+            InitializeInjectionModules();
 
             WeakReferenceMessenger.Default.Register<GamePathChangedMessage>(this, (r, m) =>
             {
@@ -359,6 +366,7 @@ namespace FufuLauncher.ViewModels
             );
 
             UseInjection = getInjectionTask.Result;
+            await LoadInjectionModuleAsync();
             
             try
             {
@@ -1315,6 +1323,48 @@ private void QuickSwitchPreset(PresetModel targetPreset)
 
                 await UpdateUI(() => UpdateLaunchButtonState());
             });
+        }
+
+        private void InitializeInjectionModules()
+        {
+            AvailableInjectionModules = new ObservableCollection<InjectionModuleInfo>
+            {
+                new() { Id = "DLL", Name = "内置注入", Description = "使用内置引擎注入插件", IsSelected = true },
+                new() { Id = "EXE", Name = "独立注入", Description = "使用外部程序启动并注入", IsSelected = false }
+            };
+        }
+
+        private void SelectInjectionModule(InjectionModuleInfo module)
+        {
+            if (module == null) return;
+
+            InjectionModule = module.Id;
+
+            foreach (var m in AvailableInjectionModules)
+            {
+                m.IsSelected = m.Id == module.Id;
+            }
+
+            _ = _localSettingsService.SaveSettingAsync("InjectionModule", module.Id);
+        }
+
+        private async Task LoadInjectionModuleAsync()
+        {
+            try
+            {
+                var saved = await _localSettingsService.ReadSettingAsync("InjectionModule");
+                var moduleId = saved?.ToString() ?? "DLL";
+                InjectionModule = moduleId;
+
+                foreach (var m in AvailableInjectionModules)
+                {
+                    m.IsSelected = m.Id == moduleId;
+                }
+            }
+            catch
+            {
+                // ignored
+            }
         }
 
         private Task UpdateUI(Action uiAction)

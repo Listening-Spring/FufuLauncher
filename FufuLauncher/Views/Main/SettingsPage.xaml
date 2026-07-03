@@ -738,6 +738,24 @@
                         </StackPanel>
 
                         <StackPanel Style="{StaticResource SettingItemStyle}" Margin="0,24,0,0">
+                            <TextBlock Text="注入模块"
+                                       Style="{StaticResource SectionTitleStyle}"
+                                       VerticalAlignment="Center" />
+                            <ComboBox Header="选择注入模块"
+                                      x:Name="InjectionModuleComboBox"
+                                      Width="220"
+                                      SelectionChanged="InjectionModuleComboBox_SelectionChanged">
+                                <ComboBoxItem Content="内置注入" Tag="DLL" />
+                                <ComboBoxItem Content="独立注入" Tag="EXE" />
+                            </ComboBox>
+                            <TextBlock Text="内置注入通过启动器自身引擎加载插件；独立注入使用独立程序启动游戏并加载插件，适用于内置模式不兼容的情况。"
+                                       Style="{ThemeResource CaptionTextBlockStyle}"
+                                       Opacity="0.7"
+                                       TextWrapping="Wrap"
+                                       Margin="0,4,0,0" />
+                        </StackPanel>
+
+                        <StackPanel Style="{StaticResource SettingItemStyle}" Margin="0,24,0,0">
                             <TextBlock Text="兑换码提醒"
                                        Style="{StaticResource SectionTitleStyle}"
                                        VerticalAlignment="Center" />
