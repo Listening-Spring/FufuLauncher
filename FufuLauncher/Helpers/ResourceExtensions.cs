@@ -43,6 +43,9 @@ public static class ResourceExtensions
                 LoadResw(Path.Combine(exeDir, "Strings", "en-US", "Resources.resw"), "en-US");
                 LoadResw(Path.Combine(exeDir, "Strings", "fr-FR", "Resources.resw"), "fr-FR");
                 LoadResw(Path.Combine(exeDir, "Strings", "de-DE", "Resources.resw"), "de-DE");
+                LoadResw(Path.Combine(exeDir, "Strings", "ru-RU", "Resources.resw"), "ru-RU");
+                LoadResw(Path.Combine(exeDir, "Strings", "ja-JP", "Resources.resw"), "ja-JP");
+                LoadResw(Path.Combine(exeDir, "Strings", "zh-TW", "Resources.resw"), "zh-TW");
 
                 Debug.WriteLine($"[ResourceExt] Loaded {_resources.Count} language(s): {string.Join(", ", _resources.Keys)}");
             }

@@ -610,6 +610,8 @@ public partial class App : Application
                     AppLanguage.enUS => "en-US",
                     AppLanguage.fr => "fr-FR",
                     AppLanguage.de => "de-DE",
+                    AppLanguage.ru => "ru-RU",
+                    AppLanguage.ja => "ja-JP",
                     _ => Windows.System.UserProfile.GlobalizationPreferences.Languages.FirstOrDefault() ?? "zh-CN"
                 };
 
@@ -649,6 +651,8 @@ public partial class App : Application
                     AppLanguage.enUS => "en-US",
                     AppLanguage.fr => "fr-FR",
                     AppLanguage.de => "de-DE",
+                    AppLanguage.ru => "ru-RU",
+                    AppLanguage.ja => "ja-JP",
                     _ => Windows.System.UserProfile.GlobalizationPreferences.Languages.FirstOrDefault() ?? "zh-CN"
                 };
 

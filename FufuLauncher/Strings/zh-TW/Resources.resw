@@ -1,0 +1,1349 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="LanguageChangedTitle" xml:space="preserve"><value>語言已更改</value></data>
+  <data name="LanguageChangedMessage" xml:space="preserve"><value>語言設置已更改。由於技術限制，部分UI需要重啟才能完全生效。</value></data>
+  <data name="RestartNowBtn" xml:space="preserve"><value>立即重啟</value></data>
+  <data name="RestartLaterBtn" xml:space="preserve"><value>稍後手動重啟</value></data>
+  <data name="AppVersionFormat" xml:space="preserve"><value>版本 {0}</value></data>
+  <data name="InjectionSettingsNav" xml:space="preserve"><value>注入設置</value></data>
+  <data name="InjectionBuiltInDesc" xml:space="preserve"><value>使用內置引擎注入插件</value></data>
+  <data name="InjectionStandaloneDesc" xml:space="preserve"><value>使用外部程序啟動並注入</value></data>
+  <data name="AppDisplayName" xml:space="preserve"><value>芙芙啟動器</value></data>
+  <data name="Show" xml:space="preserve"><value>顯示</value></data>
+  <data name="Hide" xml:space="preserve"><value>隱藏</value></data>
+  <data name="Enabled" xml:space="preserve"><value>已啟用</value></data>
+  <data name="Disabled" xml:space="preserve"><value>已禁用</value></data>
+  <data name="ColorHex" xml:space="preserve"><value>顏色 (Hex)</value></data>
+  <data name="Opacity" xml:space="preserve"><value>透明度</value></data>
+  <data name="RestoreDefault" xml:space="preserve"><value>恢復默認</value></data>
+  <data name="Browse" xml:space="preserve"><value>瀏覽</value></data>
+  <data name="Clear" xml:space="preserve"><value>清除</value></data>
+  <data name="High" xml:space="preserve"><value>高</value></data>
+  <data name="SectionAppearance" xml:space="preserve"><value>外觀與個性化</value></data>
+  <data name="SectionHomeText" xml:space="preserve"><value>主頁文字樣式</value></data>
+  <data name="SectionLanguage" xml:space="preserve"><value>語言與區域</value></data>
+  <data name="SectionLaunchConfig" xml:space="preserve"><value>遊戲啟動配置</value></data>
+  <data name="SectionBackground" xml:space="preserve"><value>背景與視覺效果</value></data>
+  <data name="SectionWindowEffects" xml:space="preserve"><value>窗口效果</value></data>
+  <data name="SectionStartupSound" xml:space="preserve"><value>啟動音效</value></data>
+  <data name="SectionCheckinSettings" xml:space="preserve"><value>簽到配置</value></data>
+  <data name="SectionAdvancedOptions" xml:space="preserve"><value>高級選項</value></data>
+  <data name="SectionScreenshotSettings" xml:space="preserve"><value>截圖設置</value></data>
+  <data name="SectionUpdate" xml:space="preserve"><value>檢查更新</value></data>
+  <data name="SectionAbout" xml:space="preserve"><value>關於</value></data>
+  <data name="SectionSecurityAuth" xml:space="preserve"><value>開發者許可認證</value></data>
+  <data name="ThemeTitle" xml:space="preserve"><value>應用主題</value></data>
+  <data name="ThemeCaption" xml:space="preserve"><value>選擇應用程序的顯示主題</value></data>
+  <data name="ThemeLight" xml:space="preserve"><value>淺色模式</value></data>
+  <data name="ThemeDark" xml:space="preserve"><value>深色模式</value></data>
+  <data name="ThemeSystem" xml:space="preserve"><value>跟隨系統設置</value></data>
+  <data name="CustomThemeColorTitle" xml:space="preserve"><value>自定義軟件主題顏色</value></data>
+  <data name="CustomThemeColorCaption" xml:space="preserve"><value>選擇或輸入Hex顏色代碼。留空並重啟應用可恢復默認顏色</value></data>
+  <data name="HomeCardDisplayTitle" xml:space="preserve"><value>主頁卡片顯示</value></data>
+  <data name="HomeCardDisplayCaption" xml:space="preserve"><value>允許隱藏主頁的遊戲資訊卡片或簽到卡片</value></data>
+  <data name="HideGameNewsCard" xml:space="preserve"><value>隱藏遊戲資訊卡片</value></data>
+  <data name="HideCheckinCard" xml:space="preserve"><value>隱藏簽到卡片</value></data>
+  <data name="ShowPresetCard" xml:space="preserve"><value>顯示快速預設卡片</value></data>
+  <data name="ShowWidgetCard" xml:space="preserve"><value>顯示小工具卡片</value></data>
+  <data name="WidgetItemsTitle" xml:space="preserve"><value>小工具卡片顯示項</value></data>
+  <data name="WidgetItemsCaption" xml:space="preserve"><value>選擇要在小工具卡片中顯示的工具</value></data>
+  <data name="WidgetGacha" xml:space="preserve"><value>顯示抽卡記錄分析</value></data>
+  <data name="WidgetAchievement" xml:space="preserve"><value>顯示成就追蹤</value></data>
+  <data name="WidgetInventory" xml:space="preserve"><value>顯示背包物品</value></data>
+  <data name="WidgetPlayerRole" xml:space="preserve"><value>顯示角色練度查詢</value></data>
+  <data name="WidgetDailyNoteWindow" xml:space="preserve"><value>顯示旅行便籤</value></data>
+  <data name="WidgetVideo" xml:space="preserve"><value>顯示視頻資源庫</value></data>
+  <data name="WidgetBBS" xml:space="preserve"><value>顯示戰績信息</value></data>
+  <data name="LaunchButtonBgColorTitle" xml:space="preserve"><value>啟動按鈕背景顏色</value></data>
+  <data name="NotesItemsTitle" xml:space="preserve"><value>便籤卡片顯示項</value></data>
+  <data name="NotesItemsCaption" xml:space="preserve"><value>選擇要在便籤卡片中顯示的項目，最多選擇3個！</value></data>
+  <data name="NotesWarningTitle" xml:space="preserve"><value>注意</value></data>
+  <data name="NotesWarningMessage" xml:space="preserve"><value>便籤數據來自米遊社遊戲記錄接口，頻繁刷新可能觸發人機驗證，嚴重時風控可能導致戰績頁面暫時無法訪問。如遇此情況，請降低刷新頻率，等待一段時間後重試。</value></data>
+  <data name="HideNotesCard" xml:space="preserve"><value>隱藏便籤卡片</value></data>
+  <data name="ShowResin" xml:space="preserve"><value>顯示樹脂</value></data>
+  <data name="ShowDailyTasks" xml:space="preserve"><value>顯示每日委託</value></data>
+  <data name="ShowHomeCoin" xml:space="preserve"><value>顯示洞天寶錢</value></data>
+  <data name="ShowExpeditions" xml:space="preserve"><value>顯示探索派遣</value></data>
+  <data name="ShowTransformer" xml:space="preserve"><value>顯示參量質變儀</value></data>
+  <data name="NavItemsTitle" xml:space="preserve"><value>導航欄顯示項</value></data>
+  <data name="NavItemsCaption" xml:space="preserve"><value>選擇要在左側導航欄中顯示的項目。隱藏後不會影響功能使用，可在設置中重新開啟。主頁和設置中心不可隱藏。</value></data>
+  <data name="BgOverlayOpacityTitle" xml:space="preserve"><value>背景遮罩透明度</value></data>
+  <data name="FrameOpacityTitle" xml:space="preserve"><value>Frame 背景透明度</value></data>
+  <data name="BgImageOpacityTitle" xml:space="preserve"><value>背景圖片透明度</value></data>
+  <data name="MinimizeToTrayTitle" xml:space="preserve"><value>關閉後最小化至系統托盤</value></data>
+  <data name="RememberWindowSizeTitle" xml:space="preserve"><value>記住窗口大小</value></data>
+  <data name="MinWindowSizeLimitTitle" xml:space="preserve"><value>窗口最小大小限制</value></data>
+  <data name="GameNewsTextColorTitle" xml:space="preserve"><value>遊戲資訊卡片文字顏色與透明度</value></data>
+  <data name="LaunchBtnTextColorTitle" xml:space="preserve"><value>啟動按鈕文字顏色與透明度</value></data>
+  <data name="CheckinTextColorTitle" xml:space="preserve"><value>遊戲簽到文字顏色與透明度</value></data>
+  <data name="AppLangTitle" xml:space="preserve"><value>應用顯示語言</value></data>
+  <data name="AppLangCaption" xml:space="preserve"><value>重啟應用後生效</value></data>
+  <data name="LangZhCN" xml:space="preserve"><value>簡體中文（推薦）</value></data>
+  <data name="LangZhTW" xml:space="preserve"><value>繁體中文</value></data>
+  <data name="LangEnUS" xml:space="preserve"><value>English</value></data>
+  <data name="LangFr" xml:space="preserve"><value>Français</value></data>
+  <data name="LangDe" xml:space="preserve"><value>Deutsch</value></data>
+  <data name="LangRu" xml:space="preserve"><value>Русский</value></data>
+  <data name="LangJa" xml:space="preserve"><value>日本語</value></data>
+  <data name="LangDefault" xml:space="preserve"><value>使用系統默認語言</value></data>
+  <data name="LaunchWindowModeTitle" xml:space="preserve"><value>啟動窗口模式</value></data>
+  <data name="WindowModeNormal" xml:space="preserve"><value>普通窗口</value></data>
+  <data name="WindowModePopup" xml:space="preserve"><value>彈出窗口（無邊框）</value></data>
+  <data name="ResolutionTitle" xml:space="preserve"><value>遊戲分辨率</value></data>
+  <data name="ResolutionCaption" xml:space="preserve"><value>設置遊戲啟動時的窗口大小</value></data>
+  <data name="WidthLabel" xml:space="preserve"><value>寬度（像素）</value></data>
+  <data name="HeightLabel" xml:space="preserve"><value>高度（像素）</value></data>
+  <data name="QuickPresetsLabel" xml:space="preserve"><value>快速預設</value></data>
+  <data name="HdrTitle" xml:space="preserve"><value>HDR 亮度配置</value></data>
+  <data name="HdrCaption" xml:space="preserve"><value>調整遊戲內的 HDR 峰值亮度與 UI 亮度</value></data>
+  <data name="OpenHdrSettings" xml:space="preserve"><value>打開 HDR 設置</value></data>
+  <data name="TargetMonitorTitle" xml:space="preserve"><value>目標顯示器</value></data>
+  <data name="TargetMonitorCaption" xml:space="preserve"><value>指定遊戲啟動時所在的顯示器</value></data>
+  <data name="IdentifyMonitors" xml:space="preserve"><value>識別顯示器</value></data>
+  <data name="AdvLaunchArgsTitle" xml:space="preserve"><value>高級啟動參數</value></data>
+  <data name="AdvLaunchArgsCaption" xml:space="preserve"><value>自定義參數將追加到啟動命令後</value></data>
+  <data name="CustomLaunchArgsLabel" xml:space="preserve"><value>自定義啟動參數</value></data>
+  <data name="CustomLaunchArgsPlaceholder" xml:space="preserve"><value>例如：-fullscreen -high</value></data>
+  <data name="CustomLaunchArgsInfo" xml:space="preserve"><value>提示：參數將以空格追加到遊戲啟動命令後，請勿輸入遊戲路徑 如果點了沒反應，請多按幾下預設選項按鈕</value></data>
+  <data name="CustomExeNameTitle" xml:space="preserve"><value>自定義遊戲主程序名稱</value></data>
+  <data name="CustomExeNameCaption" xml:space="preserve"><value>修改此項可自定義檢測和啟動時的 exe 文件名。留空則使用默認值 (YuanShen.exe / GenshinImpact.exe)</value></data>
+  <data name="CustomExeNamePlaceholder" xml:space="preserve"><value>例如: YuanShen.exe</value></data>
+  <data name="InjectionModuleTitle" xml:space="preserve"><value>注入模塊</value></data>
+  <data name="InjectionModuleHeader" xml:space="preserve"><value>選擇注入模塊</value></data>
+  <data name="InjectionBuiltIn" xml:space="preserve"><value>內置注入</value></data>
+  <data name="InjectionStandalone" xml:space="preserve"><value>獨立注入</value></data>
+  <data name="InjectionCaption" xml:space="preserve"><value>內置注入通過啟動器自身引擎加載插件；獨立注入使用獨立程序啟動遊戲並加載插件，適用於內置模式不兼容的情況。</value></data>
+  <data name="RedeemReminderTitle" xml:space="preserve"><value>兌換碼提醒</value></data>
+  <data name="RedeemReminderToggle" xml:space="preserve"><value>新兌換碼發佈時即時提醒</value></data>
+  <data name="RedeemReminderCaption" xml:space="preserve"><value>開啟後，當有新的兌換碼發佈時，將在第一時間推送通知並顯示有效期倒計時。每期兌換碼僅通知一次。</value></data>
+  <data name="PostLaunchTitle" xml:space="preserve"><value>啟動後行為</value></data>
+  <data name="PostLaunchHeader" xml:space="preserve"><value>遊戲啟動後執行</value></data>
+  <data name="PostLaunchCaption" xml:space="preserve"><value>選擇啟動遊戲後啟動器的行為：最小化到系統托盤繼續運行，或保存狀態後完全退出。</value></data>
+  <data name="EnableCustomBg" xml:space="preserve"><value>啟用自定義背景</value></data>
+  <data name="BgSourceTitle" xml:space="preserve"><value>背景來源</value></data>
+  <data name="SelectCustomBgImage" xml:space="preserve"><value>選擇自定義背景圖片...</value></data>
+  <data name="ClearCustomBg" xml:space="preserve"><value>清除自定義背景</value></data>
+  <data name="BgSlideshowTitle" xml:space="preserve"><value>背景輪播模式</value></data>
+  <data name="SelectSlideshowFolder" xml:space="preserve"><value>選擇輪播圖片文件夾...</value></data>
+  <data name="ClearSlideshowFolder" xml:space="preserve"><value>清除輪播圖片文件夾</value></data>
+  <data name="SlideshowInterval" xml:space="preserve"><value>輪播間隔 (秒)</value></data>
+  <data name="OfficialBgServerTitle" xml:space="preserve"><value>官方背景服務器</value></data>
+  <data name="ServerCN" xml:space="preserve"><value>國服 (天空島)</value></data>
+  <data name="ServerGlobal" xml:space="preserve"><value>國際服 (提瓦特)</value></data>
+  <data name="OfficialBgApiTitle" xml:space="preserve"><value>官方背景 API</value></data>
+  <data name="OfficialBgApiCaption" xml:space="preserve"><value>留空使用當前服務器的默認 API。自定義 API 需要返回與官方 getAllGameBasicInfo 一致的數據結構。</value></data>
+  <data name="OfficialBgApiPlaceholder" xml:space="preserve"><value>輸入自定義官方背景 API 地址</value></data>
+  <data name="ResetBgApi" xml:space="preserve"><value>重置為默認 API</value></data>
+  <data name="FetchBgAssetsTitle" xml:space="preserve"><value>獲取官方背景資源</value></data>
+  <data name="DownloadBgImage" xml:space="preserve"><value>下載最新背景圖片</value></data>
+  <data name="DownloadBgVideo" xml:space="preserve"><value>下載最新背景視頻</value></data>
+  <data name="EnableAcrylicOverlay" xml:space="preserve"><value>啟用頁面亞克力模糊遮罩</value></data>
+  <data name="SolidColor" xml:space="preserve"><value>純色</value></data>
+  <data name="AcrylicBlur" xml:space="preserve"><value>亞克力模糊</value></data>
+  <data name="AcrylicOverlayNote" xml:space="preserve"><value>注意：當使用視頻背景時，為保證性能與顯示效果，將自動回退為純色半透明背景</value></data>
+  <data name="SemiTransparentOverlay" xml:space="preserve"><value>頁面遮罩半透明模式</value></data>
+  <data name="Opaque" xml:space="preserve"><value>不透明</value></data>
+  <data name="SemiTransparent" xml:space="preserve"><value>半透明</value></data>
+  <data name="SemiTransparentCaption" xml:space="preserve"><value>開啟後頁面遮罩將以半透明方式顯示，可透出背景圖片</value></data>
+  <data name="OverlayOpacityTitle" xml:space="preserve"><value>遮罩透明度</value></data>
+  <data name="BackdropTitle" xml:space="preserve"><value>窗口背景材質</value></data>
+  <data name="BackdropCaption" xml:space="preserve"><value>選擇窗口背景的視覺效果</value></data>
+  <data name="MicaOption" xml:space="preserve"><value>Mica (雲母)</value></data>
+  <data name="AcrylicOption" xml:space="preserve"><value>Acrylic (亞克力)</value></data>
+  <data name="MicaWarning" xml:space="preserve"><value>注意：Mica 效果僅在 Windows 11 上可用，舊版本系統可能會回退到純色。</value></data>
+  <data name="ShowHamburger" xml:space="preserve"><value>顯示側邊欄漢堡按鈕</value></data>
+  <data name="ShowHamburgerCaption" xml:space="preserve"><value>開啟後側邊欄頂部顯示展開/收起按鈕，可展開側邊欄查看完整菜單文字</value></data>
+  <data name="EnableStartupSound" xml:space="preserve"><value>啟用遊戲啟動音效</value></data>
+  <data name="SelectAudioFile" xml:space="preserve"><value>選擇音頻文件...</value></data>
+  <data name="ClearAudioFile" xml:space="preserve"><value>清除音頻文件</value></data>
+  <data name="GameCheckin" xml:space="preserve"><value>遊戲簽到</value></data>
+  <data name="GameCheckinCaption" xml:space="preserve"><value>領取米遊社每日簽到獎勵（原石、摩拉等）</value></data>
+  <data name="CommunityCheckin" xml:space="preserve"><value>社區簽到</value></data>
+  <data name="CommunityCheckinCaption" xml:space="preserve"><value>自動完成社區互動任務獲取米遊幣</value></data>
+  <data name="Like" xml:space="preserve"><value>點贊</value></data>
+  <data name="ReadPosts" xml:space="preserve"><value>看帖</value></data>
+  <data name="Share" xml:space="preserve"><value>分享</value></data>
+  <data name="CloudGameCheckin" xml:space="preserve"><value>雲遊戲簽到</value></data>
+  <data name="CloudGameCheckinCaption" xml:space="preserve"><value>領取雲遊戲簽到獎勵，需在下方賬號列表右側添加雲遊戲登錄憑證</value></data>
+  <data name="AutoCheckinOnLaunch" xml:space="preserve"><value>啟動時自動簽到</value></data>
+  <data name="AutoCheckinCaption" xml:space="preserve"><value>開啟後，將在應用啟動時自動檢測並在未簽到時執行簽到</value></data>
+  <data name="BatchCheckin" xml:space="preserve"><value>批量簽到</value></data>
+  <data name="BatchCheckinCaption" xml:space="preserve"><value>打開此開關則可為所有勾選的賬號執行指定的簽到任務，否則僅為當前賬號執行</value></data>
+  <data name="AccountListTitle" xml:space="preserve"><value>賬號列表</value></data>
+  <data name="AddCloudCredentialTooltip" xml:space="preserve"><value>添加雲遊戲憑證</value></data>
+  <data name="CaptchaQuestion" xml:space="preserve"><value>遇到驗證碼？</value></data>
+  <data name="CaptchaTooltip" xml:space="preserve"><value>遊戲簽到和社區簽到（概率較大）過程中可能會遇到驗證碼，需要配置真實設備信息降低風控頻率，或使用獨立部署版本配置打碼服務。</value></data>
+  <data name="SelfHostedVersion" xml:space="preserve"><value>獨立部署版本</value></data>
+  <data name="EnableBetterGI" xml:space="preserve"><value>啟用 BetterGI 聯動</value></data>
+  <data name="BetterGICaption" xml:space="preserve"><value>啟動遊戲時的同時打開BetterGI</value></data>
+  <data name="BetterGIDelayLabel" xml:space="preserve"><value>BetterGI啟動延遲 (秒)</value></data>
+  <data name="BetterGIDelayCaption" xml:space="preserve"><value>設為0可關閉延遲；延遲隻影響BetterGI</value></data>
+  <data name="BetterGICloseOnExit" xml:space="preserve"><value>退出遊戲時關閉BetterGI</value></data>
+  <data name="BetterGICloseOnExitCaption" xml:space="preserve"><value>點擊退出遊戲,自動關閉BetterGI</value></data>
+  <data name="BrowserCacheTitle" xml:space="preserve"><value>瀏覽器緩存清理</value></data>
+  <data name="BrowserCacheCaption" xml:space="preserve"><value>清理內置瀏覽器 (WebView2) 產生的緩存文件</value></data>
+  <data name="ClearCacheBtn" xml:space="preserve"><value>清除緩存</value></data>
+  <data name="ProcessPriorityTitle" xml:space="preserve"><value>程序性能優先級</value></data>
+  <data name="ProcessPriorityCaption" xml:space="preserve"><value>調整啟動器在系統中的CPU調度優先級（過高可能影響系統其他進程）</value></data>
+  <data name="PriorityNormal" xml:space="preserve"><value>正常 (默認)</value></data>
+  <data name="PriorityAboveNormal" xml:space="preserve"><value>高於正常</value></data>
+  <data name="CpuWarningTitle" xml:space="preserve"><value>CPU 佔用異常警告</value></data>
+  <data name="CpuWarningCaption" xml:space="preserve"><value>當啟動器 CPU 佔用持續超過閾值 5 分鐘，且未檢測到 OBS 時彈出置頂提示。默認開啟。</value></data>
+  <data name="EnableCpuWarning" xml:space="preserve"><value>啟用 CPU 佔用異常警告</value></data>
+  <data name="CpuWarningThreshold" xml:space="preserve"><value>警告閾值 (%)</value></data>
+  <data name="ConfigEditorBtn" xml:space="preserve"><value>配置編輯</value></data>
+  <data name="UpdateAchievementDbBtn" xml:space="preserve"><value>更新成就數據庫資源</value></data>
+  <data name="EnableInGameScreenshot" xml:space="preserve"><value>啟用遊戲內截圖</value></data>
+  <data name="ScreenshotCaption" xml:space="preserve"><value>啟動遊戲後通過快捷鍵截取遊戲窗口畫面，不會包含其他窗口內容</value></data>
+  <data name="ScreenshotHotkeyTitle" xml:space="preserve"><value>截圖快捷鍵</value></data>
+  <data name="ScreenshotHotkeyCaption" xml:space="preserve"><value>點擊下方按鈕後按下想要的快捷鍵組合（支持 Ctrl/Alt/Shift + 按鍵）</value></data>
+  <data name="RecordingHint" xml:space="preserve"><value>正在錄製，請按下快捷鍵...</value></data>
+  <data name="ScreenshotSaveLocTitle" xml:space="preserve"><value>截圖保存位置</value></data>
+  <data name="ScreenshotSaveLocCaption" xml:space="preserve"><value>自定義截圖文件的保存目錄，默認保存到 文檔/FufuScreenshots</value></data>
+  <data name="OpenScreenshotFolder" xml:space="preserve"><value>打開截圖文件夾</value></data>
+  <data name="VersionUpdateTitle" xml:space="preserve"><value>版本更新</value></data>
+  <data name="VersionUpdateCaption" xml:space="preserve"><value>檢查並獲取最新版本。點擊後將啟動更新程序</value></data>
+  <data name="AboutUsBtn" xml:space="preserve"><value>關於我們</value></data>
+  <data name="SecurityAuthCaption" xml:space="preserve"><value>通過開發者許可認證獲取部分特殊功能的使用權限</value></data>
+  <data name="SecurityAuthBtn" xml:space="preserve"><value>進行開發者許可認證</value></data>
+  <data name="PluginMgmtTitle" xml:space="preserve"><value>插件管理</value></data>
+  <data name="EnableInjectionTitle" xml:space="preserve"><value>啟用注入</value></data>
+  <data name="InjectionLoadCaption" xml:space="preserve"><value>啟動遊戲時加載插件</value></data>
+  <data name="GetPluginsLabel" xml:space="preserve"><value>獲取插件(Get Plugins)</value></data>
+  <data name="FreeCamHelpLabel" xml:space="preserve"><value>自由視角怎麼用</value></data>
+  <data name="AddPluginLabel" xml:space="preserve"><value>添加插件</value></data>
+  <data name="RefreshLabel" xml:space="preserve"><value>刷新</value></data>
+  <data name="OpenFolderLabel" xml:space="preserve"><value>打開文件夾</value></data>
+  <data name="SortLabel" xml:space="preserve"><value>排序</value></data>
+  <data name="SortByName" xml:space="preserve"><value>按名稱</value></data>
+  <data name="SortByStatus" xml:space="preserve"><value>按狀態 (啟用優先)</value></data>
+  <data name="SortBySize" xml:space="preserve"><value>按大小</value></data>
+  <data name="SortByDate" xml:space="preserve"><value>按修改時間</value></data>
+  <data name="RenameFolderLabel" xml:space="preserve"><value>重命名文件夾</value></data>
+  <data name="DeleteLabel" xml:space="preserve"><value>刪除</value></data>
+  <data name="EditConfigTooltip" xml:space="preserve"><value>編輯配置文件</value></data>
+  <data name="PluginSettingsLabel" xml:space="preserve"><value>插件設置</value></data>
+  <data name="EmptyPluginLibrary" xml:space="preserve"><value>插件庫空空如也</value></data>
+  <data name="PluginSafetyDisclaimer" xml:space="preserve"><value>請自行辨別插件安全性，對於因使用插件造成的任何損失，開發者概不負責</value></data>
+  <data name="DiagnosticsHint" xml:space="preserve"><value>如果遇到問題，請先點擊診斷電腦</value></data>
+  <data name="DiagnosticsBtn" xml:space="preserve"><value>診斷電腦</value></data>
+  <data name="ViewHelpTooltip" xml:space="preserve"><value>查看幫助</value></data>
+  <data name="GifInvalidError" xml:space="preserve"><value>配置的鏈接非有效GIF格式</value></data>
+  <data name="GifLoadFailedError" xml:space="preserve"><value>GIF資源加載失敗</value></data>
+  <data name="OnLabel" xml:space="preserve"><value>開</value></data>
+  <data name="OffLabel" xml:space="preserve"><value>關</value></data>
+  <data name="ConfigTargetLabel" xml:space="preserve"><value>配置目標:</value></data>
+  <data name="PluginFuFuMain" xml:space="preserve"><value>FuFuPlugin (主插件)</value></data>
+  <data name="PluginFPS" xml:space="preserve"><value>FPS (幀率插件)</value></data>
+  <data name="PluginAvatar" xml:space="preserve"><value>Avatar (千星頭像插件)</value></data>
+  <data name="ModifiedDateLabel" xml:space="preserve"><value>修改日期: </value></data>
+  <data name="FunctionsMenuBtn" xml:space="preserve"><value>功能(Download/Repair)</value></data>
+  <data name="DownloadPluginBtn" xml:space="preserve"><value>下載插件(Download)</value></data>
+  <data name="RepairFpsPluginBtn" xml:space="preserve"><value>修復FPS顯示插件(Repair)</value></data>
+  <data name="MainPluginEnabledLabel" xml:space="preserve"><value>主插件啟用</value></data>
+  <data name="FpsPluginEnabledLabel" xml:space="preserve"><value>FPS插件啟用</value></data>
+  <data name="AvatarPluginEnabledLabel" xml:space="preserve"><value>頭像插件啟用</value></data>
+  <data name="KeyInputModeLabel" xml:space="preserve"><value>鍵位輸入模式(列表)</value></data>
+  <data name="ListLabel" xml:space="preserve"><value>列表</value></data>
+  <data name="NumberLabel" xml:space="preserve"><value>數字</value></data>
+  <data name="AutoCreatePresetLabel" xml:space="preserve"><value>自動創建預設</value></data>
+  <data name="ShowDevFeaturesLabel" xml:space="preserve"><value>顯示開發者功能</value></data>
+  <data name="FeedbackBtn" xml:space="preserve"><value>有想法或遇到問題？點此反饋</value></data>
+  <data name="SubmitPRBtn" xml:space="preserve"><value>提交PR</value></data>
+  <data name="EnableInjectionParenLabel" xml:space="preserve"><value>啟用注入(Injection)</value></data>
+  <data name="ConfigPresetLabel" xml:space="preserve"><value>配置預設:</value></data>
+  <data name="SwitchPresetTooltip" xml:space="preserve"><value>點擊切換至此預設</value></data>
+  <data name="LockedTag" xml:space="preserve"><value>[鎖定]</value></data>
+  <data name="DeletePresetTooltip" xml:space="preserve"><value>刪除此預設</value></data>
+  <data name="NewPresetBtn" xml:space="preserve"><value>新建預設</value></data>
+  <data name="ResetAllBtn" xml:space="preserve"><value>重置全部</value></data>
+  <data name="AvatarSettingsTitle" xml:space="preserve"><value>頭像替換設置 (根據需要上傳對應尺寸)</value></data>
+  <data name="ImportBtn" xml:space="preserve"><value>導入</value></data>
+  <data name="CropBtn" xml:space="preserve"><value>裁剪</value></data>
+  <data name="AvatarFormatsNote" xml:space="preserve"><value>支持格式: PNG, JPG, BMP, WEBP.修改後在下次進遊戲時生效</value></data>
+  <data name="CropAvatarTitle" xml:space="preserve"><value>調整頭像</value></data>
+  <data name="SaveCurrentSizeBtn" xml:space="preserve"><value>保存當前尺寸</value></data>
+  <data name="BatchApplyAllBtn" xml:space="preserve"><value>批量應用到全部尺寸</value></data>
+  <data name="CancelBtn" xml:space="preserve"><value>取消</value></data>
+  <data name="CropHint" xml:space="preserve"><value>* 請在方框內拖動或使用Ctrl+鼠標滾輪縮放調整裁切位置</value></data>
+  <data name="Plugin_FpsUnlock" xml:space="preserve"><value>解鎖幀率限制</value></data>
+  <data name="Plugin_TargetFps" xml:space="preserve"><value>目標幀率</value></data>
+  <data name="Plugin_VSync" xml:space="preserve"><value>禁用垂直同步</value></data>
+  <data name="Plugin_TouchScreen" xml:space="preserve"><value>啟用手機端UI模式</value></data>
+  <data name="Plugin_FovUnlock" xml:space="preserve"><value>啟用廣角修改</value></data>
+  <data name="Plugin_FovValue" xml:space="preserve"><value>自定義廣角數值</value></data>
+  <data name="Plugin_DisableDamageText" xml:space="preserve"><value>禁用傷害跳字顯示</value></data>
+  <data name="Plugin_DisableCameraMove" xml:space="preserve"><value>禁用鏡頭移動(大招動畫)</value></data>
+  <data name="Plugin_DisableFog" xml:space="preserve"><value>禁用霧氣效果</value></data>
+  <data name="Plugin_DisableCharFade" xml:space="preserve"><value>反角色虛化</value></data>
+  <data name="Plugin_RedirectCraft" xml:space="preserve"><value>啟用合成臺重定向</value></data>
+  <data name="Plugin_RemoveTeamAnim" xml:space="preserve"><value>移除隊伍打開加載條</value></data>
+  <data name="Plugin_HideGrass" xml:space="preserve"><value>隱藏草地</value></data>
+  <data name="Plugin_HideGrassIndiscriminate" xml:space="preserve"><value>無差別隱藏草</value></data>
+  <data name="Plugin_EnableCustomTitle" xml:space="preserve"><value>啟用自定義窗口標題</value></data>
+  <data name="Plugin_CustomTitleText" xml:space="preserve"><value>自定義標題內容</value></data>
+  <data name="Plugin_ToggleKey" xml:space="preserve"><value>配置重載熱鍵</value></data>
+  <data name="Plugin_CraftKey" xml:space="preserve"><value>合成臺熱鍵</value></data>
+  <data name="Plugin_HideQuestBanner" xml:space="preserve"><value>隱藏任務橫幅</value></data>
+  <data name="Plugin_FovLimitCheck" xml:space="preserve"><value>廣角特殊視角修復</value></data>
+  <data name="Plugin_HideUID" xml:space="preserve"><value>隱藏右下角UID</value></data>
+  <data name="Plugin_ClockSpeedup" xml:space="preserve"><value>快速調整時間</value></data>
+  <data name="Plugin_AutoCook" xml:space="preserve"><value>快捷打開烹飪界面</value></data>
+  <data name="Plugin_AutoExpedition" xml:space="preserve"><value>快捷打開探索派遣界面</value></data>
+  <data name="Plugin_AutoCookKey" xml:space="preserve"><value>打開烹飪界面快捷鍵</value></data>
+  <data name="Plugin_AutoExpeditionKey" xml:space="preserve"><value>打開探索派遣界面快捷鍵</value></data>
+  <data name="Plugin_DisableUnderwaterMask" xml:space="preserve"><value>禁用下水遮罩</value></data>
+  <data name="Plugin_EnableRainbowDamage" xml:space="preserve"><value>啟用傷害跳字顏色修改</value></data>
+  <data name="Plugin_RainbowDamageMode" xml:space="preserve"><value>0動態循環 1固定顏色</value></data>
+  <data name="Plugin_RainbowFixedColorIdx" xml:space="preserve"><value>固定顏色索引(0至7)</value></data>
+  <data name="Plugin_NetworkToggleKey" xml:space="preserve"><value>遊戲網絡中斷快捷鍵(DEV)</value></data>
+  <data name="Plugin_BlockNetwork" xml:space="preserve"><value>遊戲網絡中斷快捷模式(DEV)</value></data>
+  <data name="Plugin_EnableNetworkToggle" xml:space="preserve"><value>遊戲網絡中斷(DEV)</value></data>
+  <data name="Plugin_DebugConsole" xml:space="preserve"><value>啟用調試窗口(DEV)</value></data>
+  <data name="Plugin_DumpOffsets" xml:space="preserve"><value>DumpOffsets(DEV)</value></data>
+  <data name="PageTitle_GameSettings" xml:space="preserve"><value>遊戲設置</value></data>
+  <data name="SectionGameInstallPath" xml:space="preserve"><value>遊戲安裝位置</value></data>
+  <data name="SelectExeFolderPlaceholder" xml:space="preserve"><value>請選擇 YuanShen.exe 所在文件夾...</value></data>
+  <data name="ApplyBtn" xml:space="preserve"><value>應用</value></data>
+  <data name="ClearGamePathTooltip" xml:space="preserve"><value>清空已設置的遊戲目錄</value></data>
+  <data name="ConfigureGamePathFirst" xml:space="preserve"><value>請先配置遊戲路徑</value></data>
+  <data name="ClientStatusTitle" xml:space="preserve"><value>客戶端狀態</value></data>
+  <data name="CurrentVersionLabel" xml:space="preserve"><value>當前版本</value></data>
+  <data name="ServerLabel" xml:space="preserve"><value>服務器</value></data>
+  <data name="DiskUsageLabel" xml:space="preserve"><value>佔用空間</value></data>
+  <data name="LatestVersionLabel" xml:space="preserve"><value>最新版本</value></data>
+  <data name="CheckingEllipsis" xml:space="preserve"><value>檢查中...</value></data>
+  <data name="PreDownloadLabel" xml:space="preserve"><value>預下載資源</value></data>
+  <data name="LatestRedeemCodesTitle" xml:space="preserve"><value>最新兌換碼</value></data>
+  <data name="CopyBtn" xml:space="preserve"><value>複製</value></data>
+  <data name="NoCodesAvailable" xml:space="preserve"><value>暫無可用兌換碼</value></data>
+  <data name="AccountSwitchTitle" xml:space="preserve"><value>賬號切換</value></data>
+  <data name="ReadFromLocalTooltip" xml:space="preserve"><value>從本地讀取</value></data>
+  <data name="RefreshListTooltip" xml:space="preserve"><value>刷新列表</value></data>
+  <data name="DoubleClickToEditTooltip" xml:space="preserve"><value>雙擊可編輯備註</value></data>
+  <data name="SwitchBtn" xml:space="preserve"><value>切換</value></data>
+  <data name="ResourceMgmtTitle" xml:space="preserve"><value>資源管理</value></data>
+  <data name="DownloadOrVerifyFiles" xml:space="preserve"><value>下載或驗證文件</value></data>
+  <data name="SwitchServerTitle" xml:space="preserve"><value>切換服務器</value></data>
+  <data name="ServerSwitchCaption" xml:space="preserve"><value>官服 / B服 / 國際服互轉</value></data>
+  <data name="MapToolsTitle" xml:space="preserve"><value>地圖工具</value></data>
+  <data name="ViewTeyvatMap" xml:space="preserve"><value>查看提瓦特地圖</value></data>
+  <data name="OfficialAnnouncementsTitle" xml:space="preserve"><value>官方公告</value></data>
+  <data name="EventsAndUpdatesCaption" xml:space="preserve"><value>活動與更新資訊</value></data>
+  <data name="VerifyGameTitle" xml:space="preserve"><value>校驗遊戲</value></data>
+  <data name="VerifyAndRepairCaption" xml:space="preserve"><value>校驗並修復遊戲文件</value></data>
+  <data name="CreateShortcutTitle" xml:space="preserve"><value>創建快捷方式啟動</value></data>
+  <data name="CreateShortcutCaption" xml:space="preserve"><value>在桌面生成一鍵注入快捷啟動方式</value></data>
+  <data name="FpsMonitorTitle" xml:space="preserve"><value>遊戲內幀數 (FPS) 監控</value></data>
+  <data name="FpsMonitorCaption" xml:space="preserve"><value>開啟後將在遊戲運行時於屏幕左上角顯示實時幀數（需要管理員權限）</value></data>
+  <data name="Err_GamePathNotFound" xml:space="preserve"><value>未找到遊戲路徑，請先在設置中指定遊戲位置</value></data>
+  <data name="Title_VerifyGameIntegrity" xml:space="preserve"><value>校驗遊戲完整性</value></data>
+  <data name="Err_GamePathNotSet" xml:space="preserve"><value>未設置遊戲路徑。</value></data>
+  <data name="Err_ExeNotFoundInFolder_Format" xml:space="preserve"><value>在文件夾中找不到遊戲主程序：
+{0}</value></data>
+  <data name="Placeholder_DefaultUseCurrentPreset" xml:space="preserve"><value>默認使用當前應用內的預設</value></data>
+  <data name="None_Value" xml:space="preserve"><value>無</value></data>
+  <data name="Msg_ChooseShortcutAction" xml:space="preserve"><value>請選擇您想要執行的操作：
+
+你需要創建桌面快捷方式：直接在桌面生成圖標（將以管理員權限運行）？
+還是複製啟動命令：獲取完整命令行，可用於 Steam 或 腳本？</value></data>
+  <data name="Msg_ImportedLaunchParams_Format" xml:space="preserve"><value>已導入啟動參數：{0}</value></data>
+  <data name="Label_SpecifyInjectionPreset" xml:space="preserve"><value>指定注入配置（預設）：</value></data>
+  <data name="Title_ChooseAction" xml:space="preserve"><value>選擇操作</value></data>
+  <data name="Btn_CreateDesktopShortcut" xml:space="preserve"><value>創建桌面快捷方式</value></data>
+  <data name="Btn_CopyLaunchCommand" xml:space="preserve"><value>複製啟動命令</value></data>
+  <data name="FileName_ShortcutName" xml:space="preserve"><value>快捷啟動原神.lnk</value></data>
+  <data name="Desc_ShortcutDescription" xml:space="preserve"><value>通過 FufuLauncher 注入啟動原神</value></data>
+  <data name="Title_ShortcutCreated" xml:space="preserve"><value>快捷方式已創建</value></data>
+  <data name="Msg_ShortcutCreated" xml:space="preserve"><value>已創建桌面快捷方式，默認將以管理員權限運行。請檢查你的電腦桌面</value></data>
+  <data name="Title_LaunchCommand" xml:space="preserve"><value>啟動命令</value></data>
+  <data name="Msg_LaunchCommandInstructions" xml:space="preserve"><value>以下是啟動命令，您可以直接在 CMD、PowerShell 或 Steam 的非 Steam 遊戲目標中使用：</value></data>
+  <data name="Btn_CopyAndClose" xml:space="preserve"><value>複製並關閉</value></data>
+  <data name="CloseBtn" xml:space="preserve"><value>關閉</value></data>
+  <data name="Err_OperationFailed_Format" xml:space="preserve"><value>操作失敗: {0}</value></data>
+  <data name="Err_FpsMonitorNeedsAdmin" xml:space="preserve"><value>開啟幀數監控失敗：該功能需要以管理員身份運行啟動器。</value></data>
+  <data name="Msg_NoNewRedeemCodes" xml:space="preserve"><value>當前沒有新的兌換碼</value></data>
+  <data name="Err_FetchFailedCheckNetwork" xml:space="preserve"><value>獲取失敗，請檢查網絡</value></data>
+  <data name="Btn_Copied" xml:space="preserve"><value>已複製</value></data>
+  <data name="Title_PathError" xml:space="preserve"><value>路徑錯誤</value></data>
+  <data name="Err_CannotCreateGameDir_Format" xml:space="preserve"><value>無法創建遊戲目錄: {0}
+錯誤: {1}</value></data>
+  <data name="Err_ConfigIniNotFound_Format" xml:space="preserve"><value>無法找到 config.ini 配置文件。
+
+嘗試尋找的路徑是：
+{0}
+
+請檢查您的遊戲路徑設置是否正確指向了遊戲安裝目錄</value></data>
+  <data name="Msg_GlobalClientNoSwitchToBili" xml:space="preserve"><value>當前為國際服客戶端，不允許切換到B服，請通過服務器轉換來切換到中國服務器！</value></data>
+  <data name="Btn_SwitchToOfficialServer" xml:space="preserve"><value>切換到 官方服務器</value></data>
+  <data name="Label_ChooseTargetServer" xml:space="preserve"><value>請選擇你要切換到的服務器：</value></data>
+  <data name="Btn_SwitchToBiliServer" xml:space="preserve"><value>切換到B服</value></data>
+  <data name="Btn_ConvertBetweenGlobalAndCN" xml:space="preserve"><value>國際服和國服互相轉換</value></data>
+  <data name="Title_Convert" xml:space="preserve"><value>轉換</value></data>
+  <data name="ServerType_Unknown" xml:space="preserve"><value>未知服務器</value></data>
+  <data name="ServerType_Global" xml:space="preserve"><value>國際服務器</value></data>
+  <data name="ServerType_Bilibili" xml:space="preserve"><value>Bilibili 服</value></data>
+  <data name="ServerType_Official" xml:space="preserve"><value>官方服務器</value></data>
+  <data name="ServerType_CustomOther_Format" xml:space="preserve"><value>自定義/其他 (Channel: {0})</value></data>
+  <data name="Err_ReadConfigFailed" xml:space="preserve"><value>讀取配置文件失敗</value></data>
+  <data name="Title_TeyvatMap" xml:space="preserve"><value>提瓦特大地圖</value></data>
+  <data name="Title_GlobalClient" xml:space="preserve"><value>國際服客戶端</value></data>
+  <data name="Msg_GlobalClientInjectionWarning" xml:space="preserve"><value>注意：本啟動器的注入功能主要是針對國服設計的。在國際服客戶端上，此功能可能無法生效或導致未知的錯誤。
+
+是否繼續使用此路徑？</value></data>
+  <data name="Btn_ContinueUsing" xml:space="preserve"><value>繼續使用</value></data>
+  <data name="Btn_DiscardAndClear" xml:space="preserve"><value>放棄並清除</value></data>
+  <data name="Title_InvalidGamePath" xml:space="preserve"><value>無效的遊戲路徑</value></data>
+  <data name="Err_ExeNotFoundAtPath_Format" xml:space="preserve"><value>在該路徑下未找到遊戲主程序 ({0})。
+
+請確認您選擇的是包含遊戲可執行文件的安裝目錄，或前往設置中配置自定義名稱。</value></data>
+  <data name="Title_InvalidPath" xml:space="preserve"><value>無效路徑</value></data>
+  <data name="Msg_PathDoesNotExist" xml:space="preserve"><value>輸入的路徑不存在，請檢查路徑是否正確。</value></data>
+  <data name="OkBtn" xml:space="preserve"><value>確定</value></data>
+  <data name="Err_PathProcessingFailed_Format" xml:space="preserve"><value>路徑處理失敗: {0}</value></data>
+  <data name="Title_AutoFoundGamePath" xml:space="preserve"><value>自動找到遊戲路徑</value></data>
+  <data name="Msg_DetectedPossiblePath_Format" xml:space="preserve"><value>檢測到可能的安裝路徑：
+
+{0}
+
+是否應用此路徑？</value></data>
+  <data name="Btn_SelectManually" xml:space="preserve"><value>手動選擇</value></data>
+  <data name="ErrorTitle" xml:space="preserve"><value>錯誤</value></data>
+  <data name="Err_CannotOpenFilePicker" xml:space="preserve"><value>無法打開文件選擇器</value></data>
+  <data name="Msg_VersionInfoNotFound" xml:space="preserve"><value>未找到版本信息</value></data>
+  <data name="UnknownGeneric" xml:space="preserve"><value>未知</value></data>
+  <data name="FetchFailedShort" xml:space="preserve"><value>獲取失敗</value></data>
+  <data name="Msg_HasVersion_Format" xml:space="preserve"><value>有 (版本 {0})</value></data>
+  <data name="NotAvailableGeneric" xml:space="preserve"><value>暫無</value></data>
+  <data name="ServerType_MainlandChina" xml:space="preserve"><value>中國大陸服務器</value></data>
+  <data name="Msg_CannotCalculate" xml:space="preserve"><value>無法計算</value></data>
+  <data name="Err_CannotAccessRegistry" xml:space="preserve"><value>無法訪問註冊表</value></data>
+  <data name="Err_NoLoggedInAccount" xml:space="preserve"><value>當前沒有登錄的賬號信息（註冊表數據為空）</value></data>
+  <data name="Err_AccountAlreadySaved" xml:space="preserve"><value>該賬號已經保存過了，無需重複保存。</value></data>
+  <data name="Placeholder_EnterAccountName" xml:space="preserve"><value>請輸入賬號名稱 (例如: 大號 / 小號)</value></data>
+  <data name="Title_SaveNewAccount" xml:space="preserve"><value>保存新賬號</value></data>
+  <data name="SaveBtn" xml:space="preserve"><value>保存</value></data>
+  <data name="Prefix_Account_Format" xml:space="preserve"><value>賬號_{0}</value></data>
+  <data name="Err_SaveFailed_Format" xml:space="preserve"><value>保存失敗: {0}</value></data>
+  <data name="Title_SwitchSuccess" xml:space="preserve"><value>切換成功</value></data>
+  <data name="Msg_SwitchedToAccount_Format" xml:space="preserve"><value>已切換到: {0}
+
+必須重啟遊戲才能生效！</value></data>
+  <data name="Btn_GotIt" xml:space="preserve"><value>我知道了</value></data>
+  <data name="Err_SwitchFailed_Format" xml:space="preserve"><value>切換失敗: {0}</value></data>
+  <data name="Title_ConfirmDelete" xml:space="preserve"><value>確認刪除</value></data>
+  <data name="Msg_DeleteAccountConfirm_Format" xml:space="preserve"><value>刪除賬號 &apos;{0}&apos; ？</value></data>
+  <data name="Err_DeleteFailed_Format" xml:space="preserve"><value>刪除失敗: {0}</value></data>
+  <data name="Title_OperationFailed" xml:space="preserve"><value>操作失敗</value></data>
+  <data name="NavHome" xml:space="preserve"><value>主頁</value></data>
+  <data name="NavControlPanel" xml:space="preserve"><value>控制面板</value></data>
+  <data name="NavAccountSettings" xml:space="preserve"><value>賬戶設置</value></data>
+  <data name="NavOtherFeatures" xml:space="preserve"><value>其他功能</value></data>
+  <data name="NavDataCenter" xml:space="preserve"><value>數據中心</value></data>
+  <data name="NavHelpDocs" xml:space="preserve"><value>幫助文檔</value></data>
+  <data name="NavCalculator" xml:space="preserve"><value>養成計算</value></data>
+  <data name="NavSettings" xml:space="preserve"><value>設置中心</value></data>
+  <data name="NavCommunity" xml:space="preserve"><value>社區</value></data>
+  <data name="TrayShowWindow" xml:space="preserve"><value>顯示主界面</value></data>
+  <data name="TrayExit" xml:space="preserve"><value>退出</value></data>
+  <data name="SysStatusChecking" xml:space="preserve"><value>網絡狀態檢測中...</value></data>
+  <data name="NotificationCenter" xml:space="preserve"><value>通知中心</value></data>
+  <data name="ClearAllBtn" xml:space="preserve"><value>全部清除</value></data>
+  <data name="NetDisconnected" xml:space="preserve"><value>網絡連接已斷開，請檢測你的網絡設置</value></data>
+  <data name="NetProxyWarning" xml:space="preserve"><value>正在使用代理網絡連接，請注意你的流量消耗</value></data>
+  <data name="AdminWarningTitle" xml:space="preserve"><value>警告</value></data>
+  <data name="AdminWarningContent" xml:space="preserve"><value>程序正以管理員身份運行，可能會影響部分功能，例如你的文件選擇有問題</value></data>
+  <data name="DontShowAgain" xml:space="preserve"><value>不再顯示</value></data>
+  <data name="GotItBtn" xml:space="preserve"><value>我知道了</value></data>
+  <data name="VcRuntimeMissingTitle" xml:space="preserve"><value>缺少 C++ 運行庫</value></data>
+  <data name="VcRuntimeMissingContent" xml:space="preserve"><value>系統未安裝 C++ VC14 運行庫，這會導致本程序的注入功能無法正常使用
+
+是否前往微軟官網下載並安裝？</value></data>
+  <data name="GoToDownload" xml:space="preserve"><value>前往下載(X64)</value></data>
+  <data name="DontRemindAgain" xml:space="preserve"><value>不再提示</value></data>
+  <data name="IgnoreWarning" xml:space="preserve"><value>忽略警告</value></data>
+  <data name="AppDisplayNameAdmin" xml:space="preserve"><value>芙芙啟動器 [管理員]</value></data>
+  <data name="HiddenFeatureTitle" xml:space="preserve"><value>無法訪問</value></data>
+  <data name="HiddenFeatureMessage" xml:space="preserve"><value>該功能已被隱藏，請在設置中重新開啟</value></data>
+  <data name="RedeemCodeExpired" xml:space="preserve"><value>兌換碼失效提醒</value></data>
+  <data name="RedeemCodeToday" xml:space="preserve"><value>今日兌換碼提醒</value></data>
+  <data name="RedeemCodeNew" xml:space="preserve"><value>新兌換碼已發佈</value></data>
+  <data name="RedeemCodeExpiring" xml:space="preserve"><value>兌換碼即將失效</value></data>
+  <data name="HomeTab_Events" xml:space="preserve"><value>活動</value></data>
+  <data name="HomeTab_Announcements" xml:space="preserve"><value>公告</value></data>
+  <data name="HomeTab_News" xml:space="preserve"><value>資訊</value></data>
+  <data name="Home_CheckinCard" xml:space="preserve"><value>原神簽到</value></data>
+  <data name="Home_RefreshToken" xml:space="preserve"><value>刷新Token</value></data>
+  <data name="Home_GoToCheckinConfig" xml:space="preserve"><value>進入簽到配置</value></data>
+  <data name="Home_RewardsCalendar" xml:space="preserve"><value>獎勵日曆</value></data>
+  <data name="Home_DailyNotesCard" xml:space="preserve"><value>原神便籤</value></data>
+  <data name="Home_RefreshNotes" xml:space="preserve"><value>刷新便籤</value></data>
+  <data name="Home_NoData" xml:space="preserve"><value>無數據</value></data>
+  <data name="Home_Resin" xml:space="preserve"><value>樹脂</value></data>
+  <data name="Home_DailyQuests" xml:space="preserve"><value>每日委託</value></data>
+  <data name="Home_RealmCurrency" xml:space="preserve"><value>洞天寶錢</value></data>
+  <data name="Home_Expeditions" xml:space="preserve"><value>探索派遣</value></data>
+  <data name="Home_Transformer" xml:space="preserve"><value>參量質變儀</value></data>
+  <data name="Home_ToggleBg" xml:space="preserve"><value>切換背景</value></data>
+  <data name="Home_ScreenshotFolder" xml:space="preserve"><value>截圖文件夾</value></data>
+  <data name="Home_Widgets" xml:space="preserve"><value>小工具</value></data>
+  <data name="Home_WidgetGacha" xml:space="preserve"><value>抽卡記錄分析</value></data>
+  <data name="Home_WidgetAchievement" xml:space="preserve"><value>成就追蹤</value></data>
+  <data name="Home_WidgetInventory" xml:space="preserve"><value>背包物品</value></data>
+  <data name="Home_WidgetPlayerRole" xml:space="preserve"><value>角色練度查詢</value></data>
+  <data name="Home_WidgetNotes" xml:space="preserve"><value>旅行便籤</value></data>
+  <data name="Home_WidgetVideo" xml:space="preserve"><value>視頻資源庫</value></data>
+  <data name="Home_WidgetBBS" xml:space="preserve"><value>戰績信息</value></data>
+  <data name="Home_AddWidget" xml:space="preserve"><value>增加小工具</value></data>
+  <data name="Home_RemoveWidget" xml:space="preserve"><value>移除小工具</value></data>
+  <data name="Home_ToggleTooltip" xml:space="preserve"><value>切換詳細功能提示</value></data>
+  <data name="Home_QuickPresets" xml:space="preserve"><value>快速預設</value></data>
+  <data name="Home_ManagePresets" xml:space="preserve"><value>管理</value></data>
+  <data name="Home_NoPresetsPinned" xml:space="preserve"><value>未固定任何預設</value></data>
+  <data name="Home_SwitchServer" xml:space="preserve"><value>切換到 {0} 服</value></data>
+  <data name="Home_SwitchOfficial" xml:space="preserve"><value>切換到 官方服務器</value></data>
+  <data name="Home_SwitchBilibili" xml:space="preserve"><value>切換到 Bilibili 服</value></data>
+  <data name="Home_SwitchSuccess" xml:space="preserve"><value>切換成功</value></data>
+  <data name="Home_SwitchedTo_Format" xml:space="preserve"><value>已成功切換至 {0} 服。{1}</value></data>
+  <data name="Home_SwitchFailed" xml:space="preserve"><value>切換失敗</value></data>
+  <data name="Home_RefreshFailed" xml:space="preserve"><value>刷新失敗</value></data>
+  <data name="Home_NoActiveAccount" xml:space="preserve"><value>沒有活躍賬戶</value></data>
+  <data name="Home_CannotLoadCredentials" xml:space="preserve"><value>無法加載賬戶憑證</value></data>
+  <data name="Home_BBSSecurityTitle" xml:space="preserve"><value>安全提示</value></data>
+  <data name="Home_BBSSecurityMessage" xml:space="preserve"><value>進入戰績信息頁面可能會導致您的賬戶被標註為風險賬戶，進而導致部分功能（如某些自動化工具或特定網頁訪問）無法正常使用，是否確認繼續？</value></data>
+  <data name="Home_BBSConfirm" xml:space="preserve"><value>確認繼續</value></data>
+  <data name="Home_ErrNoGamePath" xml:space="preserve"><value>未找到有效的遊戲路徑，請先在設置頁設置遊戲位置</value></data>
+  <data name="Home_ErrConfigNotFound" xml:space="preserve"><value>無法找到 config.ini 配置文件，無法切換服務器</value></data>
+  <data name="Home_ErrSwitchException" xml:space="preserve"><value>準備切換時發生異常</value></data>
+  <data name="Home_OfficialServer" xml:space="preserve"><value>官服</value></data>
+  <data name="Home_BilibiliServer" xml:space="preserve"><value>B服</value></data>
+  <data name="Home_Deployed" xml:space="preserve"><value>已部署</value></data>
+  <data name="Home_Cleaned" xml:space="preserve"><value>已清理</value></data>
+  <data name="Home_OpenLink" xml:space="preserve"><value>打開鏈接</value></data>
+  <data name="Home_OpenLinkFailed" xml:space="preserve"><value>打開鏈接失敗</value></data>
+  <data name="Home_GachaTooltip" xml:space="preserve"><value>抽卡記錄分析：分析遊戲內的祈願記錄，展示抽卡數據情況</value></data>
+  <data name="Home_AchievementTooltip" xml:space="preserve"><value>成就追蹤：追蹤遊戲內成就的完成進度，支持導出與導入</value></data>
+  <data name="Home_InventoryTooltip" xml:space="preserve"><value>背包物品：查看當前賬號遊戲內背包中的材料</value></data>
+  <data name="Home_PlayerRoleTooltip" xml:space="preserve"><value>角色練度查詢：查詢已擁有角色的等級、命座、武器及聖遺物搭配情況</value></data>
+  <data name="Home_NotesTooltip" xml:space="preserve"><value>旅行便籤：獨立窗口顯示當前開放的角色材料秘境等實時數據</value></data>
+  <data name="Home_VideoTooltip" xml:space="preserve"><value>視頻資源庫：可查看各類遊戲角色或者遊戲內過場動畫</value></data>
+  <data name="Home_BBSTooltip" xml:space="preserve"><value>戰績信息：查詢深淵、幻想真境劇詩等詳細戰績數據</value></data>
+  <data name="OtherPage_Title" xml:space="preserve"><value>其他設置</value></data>
+  <data name="OtherPage_ExternalPrograms" xml:space="preserve"><value>外部程序</value></data>
+  <data name="OtherPage_AdditionalProgramLaunch" xml:space="preserve"><value>附加程序啟動</value></data>
+  <data name="OtherPage_AutostartExeDesc" xml:space="preserve"><value>隨遊戲自動啟動指定的 .exe 程序</value></data>
+  <data name="OtherPage_ProgramPath" xml:space="preserve"><value>程序路徑</value></data>
+  <data name="OtherPage_PathPlaceholder" xml:space="preserve"><value>例如：C:\Tools\MapTool.exe</value></data>
+  <data name="OtherPage_PathHint" xml:space="preserve"><value>提示：如果選擇路徑後無反應，請手動粘貼路徑並點擊應用。</value></data>
+  <data name="OtherPage_AccessibilityTools" xml:space="preserve"><value>輔助功能</value></data>
+  <data name="OtherPage_AutoClicker" xml:space="preserve"><value>連點器</value></data>
+  <data name="OtherPage_AutoClickerDesc" xml:space="preserve"><value>按住觸發鍵、鼠標左鍵或鼠標右鍵以模擬高頻點擊</value></data>
+  <data name="OtherPage_ClickMode" xml:space="preserve"><value>連點模式</value></data>
+  <data name="OtherPage_MouseLeft" xml:space="preserve"><value>鼠標左鍵</value></data>
+  <data name="OtherPage_MouseRight" xml:space="preserve"><value>鼠標右鍵</value></data>
+  <data name="OtherPage_MouseModeHint" xml:space="preserve"><value>兩個鼠標模式只能開啟一個。開啟鼠標模式前必須設置停止快捷鍵。</value></data>
+  <data name="OtherPage_TriggerKeyHeader" xml:space="preserve"><value>觸發鍵 (按住此鍵)</value></data>
+  <data name="OtherPage_RecordClick" xml:space="preserve"><value>點擊錄製</value></data>
+  <data name="OtherPage_StopKeyHeader" xml:space="preserve"><value>停止快捷鍵 (必須設置)</value></data>
+  <data name="OtherPage_ClickKeyHeader" xml:space="preserve"><value>鍵盤連點鍵 (僅鍵盤模式)</value></data>
+  <data name="OtherPage_UsageInstructions" xml:space="preserve"><value>使用說明</value></data>
+  <data name="OtherPage_UsageHint" xml:space="preserve"><value>點擊右側圖標進行錄製，然後按下鍵盤上任意鍵。鼠標左鍵和右鍵模式互斥，且必須先設置停止快捷鍵。</value></data>
+  <data name="OtherPage_UtilityTools" xml:space="preserve"><value>實用工具</value></data>
+  <data name="OtherPage_Browser" xml:space="preserve"><value>瀏覽器</value></data>
+  <data name="OtherPage_BrowserDesc" xml:space="preserve"><value>打開一個支持置頂的獨立懸浮瀏覽器</value></data>
+  <data name="OtherPage_Open" xml:space="preserve"><value>打開</value></data>
+  <data name="OtherPage_SaveConfig" xml:space="preserve"><value>保存配置</value></data>
+  <data name="OtherPage_KeyRecorderEnabled" xml:space="preserve"><value>按鍵錄製配置開啟，全局按鍵事件已註冊到 {0}</value></data>
+  <data name="OtherPage_KeyRecorderDisabled" xml:space="preserve"><value>按鍵錄製配置關閉，全局按鍵事件已註銷</value></data>
+  <data name="OtherPage_KeyEventError" xml:space="preserve"><value>註冊／註銷按鍵事件失敗</value></data>
+  <data name="OtherPage_UnloadCleanupError" xml:space="preserve"><value>頁面卸載清理按鍵事件失敗</value></data>
+  <data name="OtherPage_CapturingKey" xml:space="preserve"><value>捕獲按鍵</value></data>
+  <data name="OtherPage_TriggerKeySet" xml:space="preserve"><value>觸發鍵設置完成</value></data>
+  <data name="OtherPage_ClickKeySet" xml:space="preserve"><value>連點鍵設置完成</value></data>
+  <data name="OtherPage_StopKeySet" xml:space="preserve"><value>停止快捷鍵設置完成</value></data>
+  <data name="OtherPage_KeyProcessError" xml:space="preserve"><value>按鍵處理異常</value></data>
+  <data name="Account_NotLoggedIn" xml:space="preserve"><value>尚未登錄</value></data>
+  <data name="Account_SavedAccounts" xml:space="preserve"><value>已保存的其他賬戶</value></data>
+  <data name="Account_Login" xml:space="preserve"><value>登錄</value></data>
+  <data name="Account_DailyCheckin" xml:space="preserve"><value>每日簽到</value></data>
+  <data name="Account_RefreshInfo" xml:space="preserve"><value>刷新信息</value></data>
+  <data name="Account_TravelJournal" xml:space="preserve"><value>旅行札記</value></data>
+  <data name="Account_GachaAnalysis" xml:space="preserve"><value>抽卡分析</value></data>
+  <data name="Account_AccountSecurity" xml:space="preserve"><value>賬號安全</value></data>
+  <data name="Account_FreezeAccount" xml:space="preserve"><value>凍結賬號</value></data>
+  <data name="Account_CopyCookie" xml:space="preserve"><value>複製 Cookie</value></data>
+  <data name="Account_DeleteAccount" xml:space="preserve"><value>刪除賬號</value></data>
+  <data name="Account_Logout" xml:space="preserve"><value>退出登錄</value></data>
+  <data name="Account_CommunityFeed" xml:space="preserve"><value>社區動態</value></data>
+  <data name="Account_Likes" xml:space="preserve"><value>獲贊數</value></data>
+  <data name="Account_Posts" xml:space="preserve"><value>發帖數</value></data>
+  <data name="Account_Replies" xml:space="preserve"><value>回覆數</value></data>
+  <data name="Account_BoundCharacters" xml:space="preserve"><value>綁定角色</value></data>
+  <data name="Account_NoCharacters" xml:space="preserve"><value>暫無綁定角色</value></data>
+  <data name="Account_BindHint" xml:space="preserve"><value>請在米遊社或遊戲中綁定角色後刷新</value></data>
+  <data name="Account_PlayTime" xml:space="preserve"><value>遊戲時長</value></data>
+  <data name="Account_RecentDays_Format" xml:space="preserve"><value>近 {0} 天遊玩統計</value></data>
+  <data name="Account_InGame" xml:space="preserve"><value>遊戲中</value></data>
+  <data name="Account_TotalTime" xml:space="preserve"><value>總時長</value></data>
+  <data name="Account_DailyAvg" xml:space="preserve"><value>日均時長</value></data>
+  <data name="Account_NoRecentRecords_Format" xml:space="preserve"><value>近 {0} 天暫無遊戲記錄</value></data>
+  <data name="Account_DeleteAccountConfirm_Format" xml:space="preserve"><value>刪除賬號 &quot;{0}&quot;？此操作將刪除該賬號的所有相關數據，包括憑證、祈願記錄和雲遊戲憑證，且無法恢復。</value></data>
+  <data name="Account_DeleteComplete" xml:space="preserve"><value>賬號 &quot;{0}&quot; 刪除完成</value></data>
+  <data name="Account_DeleteException" xml:space="preserve"><value>刪除賬號異常</value></data>
+  <data name="Account_DeleteBtn" xml:space="preserve"><value>刪除</value></data>
+  <data name="Account_CheckingIn" xml:space="preserve"><value>簽到中</value></data>
+  <data name="Account_CheckinComplete" xml:space="preserve"><value>簽到完成</value></data>
+  <data name="Account_CheckinFailed" xml:space="preserve"><value>簽到失敗</value></data>
+  <data name="Account_CheckinException" xml:space="preserve"><value>簽到異常</value></data>
+  <data name="Account_LoginFailed" xml:space="preserve"><value>登錄失敗</value></data>
+  <data name="Account_OtherOperations" xml:space="preserve"><value>其他操作</value></data>
+  <data name="Account_RecentDays30" xml:space="preserve"><value>近 30 天遊玩統計</value></data>
+  <data name="Account_NoRecentRecords30" xml:space="preserve"><value>近 30 天暫無遊戲記錄</value></data>
+  <data name="Account_CopyUID" xml:space="preserve"><value>複製 UID</value></data>
+  <data name="Account_DeleteCurrent" xml:space="preserve"><value>刪除當前賬號</value></data>
+  <data name="Account_DeleteCurrentConfirm_Format" xml:space="preserve"><value>確定要刪除當前賬號 {0} ({1}) 嗎？此操作將刪除該賬號的所有相關數據，且無法恢復。</value></data>
+  <data name="LoginQR_Title" xml:space="preserve"><value>掃碼登錄</value></data>
+  <data name="LoginQR_MiyousheQR" xml:space="preserve"><value>米遊社APP掃碼登錄</value></data>
+  <data name="LoginQR_WebPassport" xml:space="preserve"><value>網頁通行證登錄</value></data>
+  <data name="LoginQR_HoYoLABWeb" xml:space="preserve"><value>HoYoLAB網頁登錄</value></data>
+  <data name="LoginQR_GameAppId" xml:space="preserve"><value>遊戲App ID:</value></data>
+  <data name="LoginQR_EnterAppId" xml:space="preserve"><value>輸入AppID</value></data>
+  <data name="LoginQR_ConfirmGenerate" xml:space="preserve"><value>確認生成</value></data>
+  <data name="LoginQR_RefreshQR" xml:space="preserve"><value>刷新二維碼</value></data>
+  <data name="LoginQR_WebLoginWarning" xml:space="preserve"><value>注意：網頁通行證登錄無法獲取到Stoken，部分功能會無法使用</value></data>
+  <data name="LoginQR_ManualCookie" xml:space="preserve"><value>手動輸入Cookie</value></data>
+  <data name="LoginQR_ClearHistory" xml:space="preserve"><value>清除歷史登錄數據</value></data>
+  <data name="Panel_Toolbox" xml:space="preserve"><value>工具箱</value></data>
+  <data name="Panel_DataAnalysis" xml:space="preserve"><value>數據分析</value></data>
+  <data name="Panel_DataAnalysisDesc" xml:space="preserve"><value>記錄統計、完成進度與長期數據沉澱</value></data>
+  <data name="Panel_TravelerProfile" xml:space="preserve"><value>旅行者檔案</value></data>
+  <data name="Panel_TravelerProfileDesc" xml:space="preserve"><value>角色、背包、便籤與米遊社戰績信息</value></data>
+  <data name="Panel_Resources" xml:space="preserve"><value>資源獲取</value></data>
+  <data name="Panel_ResourcesDesc" xml:space="preserve"><value>管理與資源獲取</value></data>
+  <data name="LaunchBtn_SelectPath" xml:space="preserve"><value>請選擇遊戲路徑</value></data>
+  <data name="LaunchBtn_ExitGame" xml:space="preserve"><value>點擊退出遊戲</value></data>
+  <data name="LaunchBtn_StartGame" xml:space="preserve"><value>點擊啟動遊戲</value></data>
+  <data name="LaunchBtn_Terminating" xml:space="preserve"><value>正在終止遊戲...</value></data>
+  <data name="Checkin_Signed" xml:space="preserve"><value>遊戲已簽到</value></data>
+  <data name="Checkin_Unsigned" xml:space="preserve"><value>遊戲未簽到</value></data>
+  <data name="LaunchErr_NoGamePath" xml:space="preserve"><value>未設置遊戲路徑</value></data>
+  <data name="LaunchErr_NoGamePathMsg" xml:space="preserve"><value>請先前往遊戲管理頁面選擇遊戲安裝路徑</value></data>
+  <data name="LaunchErr_LaunchFailed" xml:space="preserve"><value>遊戲啟動失敗</value></data>
+  <data name="Screenshot_FolderNotFound" xml:space="preserve"><value>截圖文件夾不存在</value></data>
+  <data name="Screenshot_FolderNotFoundMsg" xml:space="preserve"><value>請先在遊戲中截圖或通過啟動器截圖功能獲取截圖</value></data>
+  <data name="Announcement_Title" xml:space="preserve"><value>公告</value></data>
+  <data name="Announcement_Loading" xml:space="preserve"><value>正在加載公告...</value></data>
+  <data name="CommunityPage_Back" xml:space="preserve"><value>後退</value></data>
+  <data name="CommunityPage_Forward" xml:space="preserve"><value>前進</value></data>
+  <data name="CommunityPage_Refresh" xml:space="preserve"><value>刷新</value></data>
+  <data name="HelpPage_SearchPlaceholder" xml:space="preserve"><value>搜索標題、文件名或內容...</value></data>
+  <data name="AboutPage_GetBuildFromActions" xml:space="preserve"><value>從Github Actions獲取構建</value></data>
+  <data name="AboutPage_Contributors" xml:space="preserve"><value>貢獻者名單</value></data>
+  <data name="AboutPage_LoadFailed" xml:space="preserve"><value>加載失敗</value></data>
+  <data name="AboutPage_ReportIssue" xml:space="preserve"><value>反饋問題</value></data>
+  <data name="AboutPage_OfficialWebsite" xml:space="preserve"><value>官方網站</value></data>
+  <data name="AboutPage_ContactAuthor" xml:space="preserve"><value>聯繫作者</value></data>
+  <data name="SponsorWindow_Title" xml:space="preserve"><value>讚賞作者</value></data>
+  <data name="SponsorWindow_OnlyWeChat" xml:space="preserve"><value>目前僅支持微信，不支持支付寶或其他讚賞方式</value></data>
+  <data name="SponsorWindow_QrCodeFailed" xml:space="preserve"><value>二維碼加載失敗</value></data>
+  <data name="SponsorWindow_Disclaimer" xml:space="preserve"><value>支付即視為知曉並同意：贊助如無特殊原因概不退款</value></data>
+  <data name="StarPrompt_Support" xml:space="preserve"><value>支持</value></data>
+  <data name="StarPrompt_Message" xml:space="preserve"><value>如果您覺得FufuLauncher幫助到了您，不妨前往GitHub為項目點亮一個免費的Star，您的支持是開發的最大動力</value></data>
+  <data name="StarPrompt_GoToGitHub" xml:space="preserve"><value>點擊前往GitHub</value></data>
+  <data name="StarPrompt_Later" xml:space="preserve"><value>下次再說</value></data>
+  <data name="StarPrompt_GotIt" xml:space="preserve"><value>我知道了</value></data>
+  <data name="AchievementUpdater_Title" xml:space="preserve"><value>成就數據更新</value></data>
+  <data name="AchievementUpdater_StartFetch" xml:space="preserve"><value>立即開始獲取</value></data>
+  <data name="AdvancedServerSwitch_Title" xml:space="preserve"><value>服務器的轉換</value></data>
+  <data name="AdvancedServerSwitch_Warning" xml:space="preserve"><value>注意，遊戲啟動時切換無效！</value></data>
+  <data name="AdvancedServerSwitch_Convert" xml:space="preserve"><value>一鍵轉換</value></data>
+  <data name="Agreement_Title" xml:space="preserve"><value>用戶協議</value></data>
+  <data name="BackgroundInit_Initializing" xml:space="preserve"><value>正在初始化背景資源</value></data>
+  <data name="BackgroundInit_PleaseWait" xml:space="preserve"><value>緩存可能需要一些時間，請耐心等待...</value></data>
+  <data name="CheckinCalendar_Title" xml:space="preserve"><value>簽到獎勵日曆</value></data>
+  <data name="CloudCredential_Title" xml:space="preserve"><value>雲遊戲憑證</value></data>
+  <data name="CloudCredential_AddTitle" xml:space="preserve"><value>添加雲遊戲憑證</value></data>
+  <data name="HiddenPage_Title" xml:space="preserve"><value>功能已隱藏</value></data>
+  <data name="HiddenPage_Message" xml:space="preserve"><value>此功能已在設置中被隱藏。如需使用，請前往設置 → 外觀與個性化 → 導航欄顯示項 重新開啟。</value></data>
+  <data name="HiddenPage_BackToHome" xml:space="preserve"><value>返回主頁</value></data>
+  <data name="PreDownload_Title" xml:space="preserve"><value>遊戲預下載</value></data>
+  <data name="PreDownload_Description" xml:space="preserve"><value>提前獲取新版本更新數據，過程自動</value></data>
+  <data name="PreDownload_Start" xml:space="preserve"><value>開始預下載</value></data>
+  <data name="PresetManager_Title" xml:space="preserve"><value>預設管理</value></data>
+  <data name="PresetManager_SelectHint" xml:space="preserve"><value>選擇要固定在首頁的預設 (最多5個)</value></data>
+  <data name="SecurityWeb_Title" xml:space="preserve"><value>開發者許可認證</value></data>
+  <data name="VerifyGame_Title" xml:space="preserve"><value>遊戲文件完整性校驗</value></data>
+  <data name="VerifyGame_Description" xml:space="preserve"><value>此操作將校驗本地文件，並自動下載修復損壞或缺失的文件。過程可能需要較長時間，請耐心等待</value></data>
+  <data name="VerifyGame_Start" xml:space="preserve"><value>開始校驗</value></data>
+  <data name="FeedbackWindow_Title" xml:space="preserve"><value>提交反饋</value></data>
+  <data name="FeedbackWindow_SelectType" xml:space="preserve"><value>請選擇您要提交的反饋類型：</value></data>
+  <data name="FeedbackWindow_FeatureRequest" xml:space="preserve"><value>提交新想法 / 功能請求</value></data>
+  <data name="FeedbackWindow_FeatureRequestDesc" xml:space="preserve"><value>如果您有新的點子或希望增加新功能，請點擊此處通過GitHub提交</value></data>
+  <data name="FeedbackWindow_BugReport" xml:space="preserve"><value>報告問題 / Bug</value></data>
+  <data name="FeedbackWindow_BugReportDesc" xml:space="preserve"><value>如果您在運行過程中遇到報錯或功能異常，請點擊此處通過GitHub提交錯誤報告</value></data>
+  <data name="AnnouncementWindow_GameAnnouncement" xml:space="preserve"><value>遊戲公告</value></data>
+  <data name="DownloadWindow_Title" xml:space="preserve"><value>資源下載器</value></data>
+  <data name="DownloadWindow_GameResourceUpdate" xml:space="preserve"><value>遊戲資源更新</value></data>
+  <data name="DownloadWindow_StuckIsNormal" xml:space="preserve"><value>在下載中卡是正常的</value></data>
+  <data name="DownloadWindow_InstallDir" xml:space="preserve"><value>安裝目錄</value></data>
+  <data name="DownloadWindow_VoiceLanguage" xml:space="preserve"><value>語音包語言</value></data>
+  <data name="DownloadWindow_DownloadBaseGame" xml:space="preserve"><value>下載遊戲本體數據 (Base Game)</value></data>
+  <data name="DownloadWindow_BaseGameTooltip" xml:space="preserve"><value>取消勾選則只更新語音包</value></data>
+  <data name="DownloadWindow_ShowDetailLog" xml:space="preserve"><value>顯示詳細日誌</value></data>
+  <data name="DownloadWindow_Ready" xml:space="preserve"><value>準備就緒</value></data>
+  <data name="DownloadWindow_StartDownload" xml:space="preserve"><value>開始下載</value></data>
+  <data name="DownloadWindow_Cancel" xml:space="preserve"><value>取消</value></data>
+  <data name="BBSWindow_Title" xml:space="preserve"><value>戰績信息</value></data>
+  <data name="BBSWindow_SwitchIdentity" xml:space="preserve"><value>切換標識</value></data>
+  <data name="BBSWindow_EnterUrl" xml:space="preserve"><value>輸入網址...</value></data>
+  <data name="BBSWindow_Go" xml:space="preserve"><value>前往</value></data>
+  <data name="BBSWindow_Save" xml:space="preserve"><value>保存</value></data>
+  <data name="BBSWindow_Copy" xml:space="preserve"><value>複製</value></data>
+  <data name="BrowserWindow_Title" xml:space="preserve"><value>瀏覽器</value></data>
+  <data name="BrowserWindow_EnterUrl" xml:space="preserve"><value>輸入網址...</value></data>
+  <data name="BrowserWindow_Refresh" xml:space="preserve"><value>刷新</value></data>
+  <data name="BrowserWindow_Settings" xml:space="preserve"><value>設置</value></data>
+  <data name="BrowserWindow_PinWindow" xml:space="preserve"><value>窗口置頂</value></data>
+  <data name="BrowserWindow_SettingsTitle" xml:space="preserve"><value>瀏覽器設置</value></data>
+  <data name="BrowserWindow_DefaultHomepage" xml:space="preserve"><value>默認主頁 (URL)</value></data>
+  <data name="BrowserWindow_DefaultZoom" xml:space="preserve"><value>默認縮放比例</value></data>
+  <data name="BrowserWindow_VideoHotkeys" xml:space="preserve"><value>視頻控制快捷鍵 (JS KeyCode)</value></data>
+  <data name="BrowserWindow_RewindKey" xml:space="preserve"><value>後退鍵</value></data>
+  <data name="BrowserWindow_ForwardKey" xml:space="preserve"><value>快進鍵</value></data>
+  <data name="BrowserWindow_HotkeyHint" xml:space="preserve"><value>提示: 常用鍵為 ArrowLeft, ArrowRight, KeyA, KeyD</value></data>
+  <data name="BrowserWindow_PerformanceSettings" xml:space="preserve"><value>性能設置</value></data>
+  <data name="BrowserWindow_RaisePriority" xml:space="preserve"><value>提升進程優先級 (防止遊戲內卡頓)</value></data>
+  <data name="MapPage_Title" xml:space="preserve"><value>提瓦特大地圖</value></data>
+  <data name="MapPage_Refresh" xml:space="preserve"><value>刷新</value></data>
+  <data name="MapPage_LockMapOff" xml:space="preserve"><value>鎖定地圖 (關)</value></data>
+  <data name="MapPage_TopMostOff" xml:space="preserve"><value>窗口置頂 (關)</value></data>
+  <data name="PluginConfigPage_Title" xml:space="preserve"><value>插件配置</value></data>
+  <data name="PluginConfigPage_AdjustParams" xml:space="preserve"><value>調整插件的運行參數</value></data>
+  <data name="PluginConfigPage_PluginInfo" xml:space="preserve"><value>插件信息</value></data>
+  <data name="UpdateNotification_Title" xml:space="preserve"><value>版本更新公告</value></data>
+  <data name="UpdateNotification_UpdateNow" xml:space="preserve"><value>立即更新</value></data>
+  <data name="VideoResources_Title" xml:space="preserve"><value>視頻資源庫</value></data>
+  <data name="VideoResources_CharacterVideos" xml:space="preserve"><value>角色視頻</value></data>
+  <data name="VideoResources_Play" xml:space="preserve"><value>播放</value></data>
+  <data name="VideoResources_Download" xml:space="preserve"><value>下載</value></data>
+  <data name="VideoResources_CutsceneVideos" xml:space="preserve"><value>過場動畫</value></data>
+  <data name="ScreenshotGallery_Title" xml:space="preserve"><value>截圖圖庫</value></data>
+  <data name="ScreenshotGallery_BackToGallery" xml:space="preserve"><value>返回相冊</value></data>
+  <data name="ScreenshotGallery_Copy" xml:space="preserve"><value>複製</value></data>
+  <data name="ScreenshotGallery_Cut" xml:space="preserve"><value>剪切</value></data>
+  <data name="ScreenshotGallery_Delete" xml:space="preserve"><value>刪除</value></data>
+  <data name="ScreenshotGallery_OpenFolder" xml:space="preserve"><value>訪問圖片文件夾</value></data>
+  <data name="ScreenshotGallery_OpenWithApp" xml:space="preserve"><value>使用系統應用打開</value></data>
+  <data name="ScreenshotGallery_NoScreenshots" xml:space="preserve"><value>暫無遊戲截圖</value></data>
+  <data name="ScreenshotGallery_OpenScreenshotFolder" xml:space="preserve"><value>打開截圖文件夾</value></data>
+  <data name="GachaDialog_Title" xml:space="preserve"><value>抽卡統計分析</value></data>
+  <data name="GachaDialog_Close" xml:space="preserve"><value>關閉</value></data>
+  <data name="GachaDialog_GachaRecordLink" xml:space="preserve"><value>抽卡記錄鏈接</value></data>
+  <data name="GachaDialog_PasteUrl" xml:space="preserve"><value>在此粘貼帶 authkey 的 URL</value></data>
+  <data name="GachaDialog_StartAnalysis" xml:space="preserve"><value>開始分析</value></data>
+  <data name="GachaDialog_ExportUigf" xml:space="preserve"><value>導出 UIGF</value></data>
+  <data name="GachaDialog_ExportUigfTooltip" xml:space="preserve"><value>導出標準 UIGF Json 格式到桌面</value></data>
+  <data name="GachaDialog_TotalInvested" xml:space="preserve"><value>共投入</value></data>
+  <data name="GachaDialog_Pulls" xml:space="preserve"><value>抽</value></data>
+  <data name="GachaDialog_CurrentPity" xml:space="preserve"><value>當前墊底</value></data>
+  <data name="GachaDialog_FiveStarCount" xml:space="preserve"><value>五星數量</value></data>
+  <data name="GachaDialog_FiveStarRecords" xml:space="preserve"><value>五星獲取記錄</value></data>
+  <data name="GachaDialog_BasicFeatureNote" xml:space="preserve"><value>本功能相對簡陋，建議使用其他專用軟件查看抽卡記錄</value></data>
+  <data name="HighCpuUsage_Title" xml:space="preserve"><value>性能異常提示</value></data>
+  <data name="HighCpuUsage_Detected" xml:space="preserve"><value>檢測到長期異常的資源佔用</value></data>
+  <data name="HighCpuUsage_Description" xml:space="preserve"><value>在未檢測到 OBS 正在運行的情況下，芙芙啟動器的 CPU 佔用已持續高於 30% 達 5 分鐘。這通常不是正常現象。</value></data>
+  <data name="HighCpuUsage_SuggestedAction" xml:space="preserve"><value>建議操作</value></data>
+  <data name="HighCpuUsage_SuggestionText" xml:space="preserve"><value>請優先彙報問題以幫助定位；如果當前版本持續異常，建議退出使用並更新到最新版本。</value></data>
+  <data name="HighCpuUsage_Dismiss" xml:space="preserve"><value>稍後處理</value></data>
+  <data name="HighCpuUsage_Report" xml:space="preserve"><value>彙報問題</value></data>
+  <data name="HighCpuUsage_ExitLauncher" xml:space="preserve"><value>退出啟動器</value></data>
+  <data name="Diagnostics_Title" xml:space="preserve"><value>系統診斷</value></data>
+  <data name="Diagnostics_HardwareAndSystem" xml:space="preserve"><value>硬件與系統環境</value></data>
+  <data name="Diagnostics_CollectingInfo" xml:space="preserve"><value>正在收集系統信息...</value></data>
+  <data name="Diagnostics_DisplayAndGraphics" xml:space="preserve"><value>顯示與圖形</value></data>
+  <data name="Diagnostics_Resolution" xml:space="preserve"><value>分辨率</value></data>
+  <data name="Diagnostics_RefreshRate" xml:space="preserve"><value>刷新率</value></data>
+  <data name="Diagnostics_Hardware" xml:space="preserve"><value>硬件</value></data>
+  <data name="Diagnostics_SecurityAndNetwork" xml:space="preserve"><value>安全與網絡</value></data>
+  <data name="Diagnostics_WindowsSecurity" xml:space="preserve"><value>Windows 安全中心</value></data>
+  <data name="Diagnostics_DiskSpace" xml:space="preserve"><value>系統盤剩餘空間</value></data>
+  <data name="Diagnostics_NetworkStatus" xml:space="preserve"><value>網絡連接狀態</value></data>
+  <data name="Diagnostics_NetworkRegion" xml:space="preserve"><value>網絡所屬環境</value></data>
+  <data name="Diagnostics_Suggestion" xml:space="preserve"><value>建議</value></data>
+  <data name="DailyNote_Title" xml:space="preserve"><value>提瓦特日程</value></data>
+  <data name="DailyNote_TodayMaterials" xml:space="preserve"><value>今日素材</value></data>
+  <data name="DailyNote_RefreshStatus" xml:space="preserve"><value>當前刷新狀態</value></data>
+  <data name="DailyNote_RefreshData" xml:space="preserve"><value>刷新數據</value></data>
+  <data name="DailyNote_MaterialDropHint" xml:space="preserve"><value>每日採集、天賦書、武器突破素材掉落提醒</value></data>
+  <data name="DailyNote_TodayBirthday" xml:space="preserve"><value>今日生日</value></data>
+  <data name="DailyNote_CharacterWeapon" xml:space="preserve"><value>角色/武器</value></data>
+  <data name="DailyNote_RecentActivities" xml:space="preserve"><value>近期活動</value></data>
+  <data name="DailyNote_ActivityOverview" xml:space="preserve"><value>活動速覽</value></data>
+  <data name="DailyNote_ActivityDesc" xml:space="preserve"><value>集中查看當前版本活動與剩餘時間。</value></data>
+  <data name="GenshinData_Title" xml:space="preserve"><value>旅行札記 - 提瓦特財務報表</value></data>
+  <data name="GenshinData_TravelJournal" xml:space="preserve"><value>旅行札記</value></data>
+  <data name="GenshinData_DataUpdated" xml:space="preserve"><value>數據更新於: </value></data>
+  <data name="GenshinData_TodayEarnings" xml:space="preserve"><value>今日收益</value></data>
+  <data name="GenshinData_Primogems" xml:space="preserve"><value>原石</value></data>
+  <data name="GenshinData_Mora" xml:space="preserve"><value>摩拉</value></data>
+  <data name="GenshinData_MonthTotal" xml:space="preserve"><value>本月累計</value></data>
+  <data name="GenshinData_PrimogemsEarned" xml:space="preserve"><value>獲得原石</value></data>
+  <data name="GenshinData_Mom" xml:space="preserve"><value>環比 </value></data>
+  <data name="GenshinData_LastMonth" xml:space="preserve"><value>(上月 </value></data>
+  <data name="GenshinData_MoraEarned" xml:space="preserve"><value>獲得摩拉</value></data>
+  <data name="GenshinData_DataNote" xml:space="preserve"><value>• 每日數據通常在次日上午更新&#x0a;• 收入等級基於原石獲取效率計算</value></data>
+  <data name="GenshinData_MonthlySourceAnalysis" xml:space="preserve"><value>本月原石收入來源分析</value></data>
+  <data name="GenshinData_Total" xml:space="preserve"><value>共計</value></data>
+  <data name="DataPage_SearchRole" xml:space="preserve"><value>搜索角色...</value></data>
+  <data name="DataPage_AllRoles" xml:space="preserve"><value>全部角色</value></data>
+  <data name="DataPage_Only5Star" xml:space="preserve"><value>僅看 5星</value></data>
+  <data name="DataPage_Only4Star" xml:space="preserve"><value>僅看 4星</value></data>
+  <data name="DataPage_StarUnit" xml:space="preserve"><value>星</value></data>
+  <data name="DataPage_Talents" xml:space="preserve"><value>天賦 (TALENTS)</value></data>
+  <data name="DataPage_ConstellationDist" xml:space="preserve"><value>命座分佈 (C0/C1/C2)</value></data>
+  <data name="DataPage_AvgDmg" xml:space="preserve"><value>平均傷害 (AVG DMG)</value></data>
+  <data name="DataPage_TopWeapons" xml:space="preserve"><value>熱門武器 (TOP WEAPONS)</value></data>
+  <data name="DataPage_TopArtifacts" xml:space="preserve"><value>熱門聖遺物 (TOP ARTIFACTS)</value></data>
+  <data name="DataPage_AvgInterval" xml:space="preserve"><value>平均間隔:</value></data>
+  <data name="DataPage_MinInterval" xml:space="preserve"><value>最短間隔:</value></data>
+  <data name="DataPage_HistoryRerun" xml:space="preserve"><value>歷史復刻:</value></data>
+  <data name="DataPage_LoadingTimeline" xml:space="preserve"><value>正在獲取時間軸數據，請稍候...</value></data>
+  <data name="DataPage_UsageRate" xml:space="preserve"><value>使用率</value></data>
+  <data name="DataPage_SpeedrunTime" xml:space="preserve"><value>競速耗時</value></data>
+  <data name="DataPage_OwnRate" xml:space="preserve"><value>持有率</value></data>
+  <data name="DataPage_AvgConstellation" xml:space="preserve"><value>平均命座</value></data>
+  <data name="DataPage_AvgTime" xml:space="preserve"><value>平均耗時</value></data>
+  <data name="DataPage_ClickToView" xml:space="preserve"><value>點擊查看大圖</value></data>
+  <data name="DataPage_5Star" xml:space="preserve"><value>5星</value></data>
+  <data name="DataPage_4Star" xml:space="preserve"><value>4星</value></data>
+  <data name="DataPage_RoleData" xml:space="preserve"><value>角色數據</value></data>
+  <data name="DataPage_AbyssData" xml:space="preserve"><value>幽境危戰</value></data>
+  <data name="DataPage_SpiralAbyss" xml:space="preserve"><value>深淵螺旋</value></data>
+  <data name="DataPage_WishData" xml:space="preserve"><value>卡池數據</value></data>
+  <data name="DataPage_RerunTimer" xml:space="preserve"><value>復刻計時</value></data>
+  <data name="DataPage_Timeline" xml:space="preserve"><value>活動時間軸</value></data>
+  <data name="DataPage_DataProvidedBy" xml:space="preserve"><value>數據由提瓦特小助手提供 活動時間軸由Paimon.moe提供</value></data>
+  <data name="HDR_SaveAndApply" xml:space="preserve"><value>保存並生效</value></data>
+  <data name="HDR_BrightnessConfig" xml:space="preserve"><value>HDR 亮度配置</value></data>
+  <data name="HDR_NotSupported" xml:space="preserve"><value>不支持 HDR</value></data>
+  <data name="HDR_NotSupportedMsg" xml:space="preserve"><value>當前顯示器報告不支持 HDR。</value></data>
+  <data name="HDR_NotEnabled" xml:space="preserve"><value>HDR 未開啟</value></data>
+  <data name="HDR_NotEnabledMsg" xml:space="preserve"><value>Windows HDR 模式未開啟，自動調整可能不準確。</value></data>
+  <data name="HDR_DisplayInfo" xml:space="preserve"><value>顯示器信息</value></data>
+  <data name="HDR_SwitchSetting" xml:space="preserve"><value>HDR 開關設置 (每次啟動時強制應用)</value></data>
+  <data name="HDR_OffContent" xml:space="preserve"><value>關閉 HDR (註冊表值為 0)</value></data>
+  <data name="HDR_OnContent" xml:space="preserve"><value>開啟 HDR (註冊表值為 1)</value></data>
+  <data name="HDR_RegistryNote" xml:space="preserve"><value>注意：保存後會立即修改註冊表，且下次啟動遊戲時會自動重新應用此設置。</value></data>
+  <data name="HDR_MaxLuminance" xml:space="preserve"><value>峰值亮度 (Max Luminosity)</value></data>
+  <data name="HDR_SceneLuminance" xml:space="preserve"><value>場景亮度 (Paper White)</value></data>
+  <data name="HDR_UILuminance" xml:space="preserve"><value>UI 亮度 (UI White)</value></data>
+  <data name="HDR_ResetDefault" xml:space="preserve"><value>重置默認</value></data>
+  <data name="HDR_AutoAdjust" xml:space="preserve"><value>自動調整</value></data>
+  <data name="HDR_AutoAdjustTooltip" xml:space="preserve"><value>根據顯示器數據自動推算</value></data>
+  <data name="InventoryWindow_Title" xml:space="preserve"><value>背包物品與目標規劃</value></data>
+  <data name="InventoryWindow_ArchiveTitle" xml:space="preserve"><value>庫存檔案</value></data>
+  <data name="InventoryWindow_SyncStatus" xml:space="preserve"><value>當前庫存同步狀態</value></data>
+  <data name="InventoryWindow_RefreshData" xml:space="preserve"><value>更新數據</value></data>
+  <data name="InventoryWindow_MyBag" xml:space="preserve"><value>我的背包</value></data>
+  <data name="InventoryWindow_InventoryOverview" xml:space="preserve"><value>庫存總覽</value></data>
+  <data name="InventoryWindow_OverviewDesc" xml:space="preserve"><value>查看當前背包數量，並通過角標快速識別已達成目標的物品。</value></data>
+  <data name="InventoryWindow_GoalCheckHint" xml:space="preserve"><value>達成目標後顯示勾選</value></data>
+  <data name="InventoryWindow_Complete" xml:space="preserve"><value>完成</value></data>
+  <data name="InventoryWindow_GoalSetting" xml:space="preserve"><value>目標設置</value></data>
+  <data name="InventoryWindow_GoalPlanning" xml:space="preserve"><value>目標規劃</value></data>
+  <data name="InventoryWindow_GoalDesc" xml:space="preserve"><value>為常用材料設置目標數量，背包頁會自動展示達成狀態。</value></data>
+  <data name="InventoryWindow_ItemName" xml:space="preserve"><value>物品名稱</value></data>
+  <data name="InventoryWindow_TargetCount" xml:space="preserve"><value>目標數量</value></data>
+  <data name="InventoryWindow_GoalMetHint" xml:space="preserve"><value>達成目標後，物品卡片會自動顯示完成標記。</value></data>
+  <data name="AchievementWindow_Title" xml:space="preserve"><value>成就管理</value></data>
+  <data name="AchievementWindow_Archive" xml:space="preserve"><value>成就檔案</value></data>
+  <data name="AchievementWindow_ViewGuide" xml:space="preserve"><value>查看攻略</value></data>
+  <data name="AchievementWindow_SearchGuideTooltip" xml:space="preserve"><value>在米遊社搜索此成就獲取方式</value></data>
+  <data name="AchievementWindow_SwitchView" xml:space="preserve"><value>切換視圖</value></data>
+  <data name="AchievementWindow_PrimogemTooltip" xml:space="preserve"><value>原石：已獲得 / 總計</value></data>
+  <data name="AchievementWindow_ProgressTooltip" xml:space="preserve"><value>成就進度</value></data>
+  <data name="AchievementWindow_SearchPlaceholder" xml:space="preserve"><value>搜索成就名稱、描述...</value></data>
+  <data name="AchievementWindow_Version" xml:space="preserve"><value>版本</value></data>
+  <data name="AchievementWindow_HiddenComplete" xml:space="preserve"><value>已隱藏完成</value></data>
+  <data name="AchievementWindow_ShowAll" xml:space="preserve"><value>顯示全部</value></data>
+  <data name="AchievementWindow_UIAFImport" xml:space="preserve"><value>UIAF導入</value></data>
+  <data name="AchievementWindow_UIAFExport" xml:space="preserve"><value>UIAF導出</value></data>
+  <data name="AchievementWindow_ImportRecords" xml:space="preserve"><value>導入記錄</value></data>
+  <data name="AchievementWindow_ManualSave" xml:space="preserve"><value>手動保存</value></data>
+  <data name="AchievementWindow_CurrentProfile" xml:space="preserve"><value>當前存檔</value></data>
+  <data name="AchievementWindow_ManageArchive" xml:space="preserve"><value>切換或新建存檔</value></data>
+  <data name="AchievementWindow_ArchiveManagement" xml:space="preserve"><value>存檔管理</value></data>
+  <data name="AchievementWindow_UpdateData" xml:space="preserve"><value>更新數據</value></data>
+  <data name="AchievementWindow_Progress" xml:space="preserve"><value>進度: </value></data>
+  <data name="AgreementPage_Title" xml:space="preserve"><value>用戶協議</value></data>
+  <data name="AgreementPage_Welcome" xml:space="preserve"><value>歡迎使用芙芙啟動器！請仔細閱讀以下協議內容。</value></data>
+  <data name="AgreementPage_AgreeCheck" xml:space="preserve"><value>我已閱讀並同意用戶協議 (I have read and agree)</value></data>
+  <data name="AgreementPage_ScrollHint" xml:space="preserve"><value>請滾動閱讀完整協議後勾選同意</value></data>
+  <data name="AgreementPage_IconCheckHint" xml:space="preserve"><value>為了確保顯示效果，請確認下方圖標是否正常顯示</value></data>
+  <data name="AgreementPage_Settings" xml:space="preserve"><value>設置</value></data>
+  <data name="AgreementPage_Home" xml:space="preserve"><value>主頁</value></data>
+  <data name="AgreementPage_Files" xml:space="preserve"><value>文件</value></data>
+  <data name="AgreementPage_CannotDisplay" xml:space="preserve"><value>無法顯示(Cannot Display)</value></data>
+  <data name="AgreementPage_DisplayNormal" xml:space="preserve"><value>顯示正常(Display Normal)</value></data>
+  <data name="AgreementPage_DataStorage" xml:space="preserve"><value>數據存儲位置</value></data>
+  <data name="AgreementPage_DataDirDesc" xml:space="preserve"><value>您可以自定義數據和緩存的存儲目錄，或保持默認設置。</value></data>
+  <data name="AgreementPage_UserDataDir" xml:space="preserve"><value>用戶數據目錄</value></data>
+  <data name="AgreementPage_Change" xml:space="preserve"><value>更改</value></data>
+  <data name="AgreementPage_CacheDir" xml:space="preserve"><value>緩存目錄</value></data>
+  <data name="AgreementPage_ConfirmAndComplete" xml:space="preserve"><value>確認並完成(Confirm)</value></data>
+  <data name="AgreementPage_Next" xml:space="preserve"><value>下一步(Next)</value></data>
+  <data name="PlayerInfo_Title" xml:space="preserve"><value>角色信息查詢</value></data>
+  <data name="PlayerInfo_SearchUid" xml:space="preserve"><value>輸入UID查詢...</value></data>
+  <data name="PlayerInfo_Query" xml:space="preserve"><value>查詢</value></data>
+  <data name="PlayerInfo_RefreshMyData" xml:space="preserve"><value>刷新我的數據</value></data>
+  <data name="PlayerInfo_RoleList" xml:space="preserve"><value>角色列表</value></data>
+  <data name="PlayerInfo_SelectRoleHint" xml:space="preserve"><value>請選擇左側角色查看詳情</value></data>
+  <data name="PlayerInfo_BasicStats" xml:space="preserve"><value>基礎屬性</value></data>
+  <data name="PlayerInfo_CoreStats" xml:space="preserve"><value>核心數值</value></data>
+  <data name="PlayerInfo_Hp" xml:space="preserve"><value>生命值上限</value></data>
+  <data name="PlayerInfo_Attack" xml:space="preserve"><value>攻擊力</value></data>
+  <data name="PlayerInfo_Defense" xml:space="preserve"><value>防禦力</value></data>
+  <data name="PlayerInfo_ElementalMastery" xml:space="preserve"><value>元素精通</value></data>
+  <data name="PlayerInfo_AdvancedStats" xml:space="preserve"><value>進階屬性</value></data>
+  <data name="PlayerInfo_CritRate" xml:space="preserve"><value>暴擊率</value></data>
+  <data name="PlayerInfo_CritDmg" xml:space="preserve"><value>暴擊傷害</value></data>
+  <data name="PlayerInfo_Recharge" xml:space="preserve"><value>元素充能效率</value></data>
+  <data name="PlayerInfo_FireDmg" xml:space="preserve"><value>火元素傷害</value></data>
+  <data name="PlayerInfo_WaterDmg" xml:space="preserve"><value>水元素傷害</value></data>
+  <data name="PlayerInfo_PhysicalDmg" xml:space="preserve"><value>物理傷害</value></data>
+  <data name="PlayerInfo_ArtifactDetails" xml:space="preserve"><value>聖遺物詳情</value></data>
+  <data name="PlayerInfo_ViewSource" xml:space="preserve"><value>查看獲取</value></data>
+  <data name="PlayerInfo_WeaponAndSkills" xml:space="preserve"><value>武器與技能</value></data>
+  <data name="PlayerInfo_Level" xml:space="preserve"><value>等級 </value></data>
+  <data name="PlayerInfo_SkillLevels" xml:space="preserve"><value>技能等級</value></data>
+  <data name="PlayerInfo_NormalAttack" xml:space="preserve"><value>普通攻擊</value></data>
+  <data name="PlayerInfo_ElementalSkill" xml:space="preserve"><value>元素戰技</value></data>
+  <data name="PlayerInfo_ElementalBurst" xml:space="preserve"><value>元素爆發</value></data>
+  <data name="PlayerInfo_ViewTeamRecommend" xml:space="preserve"><value>查看配隊推薦</value></data>
+  <data name="GachaAnalysis_Title" xml:space="preserve"><value>抽卡記錄分析</value></data>
+  <data name="GachaAnalysis_Pulls" xml:space="preserve"><value>抽</value></data>
+  <data name="GachaAnalysis_NoRecords" xml:space="preserve"><value>暫無記錄</value></data>
+  <data name="GachaAnalysis_4Star" xml:space="preserve"><value>四星</value></data>
+  <data name="GachaAnalysis_TotalPulls" xml:space="preserve"><value>總抽數</value></data>
+  <data name="GachaAnalysis_PrimogemsSpent" xml:space="preserve"><value>耗費原石數</value></data>
+  <data name="GachaAnalysis_Show4Star" xml:space="preserve"><value>顯示四星記錄</value></data>
+  <data name="GachaAnalysis_Show4StarShort" xml:space="preserve"><value>顯示四星</value></data>
+  <data name="GachaAnalysis_Total" xml:space="preserve"><value>共 </value></data>
+  <data name="GachaAnalysis_Pity5Star" xml:space="preserve"><value>五星已墊: </value></data>
+  <data name="GachaAnalysis_Pity4Star" xml:space="preserve"><value>四星已墊: </value></data>
+  <data name="GachaAnalysis_Pity5StarShort" xml:space="preserve"><value>五星已墊 </value></data>
+  <data name="GachaAnalysis_Pity4StarShort" xml:space="preserve"><value>四星已墊 </value></data>
+  <data name="GachaAnalysis_CharacterEvent" xml:space="preserve"><value>角色活動</value></data>
+  <data name="GachaAnalysis_WeaponEvent" xml:space="preserve"><value>武器活動</value></data>
+  <data name="GachaAnalysis_ChronicledWish" xml:space="preserve"><value>集錄祈願</value></data>
+  <data name="GachaAnalysis_StandardWish" xml:space="preserve"><value>常駐祈願</value></data>
+  <data name="GachaAnalysis_WishOverview" xml:space="preserve"><value>祈願總覽</value></data>
+  <data name="GachaAnalysis_WishAnalysis" xml:space="preserve"><value>祈願分析</value></data>
+  <data name="GachaAnalysis_GetRecords" xml:space="preserve"><value>獲取抽卡記錄</value></data>
+  <data name="GachaAnalysis_GetViaMiyoushe" xml:space="preserve"><value>通過米遊社賬號獲取</value></data>
+  <data name="GachaAnalysis_GetViaUrl" xml:space="preserve"><value>通過 URL 獲取</value></data>
+  <data name="GachaAnalysis_ImportUigf" xml:space="preserve"><value>導入 UIGF 文件</value></data>
+  <data name="GachaAnalysis_UpdateData" xml:space="preserve"><value>更新數據</value></data>
+  <data name="GachaAnalysis_About" xml:space="preserve"><value>關於</value></data>
+  <data name="GachaAnalysis_ImageLibrary" xml:space="preserve"><value>圖片資源庫</value></data>
+  <data name="GachaAnalysis_ListView" xml:space="preserve"><value>列表視圖</value></data>
+  <data name="GachaAnalysis_CardView" xml:space="preserve"><value>卡片視圖</value></data>
+  <data name="GachaAnalysis_ExportUigf" xml:space="preserve"><value>導出 UIGF</value></data>
+  <data name="GachaAnalysis_RefreshMetadata" xml:space="preserve"><value>刷新元數據</value></data>
+  <data name="GachaAnalysis_DeleteRecords" xml:space="preserve"><value>刪除記錄</value></data>
+  <data name="GachaAnalysis_PullsUnit" xml:space="preserve"><value> 抽</value></data>
+  <data name="GachaAnalysis_ImportHint" xml:space="preserve"><value>選擇一種方式導入你的祈願記錄，開始分析你的抽卡數據</value></data>
+  <data name="GachaAnalysis_MiyousheDesc" xml:space="preserve"><value>通過當前登錄的米遊社&#x0a;賬號直接獲取記錄</value></data>
+  <data name="GachaAnalysis_Recommended" xml:space="preserve"><value>推薦</value></data>
+  <data name="GachaAnalysis_UrlDesc" xml:space="preserve"><value>粘貼抽卡分析鏈接&#x0a;從 API 拉取記錄</value></data>
+  <data name="GachaAnalysis_UigfDesc" xml:space="preserve"><value>從標準UIGF格式&#x0a;JSON文件導入記錄&#x0a;UIGF v4.x/3.0/2.x</value></data>
+  <data name="GachaAnalysis_IncrementalUpdate" xml:space="preserve"><value>增量更新（推薦）</value></data>
+  <data name="GachaAnalysis_FullUpdate" xml:space="preserve"><value>全量更新</value></data>
+  <data name="GachaAnalysis_Characters" xml:space="preserve"><value>角色</value></data>
+  <data name="GachaAnalysis_Weapons" xml:space="preserve"><value>武器</value></data>
+  <data name="GachaAnalysis_CachedIconData" xml:space="preserve"><value>已緩存的角色及武器基礎圖標數據</value></data>
+  <data name="GachaAnalysis_GeneratingAnalysis" xml:space="preserve"><value>正在生成祈願分析...</value></data>
+  <data name="GachaAnalysis_CopyImage" xml:space="preserve"><value>複製圖片</value></data>
+  <data name="GachaAnalysis_SaveImage" xml:space="preserve"><value>保存圖片</value></data>
+  <data name="GachaAnalysis_GoldPullStats" xml:space="preserve"><value>出金抽卡方式統計</value></data>
+  <data name="GachaAnalysis_GoldPullStatsDesc" xml:space="preserve"><value>同一卡池同一時間的記錄按一組抽卡計算</value></data>
+  <data name="GachaAnalysis_TenPullGoldRate" xml:space="preserve"><value>十連出金率</value></data>
+  <data name="GachaAnalysis_GroupsWith5Star" xml:space="preserve"><value> 組含五星</value></data>
+  <data name="GachaAnalysis_SinglePullGoldRate" xml:space="preserve"><value>單抽出金率</value></data>
+  <data name="GachaAnalysis_TimesWith5Star" xml:space="preserve"><value> 次含五星</value></data>
+  <data name="GachaAnalysis_Avg5StarCost" xml:space="preserve"><value>五星角色均耗</value></data>
+  <data name="GachaAnalysis_Approx" xml:space="preserve"><value>約 </value></data>
+  <data name="GachaAnalysis_PrimogemsUnit" xml:space="preserve"><value> 原石</value></data>
+  <data name="GachaAnalysis_ActiveMonths" xml:space="preserve"><value>活躍月份</value></data>
+  <data name="GachaAnalysis_MonthlyAvg" xml:space="preserve"><value>月均 </value></data>
+  <data name="GachaAnalysis_PeakMonth" xml:space="preserve"><value>峰值月份</value></data>
+  <data name="GachaAnalysis_5StarAvg" xml:space="preserve"><value>五星平均</value></data>
+  <data name="GachaAnalysis_AllPools5Star" xml:space="preserve"><value>全部卡池五星</value></data>
+  <data name="GachaAnalysis_RarityComposition" xml:space="preserve"><value>稀有度構成</value></data>
+  <data name="GachaAnalysis_Rarity" xml:space="preserve"><value>稀有度</value></data>
+  <data name="GachaAnalysis_Proportion" xml:space="preserve"><value>佔比</value></data>
+  <data name="GachaAnalysis_PoolPullDistribution" xml:space="preserve"><value>卡池抽數分佈</value></data>
+  <data name="GachaAnalysis_Pool" xml:space="preserve"><value>卡池</value></data>
+  <data name="GachaAnalysis_Distribution" xml:space="preserve"><value>分佈</value></data>
+  <data name="GachaAnalysis_Recent5StarPulls" xml:space="preserve"><value>最近五星出貨抽數</value></data>
+  <data name="GachaAnalysis_4StarTop10" xml:space="preserve"><value>四星出貨 Top10</value></data>
+  <data name="GachaAnalysis_PityInterval" xml:space="preserve"><value>五星墊數區間</value></data>
+  <data name="GachaAnalysis_MonthlyTrend" xml:space="preserve"><value>月度抽卡趨勢</value></data>
+  <data name="GachaAnalysis_MonthlyTrendDesc" xml:space="preserve"><value>全部卡池 1-5 星按月份統計</value></data>
+  <data name="WishBannerImage" xml:space="preserve"><value> 卡池圖片</value></data>
+  <data name="HelpPage_SearchResults" xml:space="preserve"><value>找到 {0} 個結果，點擊條目打開</value></data>
+  <data name="HelpPage_NoResults" xml:space="preserve"><value>未找到匹配的文檔</value></data>
+  <data name="Success" xml:space="preserve"><value>成功</value></data>
+  <data name="Failure" xml:space="preserve"><value>失敗</value></data>
+  <data name="Settings_Disclaimer" xml:space="preserve"><value>聲明</value></data>
+  <data name="Settings_ContinueVisit" xml:space="preserve"><value>繼續訪問</value></data>
+  <data name="Settings_CommunityCheckinNote" xml:space="preserve"><value>社區簽到說明</value></data>
+  <data name="Settings_CloudCheckinNote" xml:space="preserve"><value>雲遊戲簽到說明</value></data>
+  <data name="Settings_Notice" xml:space="preserve"><value>提示</value></data>
+  <data name="Settings_SubmitApp" xml:space="preserve"><value>提交申請</value></data>
+  <data name="Settings_NetworkError" xml:space="preserve"><value>網絡錯誤</value></data>
+  <data name="DownloadWindow_Success" xml:space="preserve"><value>下載成功</value></data>
+  <data name="DownloadWindow_Complete" xml:space="preserve"><value>完成</value></data>
+  <data name="DownloadWindow_Cancelled" xml:space="preserve"><value>任務已取消</value></data>
+  <data name="DownloadWindow_Error" xml:space="preserve"><value>發生錯誤</value></data>
+  <data name="DownloadWindow_HideDetailLog" xml:space="preserve"><value>隱藏詳細日誌</value></data>
+  <data name="DownloadWindow_AllDone" xml:space="preserve"><value>所有文件下載、校驗、部署已完成。</value></data>
+  <data name="DownloadWindow_Processing" xml:space="preserve"><value>正在處理: {0}/{1} 文件</value></data>
+  <data name="DownloadWindow_InitTask" xml:space="preserve"><value>初始化任務...</value></data>
+  <data name="CommunityPage_WelcomeTitle" xml:space="preserve"><value>歡迎訪問VanillaBBS，請仔細閱讀以下說明</value></data>
+  <data name="CommunityPage_AuthTitle" xml:space="preserve"><value>授權請求</value></data>
+  <data name="CommunityPage_Agree" xml:space="preserve"><value>同意</value></data>
+  <data name="CommunityPage_Deny" xml:space="preserve"><value>拒絕</value></data>
+  <data name="CommunityPage_Unknown" xml:space="preserve"><value>未知</value></data>
+  <data name="CommunityPage_DataRequest" xml:space="preserve"><value>當前網頁請求訪問您的以下數據：</value></data>
+  <data name="CommunityPage_ConsentPrompt" xml:space="preserve"><value>是否同意提供？</value></data>
+  <data name="AboutPage_FetchFailed" xml:space="preserve"><value>獲取失敗</value></data>
+  <data name="AboutPage_LoadingBio" xml:space="preserve"><value>正在獲取簡介信息...</value></data>
+  <data name="AboutPage_OpenInBrowser" xml:space="preserve"><value>在外部瀏覽器中打開主頁</value></data>
+  <data name="AboutPage_NoBio" xml:space="preserve"><value>該用戶暫無簡介。</value></data>
+  <data name="AboutPage_ConfirmNav" xml:space="preserve"><value>確認跳轉/複製</value></data>
+  <data name="AboutPage_GitHubToken" xml:space="preserve"><value>GitHub Token</value></data>
+  <data name="AboutPage_FetchSuccess" xml:space="preserve"><value>獲取成功! 已生成下載腳本.</value></data>
+  <data name="AboutPage_EnterToken" xml:space="preserve"><value>請輸入Token! </value></data>
+  <data name="AboutPage_FetchFailedArtifact" xml:space="preserve"><value>獲取失敗 (未找到工件)</value></data>
+  <data name="AboutPage_FetchFailedRun" xml:space="preserve"><value>獲取失敗 (未找到成功運行)</value></data>
+  <data name="AboutPage_FetchFailedWorkflow" xml:space="preserve"><value>獲取失敗 (未找到工作流)</value></data>
+  <data name="AboutPage_Exception" xml:space="preserve"><value>發生異常</value></data>
+  <data name="AboutPage_GitHubTokenPlaceholder" xml:space="preserve"><value>請輸入你的 GitHub Token</value></data>
+  <data name="AboutPage_SelectContact" xml:space="preserve"><value>選擇聯繫方式</value></data>
+  <data name="AboutPage_DiscordCopied" xml:space="preserve"><value>Discord ID 已複製!</value></data>
+  <data name="AboutPage_Loading" xml:space="preserve"><value>正在獲取...</value></data>
+  <data name="AchievementWindow_DefaultProfile" xml:space="preserve"><value>默認存檔</value></data>
+  <data name="AchievementWindow_UnnamedProfile" xml:space="preserve"><value>未命名存檔</value></data>
+  <data name="AchievementWindow_UnknownCategory" xml:space="preserve"><value>未知分類</value></data>
+  <data name="AchievementWindow_AllVersions" xml:space="preserve"><value>所有版本</value></data>
+  <data name="AchievementWindow_CurrentSuffix" xml:space="preserve"><value> (當前)</value></data>
+  <data name="AchievementWindow_EnterName" xml:space="preserve"><value>請輸入名稱...</value></data>
+  <data name="AchievementWindow_DbNotFound" xml:space="preserve"><value>找不到內置數據庫文件</value></data>
+  <data name="AchievementWindow_AlreadyLatest" xml:space="preserve"><value>您的存檔已經是最新版本，無需更新。</value></data>
+  <data name="AchievementWindow_UpdateDb" xml:space="preserve"><value>更新成就數據庫</value></data>
+  <data name="AchievementWindow_StartUpdate" xml:space="preserve"><value>開始更新</value></data>
+  <data name="AchievementWindow_SaveCurrent" xml:space="preserve"><value>保存當前存檔</value></data>
+  <data name="AchievementWindow_NewProfile" xml:space="preserve"><value>新建存檔</value></data>
+  <data name="AchievementWindow_DuplicateName" xml:space="preserve"><value>該存檔名稱已存在！</value></data>
+  <data name="AchievementWindow_ProfileNotFound" xml:space="preserve"><value>找不到目標存檔文件！</value></data>
+  <data name="AchievementWindow_InvalidChars" xml:space="preserve"><value>名稱包含非法字符，請重試。</value></data>
+  <data name="AchievementWindow_EmptyContent" xml:space="preserve"><value>文件中沒有內容。</value></data>
+  <data name="AchievementWindow_NoBackup" xml:space="preserve"><value>暫無備份存檔</value></data>
+  <data name="AchievementWindow_ConfirmDeleteMsg" xml:space="preserve"><value>確定要永久刪除嗎？</value></data>
+  <data name="AchievementWindow_NewBlank" xml:space="preserve"><value>新建空白存檔</value></data>
+  <data name="AchievementWindow_ExistingProfiles" xml:space="preserve"><value>現有存檔列表:</value></data>
+  <data name="AchievementWindow_ImportData" xml:space="preserve"><value>導入數據</value></data>
+  <data name="AchievementWindow_ImportFailed" xml:space="preserve"><value>導入失敗</value></data>
+  <data name="AchievementWindow_ExportSuccess" xml:space="preserve"><value>導出成功</value></data>
+  <data name="AchievementWindow_ExportFailed" xml:space="preserve"><value>導出失敗</value></data>
+  <data name="AchievementWindow_InvalidName" xml:space="preserve"><value>名稱無效</value></data>
+  <data name="AchievementWindow_ReadFailed" xml:space="preserve"><value>讀取失敗</value></data>
+  <data name="AchievementWindow_EmptyFile" xml:space="preserve"><value>空文件</value></data>
+  <data name="AchievementWindow_SwitchFailed" xml:space="preserve"><value>切換失敗</value></data>
+  <data name="AchievementWindow_SaveSuccess" xml:space="preserve"><value>保存成功</value></data>
+  <data name="AchievementWindow_ConfirmDelete" xml:space="preserve"><value>確認刪除</value></data>
+  <data name="AchievementWindow_Importing" xml:space="preserve"><value>正在導入成就</value></data>
+  <data name="AchievementWindow_TotalAchievements" xml:space="preserve"><value>共 {0} 個成就</value></data>
+  <data name="AchievementWindow_DataLoaded" xml:space="preserve"><value>數據加載完成</value></data>
+  <data name="AchievementWindow_Saving" xml:space="preserve"><value>正在保存...</value></data>
+  <data name="AchievementWindow_SavedToDocs" xml:space="preserve"><value>數據已保存到文檔目錄</value></data>
+  <data name="AchievementWindow_ReadingData" xml:space="preserve"><value>正在讀取數據...</value></data>
+  <data name="AchievementWindow_SwitchingProfile" xml:space="preserve"><value>正在切換存檔...</value></data>
+  <data name="AchievementWindow_PreparingRead" xml:space="preserve"><value>正在準備讀取數據...</value></data>
+  <data name="AchievementWindow_ApplyingChanges" xml:space="preserve"><value>正在應用更改</value></data>
+  <data name="AchievementWindow_RefreshingUI" xml:space="preserve"><value>正在刷新界面狀態...</value></data>
+  <data name="AchievementWindow_ReadingUIAF" xml:space="preserve"><value>正在讀取UIAF數據...</value></data>
+  <data name="AchievementWindow_GeneratingUIAF" xml:space="preserve"><value>正在生成UIAF數據...</value></data>
+  <data name="AchievementWindow_UIAFExportDone" xml:space="preserve"><value>UIAF導出完成</value></data>
+  <data name="AchievementWindow_SaveException" xml:space="preserve"><value>保存異常</value></data>
+  <data name="AchievementWindow_CannotOpenBrowser" xml:space="preserve"><value>無法打開瀏覽器</value></data>
+  <data name="LaunchErr_UnknownError" xml:space="preserve"><value>未知錯誤</value></data>
+  <data name="LaunchErr_InvalidGamePath" xml:space="preserve"><value>遊戲路徑無效或不存在</value></data>
+  <data name="LaunchErr_ExeNotFound" xml:space="preserve"><value>遊戲主程序不存在，請檢查路徑設置是否正確
+查找的文件:
+{0}</value></data>
+  <data name="LaunchErr_MultipleExeFound" xml:space="preserve"><value>在當前遊戲目錄中同時檢測到了多個可執行程序，啟動器無法確定該啟動哪一個，請清理多餘的客戶端文件，或者在設置中自定義啟動名稱</value></data>
+  <data name="LaunchErr_CannotLoadConfig" xml:space="preserve"><value>無法加載遊戲配置文件</value></data>
+  <data name="LaunchErr_LaunchTimeout" xml:space="preserve"><value>啟動超時，請重新啟動</value></data>
+  <data name="LaunchErr_FatalError" xml:space="preserve"><value>啟動過程中發生嚴重異常: {0}</value></data>
+  <data name="LaunchErr_PluginDamagedTitle" xml:space="preserve"><value>插件可能已損壞</value></data>
+  <data name="LaunchErr_PluginDamagedMsg" xml:space="preserve"><value>插件文件被殺毒軟件破壞或攔截，功能可能失效或者直接無法運行，建議重新安裝插件</value></data>
+  <data name="Status_Success" xml:space="preserve"><value>成功</value></data>
+  <data name="Status_Failure" xml:space="preserve"><value>失敗</value></data>
+  <data name="Status_Skipped" xml:space="preserve"><value>跳過</value></data>
+  <data name="Status_Completed" xml:space="preserve"><value>完成</value></data>
+  <data name="Status_Unknown" xml:space="preserve"><value>未知</value></data>
+  <data name="Status_None" xml:space="preserve"><value>暫無</value></data>
+  <data name="Status_Exception" xml:space="preserve"><value>異常</value></data>
+  <data name="Status_RequestFailed" xml:space="preserve"><value>請求失敗</value></data>
+  <data name="Status_UnknownError" xml:space="preserve"><value>未知錯誤</value></data>
+  <data name="CheckinCloud_Title" xml:space="preserve"><value>雲原神簽到</value></data>
+  <data name="CheckinCloud_MissingCredential" xml:space="preserve"><value>缺少雲遊戲憑證 (x-rpc-combo_token)</value></data>
+  <data name="CheckinCloud_TokenExpired" xml:space="preserve"><value>token 失效或賬號狀態受限</value></data>
+  <data name="CheckinCloud_GainedTime" xml:space="preserve"><value>獲得 {0} 分鐘免費時長</value></data>
+  <data name="CheckinCloud_CurrentFreeTime" xml:space="preserve"><value>當前免費時長: {0}</value></data>
+  <data name="CheckinCloud_AlreadyCheckedIn" xml:space="preserve"><value>今日已簽到或已達上限</value></data>
+  <data name="CheckinCloud_PlayCardStatus" xml:space="preserve"><value>暢玩卡狀態: {0}，米遊幣: {1}</value></data>
+  <data name="CheckinCloud_Exception" xml:space="preserve"><value>異常: {0}</value></data>
+  <data name="CheckinCloud_HoursMinutes" xml:space="preserve"><value>{0}小時{1}分鐘</value></data>
+  <data name="CheckinCloud_HoursOnly" xml:space="preserve"><value>{0}小時</value></data>
+  <data name="CheckinCloud_MinutesOnly" xml:space="preserve"><value>{0}分鐘</value></data>
+  <data name="CheckinCommunity_Title" xml:space="preserve"><value>社區簽到</value></data>
+  <data name="CheckinCommunity_MissingToken" xml:space="preserve"><value>缺少 stoken 或 mid</value></data>
+  <data name="CheckinCommunity_GetTaskFailed" xml:space="preserve"><value>獲取任務狀態失敗，請檢查 cookie</value></data>
+  <data name="CheckinCommunity_TodayDone" xml:space="preserve"><value>今日已完成 ({0}米遊幣)</value></data>
+  <data name="CheckinCommunity_SignDoneSkipped" xml:space="preserve"><value>社區簽到已完成，跳過</value></data>
+  <data name="CheckinCommunity_GetPostsFailed" xml:space="preserve"><value>獲取帖子列表失敗，無法執行看帖/點贊/分享</value></data>
+  <data name="CheckinCommunity_ReadDoneSkipped" xml:space="preserve"><value>看帖已完成，跳過</value></data>
+  <data name="CheckinCommunity_LikeDoneSkipped" xml:space="preserve"><value>點贊已完成，跳過</value></data>
+  <data name="CheckinCommunity_ShareDoneSkipped" xml:space="preserve"><value>分享已完成，跳過</value></data>
+  <data name="CheckinCommunity_GainedCoins" xml:space="preserve"><value>獲得 {0} 米遊幣 (當前 {1})</value></data>
+  <data name="CheckinCommunity_CurrentCoins" xml:space="preserve"><value>{0} 米遊幣</value></data>
+  <data name="CheckinCommunity_GenshinSignRequestFailed" xml:space="preserve"><value>原神社區簽到: 請求失敗</value></data>
+  <data name="CheckinCommunity_GenshinSignSuccess" xml:space="preserve"><value>原神社區簽到成功</value></data>
+  <data name="CheckinCommunity_GenshinSignCaptcha" xml:space="preserve"><value>原神社區簽到: 觸發驗證碼，已跳過</value></data>
+  <data name="CheckinCommunity_GenshinSignFailed" xml:space="preserve"><value>原神社區簽到失敗: {0}</value></data>
+  <data name="CheckinCommunity_GenshinSignException" xml:space="preserve"><value>原神社區簽到異常: {0}</value></data>
+  <data name="CheckinCommunity_ReadSuccess" xml:space="preserve"><value>閱讀成功: {0}</value></data>
+  <data name="CheckinCommunity_ReadFailed" xml:space="preserve"><value>閱讀失敗: {0}</value></data>
+  <data name="CheckinCommunity_ReadException" xml:space="preserve"><value>閱讀異常: {0} ({1})</value></data>
+  <data name="CheckinCommunity_LikeSuccess" xml:space="preserve"><value>點贊成功: {0}</value></data>
+  <data name="CheckinCommunity_LikeFailed" xml:space="preserve"><value>點贊失敗: {0} ({1})</value></data>
+  <data name="CheckinCommunity_LikeException" xml:space="preserve"><value>點贊異常: {0} ({1})</value></data>
+  <data name="CheckinCommunity_ShareSuccess" xml:space="preserve"><value>分享成功: {0}</value></data>
+  <data name="CheckinCommunity_ShareFailed" xml:space="preserve"><value>分享失敗: {0} ({1})</value></data>
+  <data name="CheckinCommunity_ShareException" xml:space="preserve"><value>分享異常: {0} ({1})</value></data>
+  <data name="CheckinCommunity_Exception" xml:space="preserve"><value>異常: {0}</value></data>
+  <data name="Checkin_NoBoundAccount" xml:space="preserve"><value>未檢測到綁定賬號</value></data>
+  <data name="Checkin_Reason" xml:space="preserve"><value>，原因: {0}</value></data>
+  <data name="Checkin_Detail" xml:space="preserve"><value>，詳情: {0}</value></data>
+  <data name="Checkin_GetInfoFailed" xml:space="preserve"><value> 獲取簽到信息失敗</value></data>
+  <data name="Checkin_FirstBindWarning" xml:space="preserve"><value>是第一次綁定，請先手動簽到一次</value></data>
+  <data name="Checkin_AlreadySignedToday" xml:space="preserve"><value>今天已經簽到過了</value></data>
+  <data name="Checkin_TodayReward" xml:space="preserve"><value>今天獲得的獎勵是{0}</value></data>
+  <data name="Checkin_SignRequestFailed" xml:space="preserve"><value> 本次簽到請求失敗</value></data>
+  <data name="Checkin_SignRateLimited" xml:space="preserve"><value> 簽到失敗，觸發 HTTP 429 限流</value></data>
+  <data name="Checkin_ParseResultFailed" xml:space="preserve"><value> 解析簽到結果失敗</value></data>
+  <data name="Checkin_SignSuccess" xml:space="preserve"><value>簽到成功</value></data>
+  <data name="Checkin_SignFailedApi" xml:space="preserve"><value> 簽到失敗，API提示: {0}</value></data>
+  <data name="Checkin_SignedDays" xml:space="preserve"><value>已簽到{0}天</value></data>
+  <data name="Checkin_RewardIs" xml:space="preserve"><value>獎勵是{0}</value></data>
+  <data name="Checkin_NoAccountToSign" xml:space="preserve"><value>沒有可簽到的賬號</value></data>
+  <data name="Checkin_ParseAccountListFailed" xml:space="preserve"><value>解析賬號列表失敗</value></data>
+  <data name="Checkin_GetAccountListException" xml:space="preserve"><value>獲取賬號列表異常: {0}</value></data>
+  <data name="Checkin_ParseSignStatusFailed" xml:space="preserve"><value>解析簽到狀態失敗</value></data>
+  <data name="Checkin_RequestSignStatusException" xml:space="preserve"><value>請求籤到狀態異常: {0}</value></data>
+  <data name="Checkin_ParseResponseDataFailed" xml:space="preserve"><value>解析賬號列表響應數據失敗</value></data>
+  <data name="Checkin_NetworkRequestException" xml:space="preserve"><value>網絡請求異常: {0}</value></data>
+  <data name="Checkin_GetCalendarException" xml:space="preserve"><value>獲取獎勵日曆異常: {0}</value></data>
+  <data name="Checkin_AllAccountsSuccess" xml:space="preserve"><value>簽到完成，{0}個賬號全部成功</value></data>
+  <data name="Checkin_PartialSuccess" xml:space="preserve"><value>簽到完成，{0}個成功，{1}個失敗</value></data>
+  <data name="Checkin_AllFailed" xml:space="preserve"><value>簽到失敗，共{0}個賬號出錯</value></data>
+  <data name="Checkin_AllDisabled" xml:space="preserve"><value>所有賬號已被禁用</value></data>
+  <data name="Checkin_AccountNotFound" xml:space="preserve"><value>未找到當前賬號</value></data>
+  <data name="Checkin_AllDone" xml:space="preserve"><value>全部完成</value></data>
+  <data name="Checkin_CountFailed" xml:space="preserve"><value>{0}個失敗</value></data>
+  <data name="Checkin_AccountsSuccess" xml:space="preserve"><value>{0}個賬號成功</value></data>
+  <data name="Checkin_AccountsFailed" xml:space="preserve"><value>{0}個失敗</value></data>
+  <data name="Checkin_GameCheckin" xml:space="preserve"><value>遊戲簽到</value></data>
+  <data name="Checkin_CloudGameCheckin" xml:space="preserve"><value>雲遊戲簽到</value></data>
+  <data name="Checkin_CommunityCheckin" xml:space="preserve"><value>社區簽到</value></data>
+  <data name="Checkin_OSAccountSkipped" xml:space="preserve"><value>OS 賬號跳過</value></data>
+  <data name="Checkin_NoCloudCredential" xml:space="preserve"><value>未配置雲遊戲憑證</value></data>
+  <data name="Checkin_NotConfiguredCredential" xml:space="preserve"><value>未配置憑證</value></data>
+  <data name="Checkin_ConsecutiveDays" xml:space="preserve"><value>連續{0}天 | 獲得{1}</value></data>
+  <data name="Checkin_SuccessFailCount" xml:space="preserve"><value>{0}成功，{1}失敗</value></data>
+  <data name="Checkin_GetStatusFailed" xml:space="preserve"><value>獲取狀態失敗</value></data>
+  <data name="Checkin_SignedToday" xml:space="preserve"><value>今日已簽到</value></data>
+  <data name="Checkin_UnsignedToday" xml:space="preserve"><value>今日未簽到</value></data>
+  <data name="Checkin_NotEnabled" xml:space="preserve"><value>簽到功能未啟用</value></data>
+  <data name="Checkin_NotDetected" xml:space="preserve"><value>未檢測到綁定</value></data>
+  <data name="Checkin_NotDetectedAccount" xml:space="preserve"><value>未檢測到賬號</value></data>
+  <data name="Checkin_FeatureNotEnabled" xml:space="preserve"><value>功能未啟用</value></data>
+  <data name="Checkin_EnableInConfig" xml:space="preserve"><value>config.json中設置Enable=true</value></data>
+  <data name="Checkin_DefaultUser" xml:space="preserve"><value>用戶{0}</value></data>
+  <data name="Checkin_GameCheckinProgress" xml:space="preserve"><value>正在遊戲簽到...</value></data>
+  <data name="Checkin_OSAccountSkippedCommunity" xml:space="preserve"><value>OS 賬號跳過社區簽到</value></data>
+  <data name="Checkin_CommunityCheckinProgress" xml:space="preserve"><value>正在社區簽到...</value></data>
+  <data name="Checkin_CloudGameCheckinProgress" xml:space="preserve"><value>正在雲遊戲簽到...</value></data>
+  <data name="CheckinGame_Exception" xml:space="preserve"><value>異常: {0}</value></data>
+  <data name="Token_InvalidCookie" xml:space="preserve"><value>未提供有效的 Cookie</value></data>
+  <data name="Token_MissingStokenOrMid" xml:space="preserve"><value>本地Cookie中缺少stoken或mid，無法刷新</value></data>
+  <data name="Token_RefreshTitle" xml:space="preserve"><value>Cookie刷新</value></data>
+  <data name="Token_ManualRefreshProgress" xml:space="preserve"><value>正在執行手動刷新...</value></data>
+  <data name="Token_AutoRefreshProgress" xml:space="preserve"><value>Cookie已失效，正在執行刷新...</value></data>
+  <data name="Token_WebTicketFailed" xml:space="preserve"><value>創建 WebTicket 失敗</value></data>
+  <data name="Token_QRScanFailed" xml:space="preserve"><value>模擬掃碼請求失敗</value></data>
+  <data name="Token_ConfirmLoginFailed" xml:space="preserve"><value>模擬確認登錄請求失敗</value></data>
+  <data name="Token_ManualRefreshDone" xml:space="preserve"><value>Cookie手動刷新已完成，新憑據已生效</value></data>
+  <data name="Token_AutoRefreshDone" xml:space="preserve"><value>Cookie自動刷新已完成，新憑據已生效</value></data>
+  <data name="Token_GetNewCookieFailed" xml:space="preserve"><value>獲取新 Cookie 失敗</value></data>
+  <data name="Token_RefreshFailed" xml:space="preserve"><value>Cookie刷新失敗</value></data>
+  <data name="Token_RefreshException" xml:space="preserve"><value>Cookie刷新過程中出現異常: {0}</value></data>
+  <data name="RedeemCode_Expired" xml:space="preserve"><value>已過期</value></data>
+  <data name="RedeemCode_ExpiringToday" xml:space="preserve"><value>今天到期</value></data>
+  <data name="RedeemCode_HoursLeft" xml:space="preserve"><value>剩餘 {0} 小時</value></data>
+  <data name="RedeemCode_DaysLeft" xml:space="preserve"><value>剩餘 {0} 天</value></data>
+  <data name="RedeemCode_MoreEvents" xml:space="preserve"><value>……以及另外 {0} 個活動</value></data>
+  <data name="RedeemCode_NewPublished" xml:space="preserve"><value>新兌換碼已發佈</value></data>
+  <data name="RedeemCode_NewContent" xml:space="preserve"><value>發現新的兌換碼活動：\n{0}\n請及時前往遊戲內兌換！</value></data>
+  <data name="RedeemCode_ExpiringTitle" xml:space="preserve"><value>兌換碼即將失效</value></data>
+  <data name="RedeemCode_ExpiringContent" xml:space="preserve"><value>活動 {0} 包含可用兌換碼：\n{1}\n請儘快前往遊戲內使用，將在今天之後失效！</value></data>
+  <data name="HashCheck_Failed" xml:space="preserve"><value>校驗失敗</value></data>
+  <data name="HashCheck_FileNotFound" xml:space="preserve"><value>找不到校驗文件，請檢查客戶端完整性</value></data>
+  <data name="HashCheck_FormatError" xml:space="preserve"><value>格式錯誤</value></data>
+  <data name="HashCheck_ComponentModified" xml:space="preserve"><value>發現組件被修改或缺失，請檢查：\nCaptureApp\n</value></data>
+  <data name="HashCheck_NotPassed" xml:space="preserve"><value>校驗未通過</value></data>
+  <data name="HashCheck_Exception" xml:space="preserve"><value>校驗組件異常</value></data>
+  <data name="HashCheck_ExceptionMsg" xml:space="preserve"><value>執行哈希校驗時發生錯誤: {0}</value></data>
+  <data name="Settings_DirCreateFailed" xml:space="preserve"><value>目錄創建失敗</value></data>
+  <data name="Settings_DirCreateFailedMsg" xml:space="preserve"><value>無法創建應用數據目錄，請檢查權限: {0}</value></data>
+  <data name="Settings_DbInitFailed" xml:space="preserve"><value>數據庫初始化失敗</value></data>
+  <data name="Settings_DbInitFailedMsg" xml:space="preserve"><value>無法創建或初始化設置數據庫: {0}</value></data>
+  <data name="Settings_ConfigDeleteFailed" xml:space="preserve"><value>配置刪除失敗</value></data>
+  <data name="Settings_ConfigDeleteFailedMsg" xml:space="preserve"><value>無法從數據庫刪除設置: {0}</value></data>
+  <data name="Settings_ConfigReadFailed" xml:space="preserve"><value>配置讀取失敗</value></data>
+  <data name="Settings_ConfigReadFailedMsg" xml:space="preserve"><value>無法從數據庫加載設置: {0}</value></data>
+  <data name="Settings_ConfigSaveFailed" xml:space="preserve"><value>配置保存失敗</value></data>
+  <data name="Settings_ConfigSaveFailedMsg" xml:space="preserve"><value>無法將設置保存到數據庫: {0}</value></data>
+  <data name="Diagnostics_Connected" xml:space="preserve"><value>已連接</value></data>
+  <data name="Diagnostics_Disconnected" xml:space="preserve"><value>未連接</value></data>
+  <data name="Diagnostics_Domestic" xml:space="preserve"><value>國內</value></data>
+  <data name="Diagnostics_Overseas" xml:space="preserve"><value>海外</value></data>
+  <data name="Diagnostics_DomesticSystem" xml:space="preserve"><value>國內 (按系統設置)</value></data>
+  <data name="Diagnostics_OverseasSystem" xml:space="preserve"><value>海外 (按系統設置)</value></data>
+  <data name="Diagnostics_NoNetwork" xml:space="preserve"><value>無網絡</value></data>
+  <data name="Diagnostics_UnknownCpu" xml:space="preserve"><value>未知處理器</value></data>
+  <data name="Diagnostics_UnknownGpu" xml:space="preserve"><value>未知顯卡</value></data>
+  <data name="Diagnostics_ReadFailed" xml:space="preserve"><value>讀取失敗</value></data>
+  <data name="Diagnostics_Enabled" xml:space="preserve"><value>已開啟</value></data>
+  <data name="Diagnostics_Disabled" xml:space="preserve"><value>未開啟</value></data>
+  <data name="Diagnostics_NotInstalled" xml:space="preserve"><value>未安裝或已卸載</value></data>
+  <data name="Diagnostics_CannotDetect" xml:space="preserve"><value>無法檢測</value></data>
+  <data name="Diagnostics_PartialError" xml:space="preserve"><value>診斷過程中發生錯誤，部分信息可能不準確</value></data>
+  <data name="Diagnostics_SuggestNoNetwork" xml:space="preserve"><value>網絡未連接，請檢查系統網絡設置</value></data>
+  <data name="Diagnostics_SuggestDomesticSlow" xml:space="preserve"><value>當前處於國內網絡環境，訪問服務器可能存在緩慢情況</value></data>
+  <data name="Diagnostics_SuggestSecurityCenter" xml:space="preserve"><value>Windows 安全中心已開啟，這可能會導致插件注入失敗，建議關閉 Windows 安全中心</value></data>
+  <data name="Diagnostics_SuggestLowMemory" xml:space="preserve"><value>當前物理內存為 {0}GB，不符合最低 12GB 的要求</value></data>
+  <data name="Diagnostics_SuggestLowDisk" xml:space="preserve"><value>系統盤剩餘空間為 {0}GB，不符合最低 1GB 的要求</value></data>
+  <data name="Diagnostics_SuggestRefreshRate" xml:space="preserve"><value>您的顯示器支持 {0}Hz，但當前僅運行在 {1}Hz</value></data>
+  <data name="Diagnostics_AllNormal" xml:space="preserve"><value>正常，系統與網絡環境符合運行要求</value></data>
+  <data name="User_DefaultSignature" xml:space="preserve"><value>這個人很懶，什麼都沒有寫...</value></data>
+  <data name="User_GenderMale" xml:space="preserve"><value>男</value></data>
+  <data name="User_GenderFemale" xml:space="preserve"><value>女</value></data>
+  <data name="User_GenderPrivate" xml:space="preserve"><value>保密</value></data>
+  <data name="Gacha_Won5050" xml:space="preserve"><value>歪</value></data>
+  <data name="Gacha_Guaranteed" xml:space="preserve"><value>大保底</value></data>
+  <data name="Gacha_FiftyFifty" xml:space="preserve"><value>小保底</value></data>
+  <data name="Gacha_ZeroPulls" xml:space="preserve"><value>0 抽</value></data>
+  <data name="Gacha_No5StarPity" xml:space="preserve"><value>暫無五星墊數</value></data>
+  <data name="Gacha_No5StarRecord" xml:space="preserve"><value>暫無五星記錄</value></data>
+  <data name="Gacha_TotalPulls" xml:space="preserve"><value>總抽數</value></data>
+  <data name="Gacha_PrimogemEstimate" xml:space="preserve"><value>原石估算</value></data>
+  <data name="Gacha_5StarDrop" xml:space="preserve"><value>五星出貨</value></data>
+  <data name="Gacha_4StarDrop" xml:space="preserve"><value>四星出貨</value></data>
+  <data name="Gacha_Avg5StarCharCost" xml:space="preserve"><value>五星角色均耗</value></data>
+  <data name="Gacha_Avg5StarPulls" xml:space="preserve"><value>五星均抽</value></data>
+  <data name="Gacha_DeepestPity" xml:space="preserve"><value>當前最深墊數</value></data>
+  <data name="Gacha_Best5Star" xml:space="preserve"><value>最歐五星</value></data>
+  <data name="Gacha_Worst5Star" xml:space="preserve"><value>最非五星</value></data>
+  <data name="Gacha_ActiveMonths" xml:space="preserve"><value>活躍月份</value></data>
+  <data name="Gacha_NoWishRecord" xml:space="preserve"><value>暫無祈願記錄</value></data>
+  <data name="Gacha_PerPull" xml:space="preserve"><value>按每抽 160 原石</value></data>
+  <data name="Gacha_No5StarChar" xml:space="preserve"><value>暫無五星角色</value></data>
+  <data name="Gacha_MonthlyAvg0" xml:space="preserve"><value>月均 0 抽</value></data>
+  <data name="Gacha_NoRecords" xml:space="preserve"><value>暫無記錄</value></data>
+  <data name="Day_Sunday" xml:space="preserve"><value>週日</value></data>
+  <data name="Day_Monday" xml:space="preserve"><value>週一</value></data>
+  <data name="Day_Tuesday" xml:space="preserve"><value>週二</value></data>
+  <data name="Day_Wednesday" xml:space="preserve"><value>週三</value></data>
+  <data name="Day_Thursday" xml:space="preserve"><value>週四</value></data>
+  <data name="Day_Friday" xml:space="preserve"><value>週五</value></data>
+  <data name="Day_Saturday" xml:space="preserve"><value>週六</value></data>
+  <data name="Element_Pyro" xml:space="preserve"><value>火</value></data>
+  <data name="Element_Anemo" xml:space="preserve"><value>風</value></data>
+  <data name="Element_Geo" xml:space="preserve"><value>巖</value></data>
+  <data name="Element_Dendro" xml:space="preserve"><value>草</value></data>
+  <data name="Element_Electro" xml:space="preserve"><value>雷</value></data>
+  <data name="Element_Hydro" xml:space="preserve"><value>水</value></data>
+  <data name="Element_Cryo" xml:space="preserve"><value>冰</value></data>
+  <data name="Download_Connecting" xml:space="preserve"><value>正在連接米哈遊服務器...</value></data>
+  <data name="Download_VoiceOnly" xml:space="preserve"><value>>> 跳過遊戲本體，僅下載語音包模式</value></data>
+  <data name="Download_FetchingManifest" xml:space="preserve"><value>正在獲取清單文件: {0}...</value></data>
+  <data name="Download_ManifestFailed" xml:space="preserve"><value>清單下載失敗: {0}</value></data>
+  <data name="Download_TaskStart" xml:space="preserve"><value>校驗/下載任務開始。總計: {0} 文件, {1}</value></data>
+  <data name="Download_FileUnfixable" xml:space="preserve"><value>文件無法修復或用戶取消操作: {0}</value></data>
+  <data name="Download_MovingFiles" xml:space="preserve"><value>下載校驗完畢，正在移動文件...</value></data>
+  <data name="Download_AllDone" xml:space="preserve"><value>全部完成！</value></data>
+  <data name="Download_UserCancelled" xml:space="preserve"><value>用戶取消操作。</value></data>
+  <data name="Download_VerifyFailed" xml:space="preserve"><value>[校驗不通過] {0} (服務器:{1} vs 本地:{2})</value></data>
+  <data name="Download_FileException" xml:space="preserve"><value>[文件處理異常] {0}: {1}</value></data>
+  <data name="Download_ManifestMd5Retry" xml:space="preserve"><value>Manifest MD5校驗失敗，重試中...</value></data>
+  <data name="Download_CannotConnectApi" xml:space="preserve"><value>無法連接到米哈遊 API</value></data>
+  <data name="DailyNote_ApiError" xml:space="preserve"><value>接口返回錯誤，retcode={0}</value></data>
+  <data name="DailyNote_GetFailed" xml:space="preserve"><value>獲取便籤數據失敗: {0}</value></data>
+  <data name="DailyNote_InvalidResponse" xml:space="preserve"><value>獲取便籤數據失敗: 響應格式錯誤</value></data>
+  <data name="DailyNote_TransformerTime" xml:space="preserve"><value>{0}天 {1}時 {2}分</value></data>
+  <data name="DailyNote_Claimed" xml:space="preserve"><value>已獲取</value></data>
+  <data name="DailyNote_Unclaimed" xml:space="preserve"><value>未獲取</value></data>
+  <data name="DailyNote_NoFingerprint" xml:space="preserve"><value>無法獲取設備指紋服務</value></data>
+  <data name="DailyNote_NoActiveAccount" xml:space="preserve"><value>無活躍賬號</value></data>
+  <data name="DailyNote_CannotLoadCookie" xml:space="preserve"><value>無法加載Cookie</value></data>
+  <data name="DailyNote_FetchFailed" xml:space="preserve"><value>獲取便籤失敗: {0} (retcode={1})</value></data>
+  <data name="Geetest_NoFingerprintService" xml:space="preserve"><value>無法獲取設備指紋服務</value></data>
+  <data name="Geetest_NoAccountService" xml:space="preserve"><value>無法獲取賬號管理服務</value></data>
+  <data name="Geetest_NoActiveAccount" xml:space="preserve"><value>無活躍賬號</value></data>
+  <data name="Geetest_CaptchaTitle" xml:space="preserve"><value>人機驗證</value></data>
+  <data name="Launcher_DllNotLoaded" xml:space="preserve"><value>由於系統缺少 C++ 運行庫或核心文件被殺毒軟件攔截，Launcher.dll 未加載成功，無法啟動。</value></data>
+  <data name="Screenshot_Saved" xml:space="preserve"><value>截圖已保存</value></data>
+  <data name="Screenshot_CaptureFailed" xml:space="preserve"><value>截圖捕獲失敗</value></data>
+  <data name="Update_AllRetriesFailed" xml:space="preserve"><value>所有重試均失敗</value></data>
+  <data name="UserInfo_FeatureRemoved" xml:space="preserve"><value>功能已移除</value></data>
+  <data name="Hoyolab_AsiaServer" xml:space="preserve"><value>亞服</value></data>
+  <data name="Hoyolab_USAServer" xml:space="preserve"><value>美服</value></data>
+  <data name="Hoyolab_EuroServer" xml:space="preserve"><value>歐服</value></data>
+  <data name="Hoyolab_CHTServer" xml:space="preserve"><value>臺港澳服</value></data>
+  <data name="FilePicker_MainWindowNull" xml:space="preserve"><value>主窗口不存在，無法打開文件選擇器</value></data>
+  <data name="FilePicker_InvalidWindowHandle" xml:space="preserve"><value>窗口句柄無效，請以普通用戶模式運行或重試</value></data>
+  <data name="Crash_Title" xml:space="preserve"><value>芙芙啟動器發生了異常</value></data>
+  <data name="Crash_Message" xml:space="preserve"><value>程序遇到了一個錯誤
+
+錯誤來源: {0}
+錯誤信息: {1}
+
+堆棧信息:
+{2}</value></data>
+  <data name="Program_InjectionFailed" xml:space="preserve"><value>注入啟動失敗: {0} (代碼: {1})</value></data>
+  <data name="Program_InjectionException" xml:space="preserve"><value>注入進程發生異常: {0}</value></data>
+  <data name="Program_ErrorTitle" xml:space="preserve"><value>FufuLauncher 錯誤</value></data>
+  <data name="IniFile_AccessDenied" xml:space="preserve"><value>拒絕訪問 請檢查文件或文件夾是否被設置為"只讀"，或者嘗試以管理員身份重新運行啟動器</value></data>
+  <data name="IniFile_WriteFailed" xml:space="preserve"><value>寫入失敗：文件可能正被遊戲或其他程序佔用
+反饋: {0}</value></data>
+  <data name="IniFile_WriteError" xml:space="preserve"><value>寫入配置時發生錯誤
+反饋: {0}</value></data>
+</root>

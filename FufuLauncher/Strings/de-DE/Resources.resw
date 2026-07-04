@@ -83,9 +83,12 @@
   <data name="AppLangTitle" xml:space="preserve"><value>Anzeigesprache</value></data>
   <data name="AppLangCaption" xml:space="preserve"><value>Wird nach einem Neustart wirksam</value></data>
   <data name="LangZhCN" xml:space="preserve"><value>简体中文 (Empfohlen)</value></data>
+  <data name="LangZhTW" xml:space="preserve"><value>Traditionelles Chinesisch</value></data>
   <data name="LangEnUS" xml:space="preserve"><value>English</value></data>
   <data name="LangFr" xml:space="preserve"><value>Français</value></data>
   <data name="LangDe" xml:space="preserve"><value>Deutsch</value></data>
+  <data name="LangRu" xml:space="preserve"><value>Русский</value></data>
+  <data name="LangJa" xml:space="preserve"><value>日本語</value></data>
   <data name="LangDefault" xml:space="preserve"><value>System-Standardsprache verwenden</value></data>
   <data name="LaunchWindowModeTitle" xml:space="preserve"><value>Startfenster-Modus</value></data>
   <data name="WindowModeNormal" xml:space="preserve"><value>Normales Fenster</value></data>
@@ -226,7 +229,7 @@
   <data name="PluginSettingsLabel" xml:space="preserve"><value>Plugin-Einstellungen</value></data>
   <data name="EmptyPluginLibrary" xml:space="preserve"><value>Die Plugin-Bibliothek ist leer</value></data>
   <data name="PluginSafetyDisclaimer" xml:space="preserve"><value>Bitte prüfe die Sicherheit der Plugins selbst. Der Entwickler übernimmt keine Verantwortung für Schäden, die durch die Verwendung von Plugins entstehen.</value></data>
-  <data name="DiagnosticsHint" xml:space="preserve"><value>Bei Problemen klicke zuerst auf „Computer diagnostizieren".</value></data>
+  <data name="DiagnosticsHint" xml:space="preserve"><value>Bei Problemen klicke zuerst auf „Computer diagnostizieren&quot;.</value></data>
   <data name="DiagnosticsBtn" xml:space="preserve"><value>Computer diagnostizieren</value></data>
   <data name="ViewHelpTooltip" xml:space="preserve"><value>Hilfe anzeigen</value></data>
   <data name="GifInvalidError" xml:space="preserve"><value>Die konfigurierte URL ist kein gültiges GIF-Format</value></data>
@@ -340,10 +343,14 @@
   <data name="Err_GamePathNotFound" xml:space="preserve"><value>Spielpfad nicht gefunden. Bitte gib zuerst den Spielpfad in den Einstellungen an.</value></data>
   <data name="Title_VerifyGameIntegrity" xml:space="preserve"><value>Spielintegrität prüfen</value></data>
   <data name="Err_GamePathNotSet" xml:space="preserve"><value>Spielpfad nicht festgelegt.</value></data>
-  <data name="Err_ExeNotFoundInFolder_Format" xml:space="preserve"><value>Spielprogramm konnte im Ordner nicht gefunden werden:\n{0}</value></data>
+  <data name="Err_ExeNotFoundInFolder_Format" xml:space="preserve"><value>Spielprogramm konnte im Ordner nicht gefunden werden:
+{0}</value></data>
   <data name="Placeholder_DefaultUseCurrentPreset" xml:space="preserve"><value>Standard: Aktuelle App-Vorgabe verwenden</value></data>
   <data name="None_Value" xml:space="preserve"><value>Keine</value></data>
-  <data name="Msg_ChooseShortcutAction" xml:space="preserve"><value>Bitte wähle die gewünschte Aktion:\n\nDesktop-Verknüpfung erstellen: Symbol direkt auf dem Desktop erzeugen (wird mit Administratorrechten ausgeführt)?\nOder Startbefehl kopieren: Vollständigen Befehl für Steam oder Skripte abrufen?</value></data>
+  <data name="Msg_ChooseShortcutAction" xml:space="preserve"><value>Bitte wähle die gewünschte Aktion:
+
+Desktop-Verknüpfung erstellen: Symbol direkt auf dem Desktop erzeugen (wird mit Administratorrechten ausgeführt)?
+Oder Startbefehl kopieren: Vollständigen Befehl für Steam oder Skripte abrufen?</value></data>
   <data name="Msg_ImportedLaunchParams_Format" xml:space="preserve"><value>Startparameter importiert: {0}</value></data>
   <data name="Label_SpecifyInjectionPreset" xml:space="preserve"><value>Injektionsvorgabe festlegen:</value></data>
   <data name="Title_ChooseAction" xml:space="preserve"><value>Aktion auswählen</value></data>
@@ -363,8 +370,14 @@
   <data name="Err_FetchFailedCheckNetwork" xml:space="preserve"><value>Abruf fehlgeschlagen, bitte Netzwerk prüfen</value></data>
   <data name="Btn_Copied" xml:space="preserve"><value>Kopiert</value></data>
   <data name="Title_PathError" xml:space="preserve"><value>Pfadfehler</value></data>
-  <data name="Err_CannotCreateGameDir_Format" xml:space="preserve"><value>Spielverzeichnis kann nicht erstellt werden: {0}\nFehler: {1}</value></data>
-  <data name="Err_ConfigIniNotFound_Format" xml:space="preserve"><value>config.ini konnte nicht gefunden werden.\n\nGesuchter Pfad:\n{0}\n\nBitte überprüfe, ob dein Spielpfad korrekt auf das Installationsverzeichnis zeigt.</value></data>
+  <data name="Err_CannotCreateGameDir_Format" xml:space="preserve"><value>Spielverzeichnis kann nicht erstellt werden: {0}
+Fehler: {1}</value></data>
+  <data name="Err_ConfigIniNotFound_Format" xml:space="preserve"><value>config.ini konnte nicht gefunden werden.
+
+Gesuchter Pfad:
+{0}
+
+Bitte überprüfe, ob dein Spielpfad korrekt auf das Installationsverzeichnis zeigt.</value></data>
   <data name="Msg_GlobalClientNoSwitchToBili" xml:space="preserve"><value>Dies ist ein globaler Client. Ein Wechsel zum B-Server ist nicht möglich. Bitte nutze die Server-Konvertierung, um zum chinesischen Server zu wechseln!</value></data>
   <data name="Btn_SwitchToOfficialServer" xml:space="preserve"><value>Zum offiziellen Server wechseln</value></data>
   <data name="Label_ChooseTargetServer" xml:space="preserve"><value>Bitte wähle den Zielserver:</value></data>
@@ -379,17 +392,25 @@
   <data name="Err_ReadConfigFailed" xml:space="preserve"><value>Konfigurationsdatei konnte nicht gelesen werden</value></data>
   <data name="Title_TeyvatMap" xml:space="preserve"><value>Teyvat-Weltkarte</value></data>
   <data name="Title_GlobalClient" xml:space="preserve"><value>Globaler Client</value></data>
-  <data name="Msg_GlobalClientInjectionWarning" xml:space="preserve"><value>Hinweis: Die Injektionsfunktion dieses Launchers ist hauptsächlich für den chinesischen Server ausgelegt. Auf dem globalen Client funktioniert sie möglicherweise nicht oder verursacht unbekannte Fehler.\n\nTrotzdem mit diesem Pfad fortfahren?</value></data>
+  <data name="Msg_GlobalClientInjectionWarning" xml:space="preserve"><value>Hinweis: Die Injektionsfunktion dieses Launchers ist hauptsächlich für den chinesischen Server ausgelegt. Auf dem globalen Client funktioniert sie möglicherweise nicht oder verursacht unbekannte Fehler.
+
+Trotzdem mit diesem Pfad fortfahren?</value></data>
   <data name="Btn_ContinueUsing" xml:space="preserve"><value>Weiter verwenden</value></data>
   <data name="Btn_DiscardAndClear" xml:space="preserve"><value>Verwerfen und löschen</value></data>
   <data name="Title_InvalidGamePath" xml:space="preserve"><value>Ungültiger Spielpfad</value></data>
-  <data name="Err_ExeNotFoundAtPath_Format" xml:space="preserve"><value>Spielprogramm ({0}) wurde unter diesem Pfad nicht gefunden.\n\nBitte stelle sicher, dass du das Installationsverzeichnis mit der ausführbaren Datei ausgewählt hast, oder konfiguriere einen benutzerdefinierten Namen in den Einstellungen.</value></data>
+  <data name="Err_ExeNotFoundAtPath_Format" xml:space="preserve"><value>Spielprogramm ({0}) wurde unter diesem Pfad nicht gefunden.
+
+Bitte stelle sicher, dass du das Installationsverzeichnis mit der ausführbaren Datei ausgewählt hast, oder konfiguriere einen benutzerdefinierten Namen in den Einstellungen.</value></data>
   <data name="Title_InvalidPath" xml:space="preserve"><value>Ungültiger Pfad</value></data>
   <data name="Msg_PathDoesNotExist" xml:space="preserve"><value>Der angegebene Pfad existiert nicht. Bitte überprüfe den Pfad.</value></data>
   <data name="OkBtn" xml:space="preserve"><value>OK</value></data>
   <data name="Err_PathProcessingFailed_Format" xml:space="preserve"><value>Pfadverarbeitung fehlgeschlagen: {0}</value></data>
   <data name="Title_AutoFoundGamePath" xml:space="preserve"><value>Spielpfad automatisch gefunden</value></data>
-  <data name="Msg_DetectedPossiblePath_Format" xml:space="preserve"><value>Möglicher Installationspfad erkannt:\n\n{0}\n\nDiesen Pfad übernehmen?</value></data>
+  <data name="Msg_DetectedPossiblePath_Format" xml:space="preserve"><value>Möglicher Installationspfad erkannt:
+
+{0}
+
+Diesen Pfad übernehmen?</value></data>
   <data name="Btn_SelectManually" xml:space="preserve"><value>Manuell auswählen</value></data>
   <data name="ErrorTitle" xml:space="preserve"><value>Fehler</value></data>
   <data name="Err_CannotOpenFilePicker" xml:space="preserve"><value>Dateiauswahl kann nicht geöffnet werden</value></data>
@@ -409,11 +430,13 @@
   <data name="Prefix_Account_Format" xml:space="preserve"><value>Konto_{0}</value></data>
   <data name="Err_SaveFailed_Format" xml:space="preserve"><value>Speichern fehlgeschlagen: {0}</value></data>
   <data name="Title_SwitchSuccess" xml:space="preserve"><value>Wechsel erfolgreich</value></data>
-  <data name="Msg_SwitchedToAccount_Format" xml:space="preserve"><value>Gewechselt zu: {0}\n\nSpiel muss neu gestartet werden, damit die Änderung wirksam wird!</value></data>
+  <data name="Msg_SwitchedToAccount_Format" xml:space="preserve"><value>Gewechselt zu: {0}
+
+Spiel muss neu gestartet werden, damit die Änderung wirksam wird!</value></data>
   <data name="Btn_GotIt" xml:space="preserve"><value>Verstanden</value></data>
   <data name="Err_SwitchFailed_Format" xml:space="preserve"><value>Wechsel fehlgeschlagen: {0}</value></data>
   <data name="Title_ConfirmDelete" xml:space="preserve"><value>Löschen bestätigen</value></data>
-  <data name="Msg_DeleteAccountConfirm_Format" xml:space="preserve"><value>Konto &apos;{0}&apos; löschen?</value></data>
+  <data name="Msg_DeleteAccountConfirm_Format" xml:space="preserve"><value>Konto '{0}' löschen?</value></data>
   <data name="Err_DeleteFailed_Format" xml:space="preserve"><value>Löschen fehlgeschlagen: {0}</value></data>
   <data name="Title_OperationFailed" xml:space="preserve"><value>Vorgang fehlgeschlagen</value></data>
   <data name="NavHome" xml:space="preserve"><value>Startseite</value></data>
@@ -437,7 +460,9 @@
   <data name="DontShowAgain" xml:space="preserve"><value>Nicht mehr anzeigen</value></data>
   <data name="GotItBtn" xml:space="preserve"><value>Verstanden</value></data>
   <data name="VcRuntimeMissingTitle" xml:space="preserve"><value>C++ Laufzeitbibliothek fehlt</value></data>
-  <data name="VcRuntimeMissingContent" xml:space="preserve"><value>Die C++ VC14-Laufzeitbibliothek ist nicht installiert. Die Injektionsfunktion wird ohne sie nicht funktionieren.\n\nJetzt zur Microsoft-Website gehen und herunterladen?</value></data>
+  <data name="VcRuntimeMissingContent" xml:space="preserve"><value>Die C++ VC14-Laufzeitbibliothek ist nicht installiert. Die Injektionsfunktion wird ohne sie nicht funktionieren.
+
+Jetzt zur Microsoft-Website gehen und herunterladen?</value></data>
   <data name="GoToDownload" xml:space="preserve"><value>Zum Download (X64)</value></data>
   <data name="DontRemindAgain" xml:space="preserve"><value>Nicht erneut erinnern</value></data>
   <data name="IgnoreWarning" xml:space="preserve"><value>Warnung ignorieren</value></data>
@@ -770,7 +795,7 @@
   <data name="GenshinData_Mom" xml:space="preserve"><value>Vergleich zum Vormonat</value></data>
   <data name="GenshinData_LastMonth" xml:space="preserve"><value>(Vormonat</value></data>
   <data name="GenshinData_MoraEarned" xml:space="preserve"><value>Mora erhalten</value></data>
-  <data name="GenshinData_DataNote" xml:space="preserve"><value>• Tägliche Daten werden normalerweise am nächsten Morgen aktualisiert\n• Die Einkommensstufe basiert auf der Urgestein-Beschaffungseffizienz</value></data>
+  <data name="GenshinData_DataNote" xml:space="preserve"><value>• Tägliche Daten werden normalerweise am nächsten Morgen aktualisiert&#x0a;• Die Einkommensstufe basiert auf der Urgestein-Beschaffungseffizienz</value></data>
   <data name="GenshinData_MonthlySourceAnalysis" xml:space="preserve"><value>Monatliche Urgestein-Quellenanalyse</value></data>
   <data name="GenshinData_Total" xml:space="preserve"><value>Gesamt</value></data>
   <data name="DataPage_SearchRole" xml:space="preserve"><value>Charakter suchen...</value></data>
@@ -932,10 +957,10 @@
   <data name="GachaAnalysis_DeleteRecords" xml:space="preserve"><value>Aufzeichnungen löschen</value></data>
   <data name="GachaAnalysis_PullsUnit" xml:space="preserve"><value> Zieh.</value></data>
   <data name="GachaAnalysis_ImportHint" xml:space="preserve"><value>Wähle eine Methode zum Importieren deiner Wunschhistorie, um mit der Analyse zu beginnen.</value></data>
-  <data name="GachaAnalysis_MiyousheDesc" xml:space="preserve"><value>Wunschhistorie direkt über das aktuell\nangemeldete MiHoYo-Konto abrufen</value></data>
+  <data name="GachaAnalysis_MiyousheDesc" xml:space="preserve"><value>Wunschhistorie direkt über das aktuell&#x0a;angemeldete MiHoYo-Konto abrufen</value></data>
   <data name="GachaAnalysis_Recommended" xml:space="preserve"><value>Empfohlen</value></data>
-  <data name="GachaAnalysis_UrlDesc" xml:space="preserve"><value>Wunschverlauf-Link einf�gen\nund Aufzeichnungen per API abrufen</value></data>
-  <data name="GachaAnalysis_UigfDesc" xml:space="preserve"><value>Aufzeichnungen aus einer UIGF-\nJSON-Datei importieren\nUIGF v4.x/3.0/2.x</value></data>
+  <data name="GachaAnalysis_UrlDesc" xml:space="preserve"><value>Wunschverlauf-Link einf�gen&#x0a;und Aufzeichnungen per API abrufen</value></data>
+  <data name="GachaAnalysis_UigfDesc" xml:space="preserve"><value>Aufzeichnungen aus einer UIGF-&#x0a;JSON-Datei importieren&#x0a;UIGF v4.x/3.0/2.x</value></data>
   <data name="GachaAnalysis_IncrementalUpdate" xml:space="preserve"><value>Inkrementelles Update (empfohlen)</value></data>
   <data name="GachaAnalysis_FullUpdate" xml:space="preserve"><value>Vollständiges Update</value></data>
   <data name="GachaAnalysis_Characters" xml:space="preserve"><value>Charaktere</value></data>
@@ -1059,7 +1084,9 @@
   <data name="AchievementWindow_CannotOpenBrowser" xml:space="preserve"><value>Browser kann nicht geöffnet werden</value></data>
   <data name="LaunchErr_UnknownError" xml:space="preserve"><value>Unbekannter Fehler</value></data>
   <data name="LaunchErr_InvalidGamePath" xml:space="preserve"><value>Spielpfad ist ungültig oder existiert nicht</value></data>
-  <data name="LaunchErr_ExeNotFound" xml:space="preserve"><value>Spielprogramm existiert nicht. Bitte überprüfe die Pfadeinstellungen.\nGesuchte Datei:\n{0}</value></data>
+  <data name="LaunchErr_ExeNotFound" xml:space="preserve"><value>Spielprogramm existiert nicht. Bitte überprüfe die Pfadeinstellungen.
+Gesuchte Datei:
+{0}</value></data>
   <data name="LaunchErr_MultipleExeFound" xml:space="preserve"><value>Im aktuellen Spielverzeichnis wurden mehrere ausführbare Programme erkannt. Der Launcher kann nicht bestimmen, welches gestartet werden soll. Bitte entferne überflüssige Client-Dateien oder lege einen benutzerdefinierten Startnamen in den Einstellungen fest.</value></data>
   <data name="LaunchErr_CannotLoadConfig" xml:space="preserve"><value>Spielkonfigurationsdatei kann nicht geladen werden</value></data>
   <data name="LaunchErr_LaunchTimeout" xml:space="preserve"><value>Start-Zeitüberschreitung, bitte erneut versuchen</value></data>
@@ -1304,11 +1331,19 @@
   <data name="FilePicker_MainWindowNull" xml:space="preserve"><value>Hauptfenster existiert nicht. Dateiauswahl kann nicht geöffnet werden.</value></data>
   <data name="FilePicker_InvalidWindowHandle" xml:space="preserve"><value>Ungültiges Fenster-Handle. Bitte im normalen Benutzermodus ausführen oder erneut versuchen.</value></data>
   <data name="Crash_Title" xml:space="preserve"><value>FufuLauncher hat ein Problem festgestellt</value></data>
-  <data name="Crash_Message" xml:space="preserve"><value>Die Anwendung hat einen Fehler festgestellt\n\nFehlerquelle: {0}\nFehlermeldung: {1}\n\nStacktrace:\n{2}</value></data>
+  <data name="Crash_Message" xml:space="preserve"><value>Die Anwendung hat einen Fehler festgestellt
+
+Fehlerquelle: {0}
+Fehlermeldung: {1}
+
+Stacktrace:
+{2}</value></data>
   <data name="Program_InjectionFailed" xml:space="preserve"><value>Injektionsstart fehlgeschlagen: {0} (Code: {1})</value></data>
   <data name="Program_InjectionException" xml:space="preserve"><value>Fehler im Injektionsprozess: {0}</value></data>
   <data name="Program_ErrorTitle" xml:space="preserve"><value>FufuLauncher Fehler</value></data>
-  <data name="IniFile_AccessDenied" xml:space="preserve"><value>Zugriff verweigert. Bitte überprüfe, ob die Datei oder der Ordner als „schreibgeschützt" markiert ist, oder versuche, den Launcher als Administrator auszuführen.</value></data>
-  <data name="IniFile_WriteFailed" xml:space="preserve"><value>Schreiben fehlgeschlagen: Die Datei wird möglicherweise vom Spiel oder einem anderen Programm verwendet.\nRückmeldung: {0}</value></data>
-  <data name="IniFile_WriteError" xml:space="preserve"><value>Fehler beim Schreiben der Konfiguration\nRückmeldung: {0}</value></data>
+  <data name="IniFile_AccessDenied" xml:space="preserve"><value>Zugriff verweigert. Bitte überprüfe, ob die Datei oder der Ordner als „schreibgeschützt&quot; markiert ist, oder versuche, den Launcher als Administrator auszuführen.</value></data>
+  <data name="IniFile_WriteFailed" xml:space="preserve"><value>Schreiben fehlgeschlagen: Die Datei wird möglicherweise vom Spiel oder einem anderen Programm verwendet.
+Rückmeldung: {0}</value></data>
+  <data name="IniFile_WriteError" xml:space="preserve"><value>Fehler beim Schreiben der Konfiguration
+Rückmeldung: {0}</value></data>
 </root>

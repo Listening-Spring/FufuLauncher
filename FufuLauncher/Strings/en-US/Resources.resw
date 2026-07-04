@@ -83,9 +83,12 @@
   <data name="AppLangTitle" xml:space="preserve"><value>App Display Language</value></data>
   <data name="AppLangCaption" xml:space="preserve"><value>Takes effect after restarting the app</value></data>
   <data name="LangZhCN" xml:space="preserve"><value>Simplified Chinese (Recommended)</value></data>
+  <data name="LangZhTW" xml:space="preserve"><value>Traditional Chinese</value></data>
   <data name="LangEnUS" xml:space="preserve"><value>English</value></data>
   <data name="LangFr" xml:space="preserve"><value>Français</value></data>
   <data name="LangDe" xml:space="preserve"><value>Deutsch</value></data>
+  <data name="LangRu" xml:space="preserve"><value>Русский</value></data>
+  <data name="LangJa" xml:space="preserve"><value>日本語</value></data>
   <data name="LangDefault" xml:space="preserve"><value>Use System Default Language</value></data>
   <data name="LaunchWindowModeTitle" xml:space="preserve"><value>Launch Window Mode</value></data>
   <data name="WindowModeNormal" xml:space="preserve"><value>Normal Window</value></data>
