@@ -83,6 +83,8 @@
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
             <Link>Update.json</Link>
         </Content>
+        <Content Include="Strings\en-US\Resources.resw" />
+        <Content Include="Strings\zh-CN\Resources.resw" />
     </ItemGroup>
 
     <ItemGroup>
