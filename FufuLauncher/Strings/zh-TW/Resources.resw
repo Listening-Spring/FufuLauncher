@@ -92,6 +92,7 @@
   <data name="LangEs" xml:space="preserve"><value>西班牙語</value></data>
   <data name="LangKo" xml:space="preserve"><value>韓語</value></data>
   <data name="LangIt" xml:space="preserve"><value>義大利語</value></data>
+  <data name="LangId" xml:space="preserve"><value>印尼語</value></data>
   <data name="LangDefault" xml:space="preserve"><value>使用系統預設語言</value></data>
   <data name="LaunchWindowModeTitle" xml:space="preserve"><value>啟動視窗模式</value></data>
   <data name="WindowModeNormal" xml:space="preserve"><value>一般視窗</value></data>

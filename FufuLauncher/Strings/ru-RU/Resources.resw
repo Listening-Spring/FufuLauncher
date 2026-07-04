@@ -92,6 +92,7 @@
   <data name="LangEs" xml:space="preserve"><value>Испанский</value></data>
   <data name="LangKo" xml:space="preserve"><value>Корейский</value></data>
   <data name="LangIt" xml:space="preserve"><value>Итальянский</value></data>
+  <data name="LangId" xml:space="preserve"><value>Индонезийский</value></data>
   <data name="LangDefault" xml:space="preserve"><value>Язык системы</value></data>
   <data name="LaunchWindowModeTitle" xml:space="preserve"><value>Режим окна запуска</value></data>
   <data name="WindowModeNormal" xml:space="preserve"><value>Обычное окно</value></data>

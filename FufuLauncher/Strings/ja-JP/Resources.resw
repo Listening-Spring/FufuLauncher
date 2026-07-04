@@ -92,6 +92,7 @@
   <data name="LangEs" xml:space="preserve"><value>スペイン語</value></data>
   <data name="LangKo" xml:space="preserve"><value>韓国語</value></data>
   <data name="LangIt" xml:space="preserve"><value>イタリア語</value></data>
+  <data name="LangId" xml:space="preserve"><value>インドネシア語</value></data>
   <data name="LangDefault" xml:space="preserve"><value>システムのデフォルト言語</value></data>
   <data name="LaunchWindowModeTitle" xml:space="preserve"><value>起動ウィンドウモード</value></data>
   <data name="WindowModeNormal" xml:space="preserve"><value>通常ウィンドウ</value></data>

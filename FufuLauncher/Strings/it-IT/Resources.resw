@@ -872,6 +872,7 @@ Dettagli: {0}</value></data>
   <data name="LangEs" xml:space="preserve"><value>Español</value></data>
   <data name="LangFr" xml:space="preserve"><value>Français</value></data>
   <data name="LangIt" xml:space="preserve"><value>Italiano</value></data>
+  <data name="LangId" xml:space="preserve"><value>Indonesiano</value></data>
   <data name="LangJa" xml:space="preserve"><value>日本語</value></data>
   <data name="LangKo" xml:space="preserve"><value>한국어</value></data>
   <data name="LangRu" xml:space="preserve"><value>Русский</value></data>
