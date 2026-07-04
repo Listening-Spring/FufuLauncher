@@ -83,6 +83,7 @@
   <data name="AppLangTitle" xml:space="preserve"><value>应用显示语言</value></data>
   <data name="AppLangCaption" xml:space="preserve"><value>重启应用后生效</value></data>
   <data name="LangZhCN" xml:space="preserve"><value>简体中文（推荐）</value></data>
+  <data name="LangEnUS" xml:space="preserve"><value>English</value></data>
   <data name="LangDefault" xml:space="preserve"><value>使用系统默认语言</value></data>
   <data name="LaunchWindowModeTitle" xml:space="preserve"><value>启动窗口模式</value></data>
   <data name="WindowModeNormal" xml:space="preserve"><value>普通窗口</value></data>
@@ -433,4 +434,200 @@
   <data name="Msg_DeleteAccountConfirm_Format" xml:space="preserve"><value>删除账号 &apos;{0}&apos; ？</value></data>
   <data name="Err_DeleteFailed_Format" xml:space="preserve"><value>删除失败: {0}</value></data>
   <data name="Title_OperationFailed" xml:space="preserve"><value>操作失败</value></data>
+  <data name="NavHome" xml:space="preserve"><value>主页</value></data>
+  <data name="NavControlPanel" xml:space="preserve"><value>控制面板</value></data>
+  <data name="NavAccountSettings" xml:space="preserve"><value>账户设置</value></data>
+  <data name="NavOtherFeatures" xml:space="preserve"><value>其他功能</value></data>
+  <data name="NavDataCenter" xml:space="preserve"><value>数据中心</value></data>
+  <data name="NavHelpDocs" xml:space="preserve"><value>帮助文档</value></data>
+  <data name="NavCalculator" xml:space="preserve"><value>养成计算</value></data>
+  <data name="NavSettings" xml:space="preserve"><value>设置中心</value></data>
+  <data name="NavCommunity" xml:space="preserve"><value>社区</value></data>
+  <data name="TrayShowWindow" xml:space="preserve"><value>显示主界面</value></data>
+  <data name="TrayExit" xml:space="preserve"><value>退出</value></data>
+  <data name="SysStatusChecking" xml:space="preserve"><value>网络状态检测中...</value></data>
+  <data name="NotificationCenter" xml:space="preserve"><value>通知中心</value></data>
+  <data name="ClearAllBtn" xml:space="preserve"><value>全部清除</value></data>
+  <data name="NetDisconnected" xml:space="preserve"><value>网络连接已断开，请检测你的网络设置</value></data>
+  <data name="NetProxyWarning" xml:space="preserve"><value>正在使用代理网络连接，请注意你的流量消耗</value></data>
+  <data name="AdminWarningTitle" xml:space="preserve"><value>警告</value></data>
+  <data name="AdminWarningContent" xml:space="preserve"><value>程序正以管理员身份运行，可能会影响部分功能，例如你的文件选择有问题</value></data>
+  <data name="DontShowAgain" xml:space="preserve"><value>不再显示</value></data>
+  <data name="GotItBtn" xml:space="preserve"><value>我知道了</value></data>
+  <data name="VcRuntimeMissingTitle" xml:space="preserve"><value>缺少 C++ 运行库</value></data>
+  <data name="VcRuntimeMissingContent" xml:space="preserve"><value>系统未安装 C++ VC14 运行库，这会导致本程序的注入功能无法正常使用
+
+是否前往微软官网下载并安装？</value></data>
+  <data name="GoToDownload" xml:space="preserve"><value>前往下载(X64)</value></data>
+  <data name="DontRemindAgain" xml:space="preserve"><value>不再提示</value></data>
+  <data name="IgnoreWarning" xml:space="preserve"><value>忽略警告</value></data>
+  <data name="AppDisplayNameAdmin" xml:space="preserve"><value>芙芙启动器 [管理员]</value></data>
+  <data name="HiddenFeatureTitle" xml:space="preserve"><value>无法访问</value></data>
+  <data name="HiddenFeatureMessage" xml:space="preserve"><value>该功能已被隐藏，请在设置中重新开启</value></data>
+  <data name="RedeemCodeExpired" xml:space="preserve"><value>兑换码失效提醒</value></data>
+  <data name="RedeemCodeToday" xml:space="preserve"><value>今日兑换码提醒</value></data>
+  <data name="RedeemCodeNew" xml:space="preserve"><value>新兑换码已发布</value></data>
+  <data name="RedeemCodeExpiring" xml:space="preserve"><value>兑换码即将失效</value></data>
+  <data name="HomeTab_Events" xml:space="preserve"><value>活动</value></data>
+  <data name="HomeTab_Announcements" xml:space="preserve"><value>公告</value></data>
+  <data name="HomeTab_News" xml:space="preserve"><value>资讯</value></data>
+  <data name="Home_CheckinCard" xml:space="preserve"><value>原神签到</value></data>
+  <data name="Home_RefreshToken" xml:space="preserve"><value>刷新Token</value></data>
+  <data name="Home_GoToCheckinConfig" xml:space="preserve"><value>进入签到配置</value></data>
+  <data name="Home_RewardsCalendar" xml:space="preserve"><value>奖励日历</value></data>
+  <data name="Home_DailyNotesCard" xml:space="preserve"><value>原神便签</value></data>
+  <data name="Home_RefreshNotes" xml:space="preserve"><value>刷新便签</value></data>
+  <data name="Home_NoData" xml:space="preserve"><value>无数据</value></data>
+  <data name="Home_Resin" xml:space="preserve"><value>树脂</value></data>
+  <data name="Home_DailyQuests" xml:space="preserve"><value>每日委托</value></data>
+  <data name="Home_RealmCurrency" xml:space="preserve"><value>洞天宝钱</value></data>
+  <data name="Home_Expeditions" xml:space="preserve"><value>探索派遣</value></data>
+  <data name="Home_Transformer" xml:space="preserve"><value>参量质变仪</value></data>
+  <data name="Home_ToggleBg" xml:space="preserve"><value>切换背景</value></data>
+  <data name="Home_ScreenshotFolder" xml:space="preserve"><value>截图文件夹</value></data>
+  <data name="Home_Widgets" xml:space="preserve"><value>小工具</value></data>
+  <data name="Home_WidgetGacha" xml:space="preserve"><value>抽卡记录分析</value></data>
+  <data name="Home_WidgetAchievement" xml:space="preserve"><value>成就追踪</value></data>
+  <data name="Home_WidgetInventory" xml:space="preserve"><value>背包物品</value></data>
+  <data name="Home_WidgetPlayerRole" xml:space="preserve"><value>角色练度查询</value></data>
+  <data name="Home_WidgetNotes" xml:space="preserve"><value>旅行便签</value></data>
+  <data name="Home_WidgetVideo" xml:space="preserve"><value>视频资源库</value></data>
+  <data name="Home_WidgetBBS" xml:space="preserve"><value>战绩信息</value></data>
+  <data name="Home_AddWidget" xml:space="preserve"><value>增加小工具</value></data>
+  <data name="Home_RemoveWidget" xml:space="preserve"><value>移除小工具</value></data>
+  <data name="Home_ToggleTooltip" xml:space="preserve"><value>切换详细功能提示</value></data>
+  <data name="Home_QuickPresets" xml:space="preserve"><value>快速预设</value></data>
+  <data name="Home_ManagePresets" xml:space="preserve"><value>管理</value></data>
+  <data name="Home_NoPresetsPinned" xml:space="preserve"><value>未固定任何预设</value></data>
+  <data name="Home_SwitchServer" xml:space="preserve"><value>切换到 {0} 服</value></data>
+  <data name="Home_SwitchOfficial" xml:space="preserve"><value>切换到 官方服务器</value></data>
+  <data name="Home_SwitchBilibili" xml:space="preserve"><value>切换到 Bilibili 服</value></data>
+  <data name="Home_SwitchSuccess" xml:space="preserve"><value>切换成功</value></data>
+  <data name="Home_SwitchedTo_Format" xml:space="preserve"><value>已成功切换至 {0} 服。{1}</value></data>
+  <data name="Home_SwitchFailed" xml:space="preserve"><value>切换失败</value></data>
+  <data name="Home_RefreshFailed" xml:space="preserve"><value>刷新失败</value></data>
+  <data name="Home_NoActiveAccount" xml:space="preserve"><value>没有活跃账户</value></data>
+  <data name="Home_CannotLoadCredentials" xml:space="preserve"><value>无法加载账户凭证</value></data>
+  <data name="Home_BBSSecurityTitle" xml:space="preserve"><value>安全提示</value></data>
+  <data name="Home_BBSSecurityMessage" xml:space="preserve"><value>进入战绩信息页面可能会导致您的账户被标注为风险账户，进而导致部分功能（如某些自动化工具或特定网页访问）无法正常使用，是否确认继续？</value></data>
+  <data name="Home_BBSConfirm" xml:space="preserve"><value>确认继续</value></data>
+  <data name="Home_ErrNoGamePath" xml:space="preserve"><value>未找到有效的游戏路径，请先在设置页设置游戏位置</value></data>
+  <data name="Home_ErrConfigNotFound" xml:space="preserve"><value>无法找到 config.ini 配置文件，无法切换服务器</value></data>
+  <data name="Home_ErrSwitchException" xml:space="preserve"><value>准备切换时发生异常</value></data>
+  <data name="Home_OfficialServer" xml:space="preserve"><value>官服</value></data>
+  <data name="Home_BilibiliServer" xml:space="preserve"><value>B服</value></data>
+  <data name="Home_Deployed" xml:space="preserve"><value>已部署</value></data>
+  <data name="Home_Cleaned" xml:space="preserve"><value>已清理</value></data>
+  <data name="Home_OpenLink" xml:space="preserve"><value>打开链接</value></data>
+  <data name="Home_OpenLinkFailed" xml:space="preserve"><value>打开链接失败</value></data>
+  <data name="Home_GachaTooltip" xml:space="preserve"><value>抽卡记录分析：分析游戏内的祈愿记录，展示抽卡数据情况</value></data>
+  <data name="Home_AchievementTooltip" xml:space="preserve"><value>成就追踪：追踪游戏内成就的完成进度，支持导出与导入</value></data>
+  <data name="Home_InventoryTooltip" xml:space="preserve"><value>背包物品：查看当前账号游戏内背包中的材料</value></data>
+  <data name="Home_PlayerRoleTooltip" xml:space="preserve"><value>角色练度查询：查询已拥有角色的等级、命座、武器及圣遗物搭配情况</value></data>
+  <data name="Home_NotesTooltip" xml:space="preserve"><value>旅行便签：独立窗口显示当前开放的角色材料秘境等实时数据</value></data>
+  <data name="Home_VideoTooltip" xml:space="preserve"><value>视频资源库：可查看各类游戏角色或者游戏内过场动画</value></data>
+  <data name="Home_BBSTooltip" xml:space="preserve"><value>战绩信息：查询深渊、幻想真境剧诗等详细战绩数据</value></data>
+  <data name="OtherPage_Title" xml:space="preserve"><value>其他设置</value></data>
+  <data name="OtherPage_ExternalPrograms" xml:space="preserve"><value>外部程序</value></data>
+  <data name="OtherPage_AdditionalProgramLaunch" xml:space="preserve"><value>附加程序启动</value></data>
+  <data name="OtherPage_AutostartExeDesc" xml:space="preserve"><value>随游戏自动启动指定的 .exe 程序</value></data>
+  <data name="OtherPage_ProgramPath" xml:space="preserve"><value>程序路径</value></data>
+  <data name="OtherPage_PathPlaceholder" xml:space="preserve"><value>例如：C:\Tools\MapTool.exe</value></data>
+  <data name="OtherPage_PathHint" xml:space="preserve"><value>提示：如果选择路径后无反应，请手动粘贴路径并点击应用。</value></data>
+  <data name="OtherPage_AccessibilityTools" xml:space="preserve"><value>辅助功能</value></data>
+  <data name="OtherPage_AutoClicker" xml:space="preserve"><value>连点器</value></data>
+  <data name="OtherPage_AutoClickerDesc" xml:space="preserve"><value>按住触发键、鼠标左键或鼠标右键以模拟高频点击</value></data>
+  <data name="OtherPage_ClickMode" xml:space="preserve"><value>连点模式</value></data>
+  <data name="OtherPage_MouseLeft" xml:space="preserve"><value>鼠标左键</value></data>
+  <data name="OtherPage_MouseRight" xml:space="preserve"><value>鼠标右键</value></data>
+  <data name="OtherPage_MouseModeHint" xml:space="preserve"><value>两个鼠标模式只能开启一个。开启鼠标模式前必须设置停止快捷键。</value></data>
+  <data name="OtherPage_TriggerKeyHeader" xml:space="preserve"><value>触发键 (按住此键)</value></data>
+  <data name="OtherPage_RecordClick" xml:space="preserve"><value>点击录制</value></data>
+  <data name="OtherPage_StopKeyHeader" xml:space="preserve"><value>停止快捷键 (必须设置)</value></data>
+  <data name="OtherPage_ClickKeyHeader" xml:space="preserve"><value>键盘连点键 (仅键盘模式)</value></data>
+  <data name="OtherPage_UsageInstructions" xml:space="preserve"><value>使用说明</value></data>
+  <data name="OtherPage_UsageHint" xml:space="preserve"><value>点击右侧图标进行录制，然后按下键盘上任意键。鼠标左键和右键模式互斥，且必须先设置停止快捷键。</value></data>
+  <data name="OtherPage_UtilityTools" xml:space="preserve"><value>实用工具</value></data>
+  <data name="OtherPage_Browser" xml:space="preserve"><value>浏览器</value></data>
+  <data name="OtherPage_BrowserDesc" xml:space="preserve"><value>打开一个支持置顶的独立悬浮浏览器</value></data>
+  <data name="OtherPage_Open" xml:space="preserve"><value>打开</value></data>
+  <data name="OtherPage_SaveConfig" xml:space="preserve"><value>保存配置</value></data>
+  <data name="OtherPage_KeyRecorderEnabled" xml:space="preserve"><value>按键录制配置开启，全局按键事件已注册到 {0}</value></data>
+  <data name="OtherPage_KeyRecorderDisabled" xml:space="preserve"><value>按键录制配置关闭，全局按键事件已注销</value></data>
+  <data name="OtherPage_KeyEventError" xml:space="preserve"><value>注册／注销按键事件失败</value></data>
+  <data name="OtherPage_UnloadCleanupError" xml:space="preserve"><value>页面卸载清理按键事件失败</value></data>
+  <data name="OtherPage_CapturingKey" xml:space="preserve"><value>捕获按键</value></data>
+  <data name="OtherPage_TriggerKeySet" xml:space="preserve"><value>触发键设置完成</value></data>
+  <data name="OtherPage_ClickKeySet" xml:space="preserve"><value>连点键设置完成</value></data>
+  <data name="OtherPage_StopKeySet" xml:space="preserve"><value>停止快捷键设置完成</value></data>
+  <data name="OtherPage_KeyProcessError" xml:space="preserve"><value>按键处理异常</value></data>
+  <data name="Account_NotLoggedIn" xml:space="preserve"><value>尚未登录</value></data>
+  <data name="Account_SavedAccounts" xml:space="preserve"><value>已保存的其他账户</value></data>
+  <data name="Account_Login" xml:space="preserve"><value>登录</value></data>
+  <data name="Account_DailyCheckin" xml:space="preserve"><value>每日签到</value></data>
+  <data name="Account_RefreshInfo" xml:space="preserve"><value>刷新信息</value></data>
+  <data name="Account_TravelJournal" xml:space="preserve"><value>旅行札记</value></data>
+  <data name="Account_GachaAnalysis" xml:space="preserve"><value>抽卡分析</value></data>
+  <data name="Account_AccountSecurity" xml:space="preserve"><value>账号安全</value></data>
+  <data name="Account_FreezeAccount" xml:space="preserve"><value>冻结账号</value></data>
+  <data name="Account_CopyCookie" xml:space="preserve"><value>复制 Cookie</value></data>
+  <data name="Account_DeleteAccount" xml:space="preserve"><value>删除账号</value></data>
+  <data name="Account_Logout" xml:space="preserve"><value>退出登录</value></data>
+  <data name="Account_CommunityFeed" xml:space="preserve"><value>社区动态</value></data>
+  <data name="Account_Likes" xml:space="preserve"><value>获赞数</value></data>
+  <data name="Account_Posts" xml:space="preserve"><value>发帖数</value></data>
+  <data name="Account_Replies" xml:space="preserve"><value>回复数</value></data>
+  <data name="Account_BoundCharacters" xml:space="preserve"><value>绑定角色</value></data>
+  <data name="Account_NoCharacters" xml:space="preserve"><value>暂无绑定角色</value></data>
+  <data name="Account_BindHint" xml:space="preserve"><value>请在米游社或游戏中绑定角色后刷新</value></data>
+  <data name="Account_PlayTime" xml:space="preserve"><value>游戏时长</value></data>
+  <data name="Account_RecentDays_Format" xml:space="preserve"><value>近 {0} 天游玩统计</value></data>
+  <data name="Account_InGame" xml:space="preserve"><value>游戏中</value></data>
+  <data name="Account_TotalTime" xml:space="preserve"><value>总时长</value></data>
+  <data name="Account_DailyAvg" xml:space="preserve"><value>日均时长</value></data>
+  <data name="Account_NoRecentRecords_Format" xml:space="preserve"><value>近 {0} 天暂无游戏记录</value></data>
+  <data name="Account_DeleteAccountConfirm_Format" xml:space="preserve"><value>删除账号 &quot;{0}&quot;？此操作将删除该账号的所有相关数据，包括凭证、祈愿记录和云游戏凭证，且无法恢复。</value></data>
+  <data name="Account_DeleteComplete" xml:space="preserve"><value>账号 &quot;{0}&quot; 删除完成</value></data>
+  <data name="Account_DeleteException" xml:space="preserve"><value>删除账号异常</value></data>
+  <data name="Account_DeleteBtn" xml:space="preserve"><value>删除</value></data>
+  <data name="Account_CheckingIn" xml:space="preserve"><value>签到中</value></data>
+  <data name="Account_CheckinComplete" xml:space="preserve"><value>签到完成</value></data>
+  <data name="Account_CheckinFailed" xml:space="preserve"><value>签到失败</value></data>
+  <data name="Account_CheckinException" xml:space="preserve"><value>签到异常</value></data>
+  <data name="Account_LoginFailed" xml:space="preserve"><value>登录失败</value></data>
+  <data name="Account_OtherOperations" xml:space="preserve"><value>其他操作</value></data>
+  <data name="Account_RecentDays30" xml:space="preserve"><value>近 30 天游玩统计</value></data>
+  <data name="Account_NoRecentRecords30" xml:space="preserve"><value>近 30 天暂无游戏记录</value></data>
+  <data name="Account_CopyUID" xml:space="preserve"><value>复制 UID</value></data>
+  <data name="Account_DeleteCurrent" xml:space="preserve"><value>删除当前账号</value></data>
+  <data name="Account_DeleteCurrentConfirm_Format" xml:space="preserve"><value>确定要删除当前账号 {0} ({1}) 吗？此操作将删除该账号的所有相关数据，且无法恢复。</value></data>
+  <data name="LoginQR_Title" xml:space="preserve"><value>扫码登录</value></data>
+  <data name="LoginQR_MiyousheQR" xml:space="preserve"><value>米游社APP扫码登录</value></data>
+  <data name="LoginQR_WebPassport" xml:space="preserve"><value>网页通行证登录</value></data>
+  <data name="LoginQR_HoYoLABWeb" xml:space="preserve"><value>HoYoLAB网页登录</value></data>
+  <data name="LoginQR_GameAppId" xml:space="preserve"><value>游戏App ID:</value></data>
+  <data name="LoginQR_EnterAppId" xml:space="preserve"><value>输入AppID</value></data>
+  <data name="LoginQR_ConfirmGenerate" xml:space="preserve"><value>确认生成</value></data>
+  <data name="LoginQR_RefreshQR" xml:space="preserve"><value>刷新二维码</value></data>
+  <data name="LoginQR_WebLoginWarning" xml:space="preserve"><value>注意：网页通行证登录无法获取到Stoken，部分功能会无法使用</value></data>
+  <data name="LoginQR_ManualCookie" xml:space="preserve"><value>手动输入Cookie</value></data>
+  <data name="LoginQR_ClearHistory" xml:space="preserve"><value>清除历史登录数据</value></data>
+  <data name="Panel_Toolbox" xml:space="preserve"><value>工具箱</value></data>
+  <data name="Panel_DataAnalysis" xml:space="preserve"><value>数据分析</value></data>
+  <data name="Panel_DataAnalysisDesc" xml:space="preserve"><value>记录统计、完成进度与长期数据沉淀</value></data>
+  <data name="Panel_TravelerProfile" xml:space="preserve"><value>旅行者档案</value></data>
+  <data name="Panel_TravelerProfileDesc" xml:space="preserve"><value>角色、背包、便签与米游社战绩信息</value></data>
+  <data name="Panel_Resources" xml:space="preserve"><value>资源获取</value></data>
+  <data name="Panel_ResourcesDesc" xml:space="preserve"><value>管理与资源获取</value></data>
+  <data name="LaunchBtn_SelectPath" xml:space="preserve"><value>请选择游戏路径</value></data>
+  <data name="LaunchBtn_ExitGame" xml:space="preserve"><value>点击退出游戏</value></data>
+  <data name="LaunchBtn_StartGame" xml:space="preserve"><value>点击启动游戏</value></data>
+  <data name="LaunchBtn_Terminating" xml:space="preserve"><value>正在终止游戏...</value></data>
+  <data name="Checkin_Signed" xml:space="preserve"><value>游戏已签到</value></data>
+  <data name="Checkin_Unsigned" xml:space="preserve"><value>游戏未签到</value></data>
+  <data name="LaunchErr_NoGamePath" xml:space="preserve"><value>未设置游戏路径</value></data>
+  <data name="LaunchErr_NoGamePathMsg" xml:space="preserve"><value>请先前往游戏管理页面选择游戏安装路径</value></data>
+  <data name="LaunchErr_LaunchFailed" xml:space="preserve"><value>游戏启动失败</value></data>
+  <data name="Screenshot_FolderNotFound" xml:space="preserve"><value>截图文件夹不存在</value></data>
+  <data name="Screenshot_FolderNotFoundMsg" xml:space="preserve"><value>请先在游戏中截图或通过启动器截图功能获取截图</value></data>
 </root>

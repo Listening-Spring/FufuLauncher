@@ -579,7 +579,7 @@
                                          CommandParameter="1"
                                          IsChecked="{x:Bind ViewModel.SelectedLanguage, Converter={StaticResource LanguageEnumToBooleanConverter}, ConverterParameter=1}"
                                          Command="{x:Bind ViewModel.SwitchLanguageCommand}" />
-                            <RadioButton Content="English"
+                            <RadioButton Content="{helpers:Loc Key=LangEnUS}"
                                          FontSize="14"
                                          GroupName="AppLanguage"
                                          CommandParameter="3"

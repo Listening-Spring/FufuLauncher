@@ -1,34 +1,119 @@
-﻿/*
+/*
 Copyright (c) FufuLauncher Dev Team. All rights reserved.
 Licensed under the MIT License.
 */
-using Microsoft.Windows.ApplicationModel.Resources;
+using System.Diagnostics;
+using System.Xml.Linq;
 
 namespace FufuLauncher.Helpers;
 
 public static class ResourceExtensions
 {
+    private static readonly Dictionary<string, Dictionary<string, string>> _resources = new();
+    private static string? _currentCulture;
+    private static readonly object _lock = new();
+    private static bool _loaded;
 
-    private static ResourceManager _resourceManager;
+    /// <summary>
+    /// Sets the language for resource resolution.
+    /// Pass null or empty to use the system default (first available).
+    /// </summary>
+    public static void SetLanguage(string? culture)
+    {
+        lock (_lock)
+        {
+            _currentCulture = string.IsNullOrEmpty(culture) ? null : culture;
+            Debug.WriteLine($"[ResourceExt] SetLanguage: culture='{_currentCulture ?? "null"}'");
+        }
+    }
+
+    private static void EnsureLoaded()
+    {
+        if (_loaded) return;
+        lock (_lock)
+        {
+            if (_loaded) return;
+
+            try
+            {
+                var exeDir = AppContext.BaseDirectory;
+                Debug.WriteLine($"[ResourceExt] Loading resw from: {exeDir}");
+
+                LoadResw(Path.Combine(exeDir, "Strings", "zh-CN", "Resources.resw"), "zh-CN");
+                LoadResw(Path.Combine(exeDir, "Strings", "en-US", "Resources.resw"), "en-US");
+
+                Debug.WriteLine($"[ResourceExt] Loaded {_resources.Count} language(s): {string.Join(", ", _resources.Keys)}");
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[ResourceExt] Failed to load resw files: {ex.Message}");
+            }
+            finally
+            {
+                _loaded = true;
+            }
+        }
+    }
+
+    private static void LoadResw(string path, string culture)
+    {
+        if (!File.Exists(path))
+        {
+            Debug.WriteLine($"[ResourceExt] Resw not found: {path}");
+            return;
+        }
+
+        try
+        {
+            var dict = new Dictionary<string, string>();
+            var doc = XDocument.Load(path);
+            if (doc.Root == null) return;
+
+            foreach (var data in doc.Root.Elements("data"))
+            {
+                var key = data.Attribute("name")?.Value;
+                var value = data.Element("value")?.Value;
+                if (!string.IsNullOrEmpty(key) && value != null)
+                    dict[key] = value;
+            }
+
+            _resources[culture] = dict;
+            Debug.WriteLine($"[ResourceExt] Loaded '{culture}': {dict.Count} strings");
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"[ResourceExt] Error loading '{path}': {ex.Message}");
+        }
+    }
 
     public static string GetLocalized(this string resourceKey)
     {
         try
         {
+            EnsureLoaded();
 
+            // 1) Use the explicitly-set language
+            string? culture;
+            lock (_lock) { culture = _currentCulture; }
 
-            if (_resourceManager == null)
+            if (culture != null &&
+                _resources.TryGetValue(culture, out var dict) &&
+                dict.TryGetValue(resourceKey, out var result))
+                return result;
+
+            // 2) Fallback: return the first match across all loaded languages
+            foreach (var kv in _resources)
             {
-                _resourceManager = new ResourceManager();
+                if (kv.Value.TryGetValue(resourceKey, out var fb))
+                    return fb;
             }
 
-
-            var candidate = _resourceManager.MainResourceMap.GetValue($"Resources/{resourceKey}");
-            return candidate != null ? candidate.ValueAsString : resourceKey;
+            // 3) Absolute fallback: return the key itself
+            return resourceKey;
         }
-        catch
+        catch (Exception ex)
         {
-
+            Debug.WriteLine($"[ResourceExt] GetLocalized error: key='{resourceKey}', err='{ex.Message}'");
             return resourceKey;
         }
     }

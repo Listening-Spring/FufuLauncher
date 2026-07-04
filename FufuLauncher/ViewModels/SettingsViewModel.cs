@@ -581,11 +581,13 @@ namespace FufuLauncher.ViewModels
                         int languageCode = Convert.ToInt32(param);
                         var language = (AppLanguage)languageCode;
 
-                        if (SelectedLanguage != language)
-                        {
-                            SelectedLanguage = language;
-                            await ApplyLanguageChangeAsync(language);
-                        }
+                        Debug.WriteLine($"[SettingsVM] SwitchLanguageCommand: param={param}, language={language}, current SelectedLanguage={SelectedLanguage}");
+
+                        // Always apply - the TwoWay binding on IsChecked may have already
+                        // updated SelectedLanguage, so the old guard was incorrectly
+                        // preventing ApplyLanguageChangeAsync from being called.
+                        SelectedLanguage = language;
+                        await ApplyLanguageChangeAsync(language);
                     }
                     catch (Exception ex)
                     {
@@ -1704,6 +1706,8 @@ var cpuWarningThresholdJson = await _localSettingsService.ReadSettingAsync(Proce
         {
             try
             {
+                Debug.WriteLine($"[SettingsVM] ApplyLanguageChangeAsync: language={language}, enumValue={(int)language}");
+
                 await _localSettingsService.SaveSettingAsync("AppLanguage", (int)language);
                 var culture = language switch
                 {
@@ -1712,7 +1716,13 @@ var cpuWarningThresholdJson = await _localSettingsService.ReadSettingAsync(Proce
                     AppLanguage.enUS => "en-US",
                     _ => Windows.System.UserProfile.GlobalizationPreferences.Languages.FirstOrDefault() ?? "zh-CN"
                 };
-                Windows.Globalization.ApplicationLanguages.PrimaryLanguageOverride = culture;
+
+                Debug.WriteLine($"[SettingsVM] ApplyLanguageChangeAsync: culture='{culture}'");
+
+                // PrimaryLanguageOverride is NOT available for unpackaged apps.
+                // Use ResourceExtensions.SetLanguage to control MRT via ResourceContext instead.
+                Helpers.ResourceExtensions.SetLanguage(
+                    language == AppLanguage.Default ? null : culture);
 
                 var dialog = new ContentDialog
                 {

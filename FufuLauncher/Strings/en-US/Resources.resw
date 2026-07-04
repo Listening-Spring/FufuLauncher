@@ -83,6 +83,7 @@
   <data name="AppLangTitle" xml:space="preserve"><value>App Display Language</value></data>
   <data name="AppLangCaption" xml:space="preserve"><value>Takes effect after restarting the app</value></data>
   <data name="LangZhCN" xml:space="preserve"><value>Simplified Chinese (Recommended)</value></data>
+  <data name="LangEnUS" xml:space="preserve"><value>English</value></data>
   <data name="LangDefault" xml:space="preserve"><value>Use System Default Language</value></data>
   <data name="LaunchWindowModeTitle" xml:space="preserve"><value>Launch Window Mode</value></data>
   <data name="WindowModeNormal" xml:space="preserve"><value>Normal Window</value></data>
@@ -433,4 +434,200 @@ You must restart the game for this to take effect!</value></data>
   <data name="Msg_DeleteAccountConfirm_Format" xml:space="preserve"><value>Delete account &apos;{0}&apos;?</value></data>
   <data name="Err_DeleteFailed_Format" xml:space="preserve"><value>Delete failed: {0}</value></data>
   <data name="Title_OperationFailed" xml:space="preserve"><value>Operation Failed</value></data>
+  <data name="NavHome" xml:space="preserve"><value>Home</value></data>
+  <data name="NavControlPanel" xml:space="preserve"><value>Control Panel</value></data>
+  <data name="NavAccountSettings" xml:space="preserve"><value>Account Settings</value></data>
+  <data name="NavOtherFeatures" xml:space="preserve"><value>Other Features</value></data>
+  <data name="NavDataCenter" xml:space="preserve"><value>Data Center</value></data>
+  <data name="NavHelpDocs" xml:space="preserve"><value>Help Docs</value></data>
+  <data name="NavCalculator" xml:space="preserve"><value>Calculator</value></data>
+  <data name="NavSettings" xml:space="preserve"><value>Settings</value></data>
+  <data name="NavCommunity" xml:space="preserve"><value>Community</value></data>
+  <data name="TrayShowWindow" xml:space="preserve"><value>Show Main Window</value></data>
+  <data name="TrayExit" xml:space="preserve"><value>Exit</value></data>
+  <data name="SysStatusChecking" xml:space="preserve"><value>Checking network status...</value></data>
+  <data name="NotificationCenter" xml:space="preserve"><value>Notifications</value></data>
+  <data name="ClearAllBtn" xml:space="preserve"><value>Clear All</value></data>
+  <data name="NetDisconnected" xml:space="preserve"><value>Network disconnected. Please check your network settings.</value></data>
+  <data name="NetProxyWarning" xml:space="preserve"><value>Using a proxy network connection. Please be mindful of your data usage.</value></data>
+  <data name="AdminWarningTitle" xml:space="preserve"><value>Warning</value></data>
+  <data name="AdminWarningContent" xml:space="preserve"><value>The program is running as administrator, which may affect some features (e.g. file picker issues).</value></data>
+  <data name="DontShowAgain" xml:space="preserve"><value>Don't show again</value></data>
+  <data name="GotItBtn" xml:space="preserve"><value>Got It</value></data>
+  <data name="VcRuntimeMissingTitle" xml:space="preserve"><value>C++ Runtime Missing</value></data>
+  <data name="VcRuntimeMissingContent" xml:space="preserve"><value>The system is missing the C++ VC14 runtime library, which is required for the injection feature to work properly.
+
+Go to the Microsoft website to download and install it?</value></data>
+  <data name="GoToDownload" xml:space="preserve"><value>Go to Download (X64)</value></data>
+  <data name="DontRemindAgain" xml:space="preserve"><value>Don't remind again</value></data>
+  <data name="IgnoreWarning" xml:space="preserve"><value>Ignore Warning</value></data>
+  <data name="AppDisplayNameAdmin" xml:space="preserve"><value>FufuLauncher [Administrator]</value></data>
+  <data name="HiddenFeatureTitle" xml:space="preserve"><value>Inaccessible</value></data>
+  <data name="HiddenFeatureMessage" xml:space="preserve"><value>This feature has been hidden. Please re-enable it in Settings.</value></data>
+  <data name="RedeemCodeExpired" xml:space="preserve"><value>Redeem Code Expired Reminder</value></data>
+  <data name="RedeemCodeToday" xml:space="preserve"><value>Today's Redeem Code Reminder</value></data>
+  <data name="RedeemCodeNew" xml:space="preserve"><value>New Redeem Code Published</value></data>
+  <data name="RedeemCodeExpiring" xml:space="preserve"><value>Redeem Code Expiring Soon</value></data>
+  <data name="HomeTab_Events" xml:space="preserve"><value>Events</value></data>
+  <data name="HomeTab_Announcements" xml:space="preserve"><value>Announcements</value></data>
+  <data name="HomeTab_News" xml:space="preserve"><value>News</value></data>
+  <data name="Home_CheckinCard" xml:space="preserve"><value>Check-in</value></data>
+  <data name="Home_RefreshToken" xml:space="preserve"><value>Refresh Token</value></data>
+  <data name="Home_GoToCheckinConfig" xml:space="preserve"><value>Go to Check-in Configuration</value></data>
+  <data name="Home_RewardsCalendar" xml:space="preserve"><value>Rewards Calendar</value></data>
+  <data name="Home_DailyNotesCard" xml:space="preserve"><value>Genshin Notes</value></data>
+  <data name="Home_RefreshNotes" xml:space="preserve"><value>Refresh Notes</value></data>
+  <data name="Home_NoData" xml:space="preserve"><value>No Data</value></data>
+  <data name="Home_Resin" xml:space="preserve"><value>Resin</value></data>
+  <data name="Home_DailyQuests" xml:space="preserve"><value>Daily Commissions</value></data>
+  <data name="Home_RealmCurrency" xml:space="preserve"><value>Realm Currency</value></data>
+  <data name="Home_Expeditions" xml:space="preserve"><value>Expeditions</value></data>
+  <data name="Home_Transformer" xml:space="preserve"><value>Parametric Transformer</value></data>
+  <data name="Home_ToggleBg" xml:space="preserve"><value>Toggle Background</value></data>
+  <data name="Home_ScreenshotFolder" xml:space="preserve"><value>Screenshot Folder</value></data>
+  <data name="Home_Widgets" xml:space="preserve"><value>Widgets</value></data>
+  <data name="Home_WidgetGacha" xml:space="preserve"><value>Wish History Analysis</value></data>
+  <data name="Home_WidgetAchievement" xml:space="preserve"><value>Achievement Tracking</value></data>
+  <data name="Home_WidgetInventory" xml:space="preserve"><value>Inventory Items</value></data>
+  <data name="Home_WidgetPlayerRole" xml:space="preserve"><value>Character Build Lookup</value></data>
+  <data name="Home_WidgetNotes" xml:space="preserve"><value>Traveler's Notes</value></data>
+  <data name="Home_WidgetVideo" xml:space="preserve"><value>Video Library</value></data>
+  <data name="Home_WidgetBBS" xml:space="preserve"><value>Battle Chronicle</value></data>
+  <data name="Home_AddWidget" xml:space="preserve"><value>Add Widget</value></data>
+  <data name="Home_RemoveWidget" xml:space="preserve"><value>Remove Widget</value></data>
+  <data name="Home_ToggleTooltip" xml:space="preserve"><value>Toggle Detailed Tooltip</value></data>
+  <data name="Home_QuickPresets" xml:space="preserve"><value>Quick Presets</value></data>
+  <data name="Home_ManagePresets" xml:space="preserve"><value>Manage</value></data>
+  <data name="Home_NoPresetsPinned" xml:space="preserve"><value>No presets pinned</value></data>
+  <data name="Home_SwitchServer" xml:space="preserve"><value>Switch to {0} Server</value></data>
+  <data name="Home_SwitchOfficial" xml:space="preserve"><value>Switch to Official Server</value></data>
+  <data name="Home_SwitchBilibili" xml:space="preserve"><value>Switch to Bilibili Server</value></data>
+  <data name="Home_SwitchSuccess" xml:space="preserve"><value>Switch Successful</value></data>
+  <data name="Home_SwitchedTo_Format" xml:space="preserve"><value>Successfully switched to {0} server. {1}</value></data>
+  <data name="Home_SwitchFailed" xml:space="preserve"><value>Switch Failed</value></data>
+  <data name="Home_RefreshFailed" xml:space="preserve"><value>Refresh Failed</value></data>
+  <data name="Home_NoActiveAccount" xml:space="preserve"><value>No active account</value></data>
+  <data name="Home_CannotLoadCredentials" xml:space="preserve"><value>Unable to load account credentials</value></data>
+  <data name="Home_BBSSecurityTitle" xml:space="preserve"><value>Security Notice</value></data>
+  <data name="Home_BBSSecurityMessage" xml:space="preserve"><value>Accessing the Battle Chronicle page may cause your account to be flagged as a risk account, which could prevent some features (such as certain automation tools or specific web page access) from functioning properly. Continue anyway?</value></data>
+  <data name="Home_BBSConfirm" xml:space="preserve"><value>Confirm</value></data>
+  <data name="Home_ErrNoGamePath" xml:space="preserve"><value>No valid game path found. Please set the game location in Settings first.</value></data>
+  <data name="Home_ErrConfigNotFound" xml:space="preserve"><value>Unable to find the config.ini configuration file. Server switch is unavailable.</value></data>
+  <data name="Home_ErrSwitchException" xml:space="preserve"><value>An exception occurred while preparing to switch servers.</value></data>
+  <data name="Home_OfficialServer" xml:space="preserve"><value>Official Server</value></data>
+  <data name="Home_BilibiliServer" xml:space="preserve"><value>Bilibili Server</value></data>
+  <data name="Home_Deployed" xml:space="preserve"><value>Deployed</value></data>
+  <data name="Home_Cleaned" xml:space="preserve"><value>Cleaned</value></data>
+  <data name="Home_OpenLink" xml:space="preserve"><value>Open Link</value></data>
+  <data name="Home_OpenLinkFailed" xml:space="preserve"><value>Failed to open link</value></data>
+  <data name="Home_GachaTooltip" xml:space="preserve"><value>Wish History Analysis: Analyze your in-game wish records and view pull statistics</value></data>
+  <data name="Home_AchievementTooltip" xml:space="preserve"><value>Achievement Tracking: Track your in-game achievement progress, with export &amp; import support</value></data>
+  <data name="Home_InventoryTooltip" xml:space="preserve"><value>Inventory Items: View the materials in your current account's in-game inventory</value></data>
+  <data name="Home_PlayerRoleTooltip" xml:space="preserve"><value>Character Build Lookup: View your characters' level, constellation, weapons, and artifact builds</value></data>
+  <data name="Home_NotesTooltip" xml:space="preserve"><value>Traveler's Notes: View real-time data such as currently available character material domains in a separate window</value></data>
+  <data name="Home_VideoTooltip" xml:space="preserve"><value>Video Library: Browse various game character demos and in-game cutscenes</value></data>
+  <data name="Home_BBSTooltip" xml:space="preserve"><value>Battle Chronicle: View detailed battle records such as Spiral Abyss and Imaginarium Theater</value></data>
+  <data name="OtherPage_Title" xml:space="preserve"><value>Other Settings</value></data>
+  <data name="OtherPage_ExternalPrograms" xml:space="preserve"><value>External Programs</value></data>
+  <data name="OtherPage_AdditionalProgramLaunch" xml:space="preserve"><value>Additional Program Launch</value></data>
+  <data name="OtherPage_AutostartExeDesc" xml:space="preserve"><value>Launch the specified .exe program alongside the game automatically</value></data>
+  <data name="OtherPage_ProgramPath" xml:space="preserve"><value>Program Path</value></data>
+  <data name="OtherPage_PathPlaceholder" xml:space="preserve"><value>e.g. C:\Tools\MapTool.exe</value></data>
+  <data name="OtherPage_PathHint" xml:space="preserve"><value>Tip: If nothing happens after selecting a path, manually paste the path and click Apply.</value></data>
+  <data name="OtherPage_AccessibilityTools" xml:space="preserve"><value>Accessibility Tools</value></data>
+  <data name="OtherPage_AutoClicker" xml:space="preserve"><value>Auto Clicker</value></data>
+  <data name="OtherPage_AutoClickerDesc" xml:space="preserve"><value>Hold a trigger key, left mouse button, or right mouse button to simulate high-frequency clicking</value></data>
+  <data name="OtherPage_ClickMode" xml:space="preserve"><value>Click Mode</value></data>
+  <data name="OtherPage_MouseLeft" xml:space="preserve"><value>Left Mouse Button</value></data>
+  <data name="OtherPage_MouseRight" xml:space="preserve"><value>Right Mouse Button</value></data>
+  <data name="OtherPage_MouseModeHint" xml:space="preserve"><value>Only one mouse mode can be enabled at a time. A stop hotkey must be set before enabling a mouse mode.</value></data>
+  <data name="OtherPage_TriggerKeyHeader" xml:space="preserve"><value>Trigger Key (hold this key)</value></data>
+  <data name="OtherPage_RecordClick" xml:space="preserve"><value>Click to Record</value></data>
+  <data name="OtherPage_StopKeyHeader" xml:space="preserve"><value>Stop Hotkey (required)</value></data>
+  <data name="OtherPage_ClickKeyHeader" xml:space="preserve"><value>Keyboard Click Key (keyboard mode only)</value></data>
+  <data name="OtherPage_UsageInstructions" xml:space="preserve"><value>Usage Instructions</value></data>
+  <data name="OtherPage_UsageHint" xml:space="preserve"><value>Click the icon on the right to start recording, then press any key on your keyboard. Left and right mouse button modes are mutually exclusive, and you must set a stop hotkey first.</value></data>
+  <data name="OtherPage_UtilityTools" xml:space="preserve"><value>Utility Tools</value></data>
+  <data name="OtherPage_Browser" xml:space="preserve"><value>Browser</value></data>
+  <data name="OtherPage_BrowserDesc" xml:space="preserve"><value>Open a standalone floating browser that supports always-on-top mode</value></data>
+  <data name="OtherPage_Open" xml:space="preserve"><value>Open</value></data>
+  <data name="OtherPage_SaveConfig" xml:space="preserve"><value>Save Configuration</value></data>
+  <data name="OtherPage_KeyRecorderEnabled" xml:space="preserve"><value>Key recorder enabled. Global key events registered to: {0}</value></data>
+  <data name="OtherPage_KeyRecorderDisabled" xml:space="preserve"><value>Key recorder disabled. Global key events unregistered.</value></data>
+  <data name="OtherPage_KeyEventError" xml:space="preserve"><value>Failed to register/unregister key events</value></data>
+  <data name="OtherPage_UnloadCleanupError" xml:space="preserve"><value>Failed to clean up key events on page unload</value></data>
+  <data name="OtherPage_CapturingKey" xml:space="preserve"><value>Capturing key...</value></data>
+  <data name="OtherPage_TriggerKeySet" xml:space="preserve"><value>Trigger key set</value></data>
+  <data name="OtherPage_ClickKeySet" xml:space="preserve"><value>Click key set</value></data>
+  <data name="OtherPage_StopKeySet" xml:space="preserve"><value>Stop hotkey set</value></data>
+  <data name="OtherPage_KeyProcessError" xml:space="preserve"><value>Key processing error</value></data>
+  <data name="Account_NotLoggedIn" xml:space="preserve"><value>Not logged in</value></data>
+  <data name="Account_SavedAccounts" xml:space="preserve"><value>Saved Accounts</value></data>
+  <data name="Account_Login" xml:space="preserve"><value>Login</value></data>
+  <data name="Account_DailyCheckin" xml:space="preserve"><value>Daily Check-in</value></data>
+  <data name="Account_RefreshInfo" xml:space="preserve"><value>Refresh Info</value></data>
+  <data name="Account_TravelJournal" xml:space="preserve"><value>Travel Journal</value></data>
+  <data name="Account_GachaAnalysis" xml:space="preserve"><value>Wish Analysis</value></data>
+  <data name="Account_AccountSecurity" xml:space="preserve"><value>Account Security</value></data>
+  <data name="Account_FreezeAccount" xml:space="preserve"><value>Freeze Account</value></data>
+  <data name="Account_CopyCookie" xml:space="preserve"><value>Copy Cookie</value></data>
+  <data name="Account_DeleteAccount" xml:space="preserve"><value>Delete Account</value></data>
+  <data name="Account_Logout" xml:space="preserve"><value>Log Out</value></data>
+  <data name="Account_CommunityFeed" xml:space="preserve"><value>Community Feed</value></data>
+  <data name="Account_Likes" xml:space="preserve"><value>Likes</value></data>
+  <data name="Account_Posts" xml:space="preserve"><value>Posts</value></data>
+  <data name="Account_Replies" xml:space="preserve"><value>Replies</value></data>
+  <data name="Account_BoundCharacters" xml:space="preserve"><value>Bound Characters</value></data>
+  <data name="Account_NoCharacters" xml:space="preserve"><value>No characters bound</value></data>
+  <data name="Account_BindHint" xml:space="preserve"><value>Please bind a character in Miyoushe or in-game, then refresh</value></data>
+  <data name="Account_PlayTime" xml:space="preserve"><value>Play Time</value></data>
+  <data name="Account_RecentDays_Format" xml:space="preserve"><value>Last {0} Days</value></data>
+  <data name="Account_InGame" xml:space="preserve"><value>In Game</value></data>
+  <data name="Account_TotalTime" xml:space="preserve"><value>Total Time</value></data>
+  <data name="Account_DailyAvg" xml:space="preserve"><value>Daily Average</value></data>
+  <data name="Account_NoRecentRecords_Format" xml:space="preserve"><value>No game records for the last {0} days</value></data>
+  <data name="Account_DeleteAccountConfirm_Format" xml:space="preserve"><value>Delete account "{0}"? This will delete all related data for this account, including credentials, wish history, and cloud gaming credentials, and cannot be undone.</value></data>
+  <data name="Account_DeleteComplete" xml:space="preserve"><value>Account "{0}" deleted.</value></data>
+  <data name="Account_DeleteException" xml:space="preserve"><value>Account deletion error</value></data>
+  <data name="Account_DeleteBtn" xml:space="preserve"><value>Delete</value></data>
+  <data name="Account_CheckingIn" xml:space="preserve"><value>Checking in...</value></data>
+  <data name="Account_CheckinComplete" xml:space="preserve"><value>Check-in complete</value></data>
+  <data name="Account_CheckinFailed" xml:space="preserve"><value>Check-in failed</value></data>
+  <data name="Account_CheckinException" xml:space="preserve"><value>Check-in error</value></data>
+  <data name="Account_LoginFailed" xml:space="preserve"><value>Login failed</value></data>
+  <data name="Account_OtherOperations" xml:space="preserve"><value>Other Operations</value></data>
+  <data name="Account_RecentDays30" xml:space="preserve"><value>Last 30 Days</value></data>
+  <data name="Account_NoRecentRecords30" xml:space="preserve"><value>No game records for the last 30 days</value></data>
+  <data name="Account_CopyUID" xml:space="preserve"><value>Copy UID</value></data>
+  <data name="Account_DeleteCurrent" xml:space="preserve"><value>Delete Current Account</value></data>
+  <data name="Account_DeleteCurrentConfirm_Format" xml:space="preserve"><value>Are you sure you want to delete the current account {0} ({1})? This will delete all related data for this account and cannot be undone.</value></data>
+  <data name="LoginQR_Title" xml:space="preserve"><value>QR Code Login</value></data>
+  <data name="LoginQR_MiyousheQR" xml:space="preserve"><value>Miyoushe App QR Login</value></data>
+  <data name="LoginQR_WebPassport" xml:space="preserve"><value>Web Passport Login</value></data>
+  <data name="LoginQR_HoYoLABWeb" xml:space="preserve"><value>HoYoLAB Web Login</value></data>
+  <data name="LoginQR_GameAppId" xml:space="preserve"><value>Game App ID:</value></data>
+  <data name="LoginQR_EnterAppId" xml:space="preserve"><value>Enter App ID</value></data>
+  <data name="LoginQR_ConfirmGenerate" xml:space="preserve"><value>Generate</value></data>
+  <data name="LoginQR_RefreshQR" xml:space="preserve"><value>Refresh QR Code</value></data>
+  <data name="LoginQR_WebLoginWarning" xml:space="preserve"><value>Note: Web passport login cannot obtain an Stoken; some features will be unavailable.</value></data>
+  <data name="LoginQR_ManualCookie" xml:space="preserve"><value>Enter Cookie Manually</value></data>
+  <data name="LoginQR_ClearHistory" xml:space="preserve"><value>Clear Login History</value></data>
+  <data name="Panel_Toolbox" xml:space="preserve"><value>Toolbox</value></data>
+  <data name="Panel_DataAnalysis" xml:space="preserve"><value>Data Analysis</value></data>
+  <data name="Panel_DataAnalysisDesc" xml:space="preserve"><value>Track statistics, completion progress, and long-term data</value></data>
+  <data name="Panel_TravelerProfile" xml:space="preserve"><value>Traveler Profile</value></data>
+  <data name="Panel_TravelerProfileDesc" xml:space="preserve"><value>Characters, inventory, notes, and Miyoushe battle records</value></data>
+  <data name="Panel_Resources" xml:space="preserve"><value>Resources</value></data>
+  <data name="Panel_ResourcesDesc" xml:space="preserve"><value>Media and resource library</value></data>
+  <data name="LaunchBtn_SelectPath" xml:space="preserve"><value>Select Game Path</value></data>
+  <data name="LaunchBtn_ExitGame" xml:space="preserve"><value>Exit Game</value></data>
+  <data name="LaunchBtn_StartGame" xml:space="preserve"><value>Launch Game</value></data>
+  <data name="LaunchBtn_Terminating" xml:space="preserve"><value>Terminating game...</value></data>
+  <data name="Checkin_Signed" xml:space="preserve"><value>Checked in today</value></data>
+  <data name="Checkin_Unsigned" xml:space="preserve"><value>Not checked in</value></data>
+  <data name="LaunchErr_NoGamePath" xml:space="preserve"><value>Game path not set</value></data>
+  <data name="LaunchErr_NoGamePathMsg" xml:space="preserve"><value>Please go to the Game Management page and select the game installation path first.</value></data>
+  <data name="LaunchErr_LaunchFailed" xml:space="preserve"><value>Game launch failed</value></data>
+  <data name="Screenshot_FolderNotFound" xml:space="preserve"><value>Screenshot folder not found</value></data>
+  <data name="Screenshot_FolderNotFoundMsg" xml:space="preserve"><value>Please take a screenshot in-game or use the launcher screenshot feature first.</value></data>
 </root>

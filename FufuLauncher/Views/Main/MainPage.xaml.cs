@@ -6,6 +6,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using CommunityToolkit.Mvvm.Messaging;
 using FufuLauncher.Contracts.Services;
+using FufuLauncher.Helpers;
 using FufuLauncher.Messages;
 using FufuLauncher.Models;
 using FufuLauncher.Services;
@@ -78,7 +79,7 @@ public sealed partial class MainPage : Page
 
                 if (string.IsNullOrEmpty(gameDir) || !Directory.Exists(gameDir))
                 {
-                    await ShowDialog("错误", "未找到有效的游戏路径，请先在设置页设置游戏位置");
+                    await ShowDialog("ErrorTitle".GetLocalized(), "Home_ErrNoGamePath".GetLocalized());
                     return;
                 }
                 
@@ -95,7 +96,7 @@ public sealed partial class MainPage : Page
                     }
                     else
                     {
-                        await ShowDialog("错误", "无法找到 config.ini 配置文件，无法切换服务器");
+                        await ShowDialog("ErrorTitle".GetLocalized(), "Home_ErrConfigNotFound".GetLocalized());
                         return;
                     }
                 }
@@ -104,7 +105,7 @@ public sealed partial class MainPage : Page
             }
             catch (Exception ex)
             {
-                await ShowDialog("错误", $"准备切换时发生异常: {ex.Message}");
+                await ShowDialog("ErrorTitle".GetLocalized(), $"{"Home_ErrSwitchException".GetLocalized()}: {ex.Message}");
             }
         }
         
@@ -176,8 +177,8 @@ public sealed partial class MainPage : Page
         {
             try
             {
-                // 官服: channel=1, sub_channel=1, cps=mihoyo
-                // B服: channel=14, sub_channel=0, cps=bilibili
+                // Official: channel=1, sub_channel=1, cps=mihoyo
+                // Bilibili: channel=14, sub_channel=0, cps=bilibili
                 string channel = toBilibili ? "14" : "1";
                 string subChannel = toBilibili ? "0" : "1";
                 string cps = toBilibili ? "bilibili" : "mihoyo";
@@ -193,11 +194,13 @@ public sealed partial class MainPage : Page
                 
                 await BilibiliSdkManager.EnsureSdkAndDeprecatedFilesAsync(gameDir, toBilibili);
                 
-                await ShowDialog("切换成功", $"已成功切换至 {(toBilibili ? "Bilibili 服" : "官方服务器")}\nSDK已{(toBilibili ? "部署" : "清理")}");
+                var serverName = toBilibili ? "Home_BilibiliServer".GetLocalized() : "Home_OfficialServer".GetLocalized();
+                var action = toBilibili ? "Home_Deployed".GetLocalized() : "Home_Cleaned".GetLocalized();
+                await ShowDialog("Home_SwitchSuccess".GetLocalized(), string.Format("Home_SwitchedTo_Format".GetLocalized(), serverName, action));
             }
             catch (Exception ex)
             {
-                await ShowDialog("切换失败", ex.Message);
+                await ShowDialog("Home_SwitchFailed".GetLocalized(), ex.Message);
             }
         }
         
@@ -207,7 +210,7 @@ public sealed partial class MainPage : Page
             {
                 Title = title,
                 Content = content,
-                CloseButtonText = "确定",
+                CloseButtonText = "OkBtn".GetLocalized(),
                 XamlRoot = XamlRoot
             };
             await dialog.ShowAsync();
@@ -246,14 +249,14 @@ public sealed partial class MainPage : Page
             var activeId = accountManager.ActiveAccountId;
             if (activeId == null)
             {
-                WeakReferenceMessenger.Default.Send(new NotificationMessage("刷新失败", "没有活跃账户", NotificationType.Error));
+                WeakReferenceMessenger.Default.Send(new NotificationMessage("Home_RefreshFailed".GetLocalized(), "Home_NoActiveAccount".GetLocalized(), NotificationType.Error));
                 return;
             }
 
             var cookies = await accountManager.LoadCookiesAsync(activeId);
             if (cookies == null || cookies.Count == 0)
             {
-                WeakReferenceMessenger.Default.Send(new NotificationMessage("刷新失败", "无法加载账户凭证", NotificationType.Error));
+                WeakReferenceMessenger.Default.Send(new NotificationMessage("Home_RefreshFailed".GetLocalized(), "Home_CannotLoadCredentials".GetLocalized(), NotificationType.Error));
                 return;
             }
 
@@ -302,13 +305,13 @@ private void OnToggleWidgetFlyoutModeClick(object sender, RoutedEventArgs e)
     _isWidgetFlyoutEnabled = !_isWidgetFlyoutEnabled;
     WidgetEyeIcon.Glyph = _isWidgetFlyoutEnabled ? "\uE8CB" : "\uE890";
 
-    ToolTipService.SetToolTip(BtnWidgetGacha, _isWidgetFlyoutEnabled ? "抽卡记录分析：分析游戏内的祈愿记录，展示抽卡数据情况" : "抽卡记录分析");
-    ToolTipService.SetToolTip(BtnWidgetAchievement, _isWidgetFlyoutEnabled ? "成就追踪：追踪游戏内成就的完成进度，支持导出与导入" : "成就追踪");
-    ToolTipService.SetToolTip(BtnWidgetInventory, _isWidgetFlyoutEnabled ? "背包物品：查看当前账号游戏内背包中的材料" : "背包物品");
-    ToolTipService.SetToolTip(BtnWidgetPlayerRole, _isWidgetFlyoutEnabled ? "角色练度查询：查询已拥有角色的等级、命座、武器及圣遗物搭配情况" : "角色练度查询");
-    ToolTipService.SetToolTip(BtnWidgetDailyNote, _isWidgetFlyoutEnabled ? "旅行便签：独立窗口显示当前开放的角色材料秘境等实时数据" : "旅行便签");
-    ToolTipService.SetToolTip(BtnWidgetVideo, _isWidgetFlyoutEnabled ? "视频资源库：可查看各类游戏角色PV或者游戏内过场动画" : "视频资源库");
-    ToolTipService.SetToolTip(BtnWidgetBBS, _isWidgetFlyoutEnabled ? "战绩信息：查询深渊、幻想真境剧诗等详细战绩数据" : "战绩信息");
+    ToolTipService.SetToolTip(BtnWidgetGacha, _isWidgetFlyoutEnabled ? "Home_GachaTooltip".GetLocalized() : "Home_WidgetGacha".GetLocalized());
+    ToolTipService.SetToolTip(BtnWidgetAchievement, _isWidgetFlyoutEnabled ? "Home_AchievementTooltip".GetLocalized() : "Home_WidgetAchievement".GetLocalized());
+    ToolTipService.SetToolTip(BtnWidgetInventory, _isWidgetFlyoutEnabled ? "Home_InventoryTooltip".GetLocalized() : "Home_WidgetInventory".GetLocalized());
+    ToolTipService.SetToolTip(BtnWidgetPlayerRole, _isWidgetFlyoutEnabled ? "Home_PlayerRoleTooltip".GetLocalized() : "Home_WidgetPlayerRole".GetLocalized());
+    ToolTipService.SetToolTip(BtnWidgetDailyNote, _isWidgetFlyoutEnabled ? "Home_NotesTooltip".GetLocalized() : "Home_WidgetNotes".GetLocalized());
+    ToolTipService.SetToolTip(BtnWidgetVideo, _isWidgetFlyoutEnabled ? "Home_VideoTooltip".GetLocalized() : "Home_WidgetVideo".GetLocalized());
+    ToolTipService.SetToolTip(BtnWidgetBBS, _isWidgetFlyoutEnabled ? "Home_BBSTooltip".GetLocalized() : "Home_WidgetBBS".GetLocalized());
 }
 
 private void WidgetButton_PointerExited(object sender, PointerRoutedEventArgs e)
@@ -365,10 +368,10 @@ private void OnOpenGachaAnalysisClick(object sender, RoutedEventArgs e)
     {
         ContentDialog riskDialog = new()
         {
-            Title = "安全提示",
-            Content = "进入战绩信息页面可能会导致您的账户被标注为风险账户，进而导致部分功能（如某些自动化工具或特定网页访问）无法正常使用，是否确认继续？",
-            PrimaryButtonText = "确认继续",
-            CloseButtonText = "取消",
+            Title = "Home_BBSSecurityTitle".GetLocalized(),
+            Content = "Home_BBSSecurityMessage".GetLocalized(),
+            PrimaryButtonText = "Home_BBSConfirm".GetLocalized(),
+            CloseButtonText = "CancelBtn".GetLocalized(),
             DefaultButton = ContentDialogButton.Close,
             XamlRoot = XamlRoot
         };

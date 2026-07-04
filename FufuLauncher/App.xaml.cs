@@ -601,6 +601,8 @@ public partial class App : Application
             var localSettingsService = GetService<ILocalSettingsService>();
             var languageValue = await localSettingsService.ReadSettingAsync("AppLanguage");
 
+            Debug.WriteLine($"[App] ApplyLanguageSettingAsync: raw value='{languageValue}' (type={languageValue?.GetType().Name ?? "null"})");
+
             if (languageValue != null && int.TryParse(languageValue.ToString(), out int languageCode))
             {
                 var language = (AppLanguage)languageCode;
@@ -612,10 +614,22 @@ public partial class App : Application
                     _ => Windows.System.UserProfile.GlobalizationPreferences.Languages.FirstOrDefault() ?? "zh-CN"
                 };
 
-                Windows.Globalization.ApplicationLanguages.PrimaryLanguageOverride = culture;
+                Debug.WriteLine($"[App] ApplyLanguageSettingAsync: language={language}, culture='{culture}'");
+
+                // PrimaryLanguageOverride is NOT available for unpackaged apps.
+                // Use ResourceExtensions.SetLanguage to control MRT via ResourceContext instead.
+                Helpers.ResourceExtensions.SetLanguage(
+                    language == AppLanguage.Default ? null : culture);
+            }
+            else
+            {
+                Debug.WriteLine($"[App] ApplyLanguageSettingAsync: skipped (languageValue is null or unparseable)");
             }
         }
-        catch { }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"[App] ApplyLanguageSettingAsync ERROR: {ex.Message}");
+        }
     }
     private void ApplyLanguageSetting()
     {
