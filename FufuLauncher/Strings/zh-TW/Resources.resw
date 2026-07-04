@@ -90,6 +90,7 @@
   <data name="LangRu" xml:space="preserve"><value>Русский</value></data>
   <data name="LangJa" xml:space="preserve"><value>日本語</value></data>
   <data name="LangEs" xml:space="preserve"><value>西班牙語</value></data>
+  <data name="LangKo" xml:space="preserve"><value>韓語</value></data>
   <data name="LangDefault" xml:space="preserve"><value>使用系統預設語言</value></data>
   <data name="LaunchWindowModeTitle" xml:space="preserve"><value>啟動視窗模式</value></data>
   <data name="WindowModeNormal" xml:space="preserve"><value>一般視窗</value></data>

@@ -90,6 +90,7 @@
   <data name="LangRu" xml:space="preserve"><value>Русский</value></data>
   <data name="LangJa" xml:space="preserve"><value>日本語</value></data>
   <data name="LangEs" xml:space="preserve"><value>Español</value></data>
+  <data name="LangKo" xml:space="preserve"><value>Coreano</value></data>
   <data name="LangDefault" xml:space="preserve"><value>Usar idioma predeterminado del sistema</value></data>
   <data name="LaunchWindowModeTitle" xml:space="preserve"><value>Modo de ventana de inicio</value></data>
   <data name="WindowModeNormal" xml:space="preserve"><value>Ventana normal</value></data>

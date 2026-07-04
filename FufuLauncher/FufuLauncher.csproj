@@ -91,6 +91,7 @@
         <Content Include="Strings\ja-JP\Resources.resw" />
         <Content Include="Strings\es-ES\Resources.resw" />
         <Content Include="Strings\zh-TW\Resources.resw" />
+        <Content Include="Strings\ko-KR\Resources.resw" />
     </ItemGroup>
 
     <ItemGroup>
@@ -127,7 +128,7 @@
     <Target Name="RemoveUnwantedNativeLanguageFolders" AfterTargets="Build;Publish">
         <ItemGroup>
             <AllMuiFiles Include="$(OutDir)*\*.mui" />
-            <MuiFilesToKeep Include="$(OutDir)en*\*.mui;$(OutDir)zh*\*.mui;$(OutDir)fr*\*.mui;$(OutDir)de*\*.mui;$(OutDir)ru*\*.mui;$(OutDir)ja*\*.mui;$(OutDir)es*\*.mui" />
+            <MuiFilesToKeep Include="$(OutDir)en*\*.mui;$(OutDir)zh*\*.mui;$(OutDir)fr*\*.mui;$(OutDir)de*\*.mui;$(OutDir)ru*\*.mui;$(OutDir)ja*\*.mui;$(OutDir)es*\*.mui;$(OutDir)ko*\*.mui" />
             <MuiFilesToDelete Include="@(AllMuiFiles)" Exclude="@(MuiFilesToKeep)" />
             <FoldersToDelete Include="@(MuiFilesToDelete->'%(RootDir)%(Directory)')" />
         </ItemGroup>

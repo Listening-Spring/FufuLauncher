@@ -43,7 +43,8 @@ namespace FufuLauncher.ViewModels
         de = 5,
         ru = 6,
         ja = 7,
-        es = 8
+        es = 8,
+        ko = 9
     }
 
     public enum WindowModeType
@@ -1724,6 +1725,7 @@ var cpuWarningThresholdJson = await _localSettingsService.ReadSettingAsync(Proce
                     AppLanguage.ru => "ru-RU",
                     AppLanguage.ja => "ja-JP",
                     AppLanguage.es => "es-ES",
+                    AppLanguage.ko => "ko-KR",
                     _ => Windows.System.UserProfile.GlobalizationPreferences.Languages.FirstOrDefault() ?? "zh-CN"
                 };
 

@@ -621,6 +621,12 @@
                                          CommandParameter="8"
                                          IsChecked="{x:Bind ViewModel.SelectedLanguage, Converter={StaticResource LanguageEnumToBooleanConverter}, ConverterParameter=8}"
                                          Command="{x:Bind ViewModel.SwitchLanguageCommand}" />
+                            <RadioButton Content="{helpers:Loc Key=LangKo}"
+                                         FontSize="14"
+                                         GroupName="AppLanguage"
+                                         CommandParameter="9"
+                                         IsChecked="{x:Bind ViewModel.SelectedLanguage, Converter={StaticResource LanguageEnumToBooleanConverter}, ConverterParameter=9}"
+                                         Command="{x:Bind ViewModel.SwitchLanguageCommand}" />
                             <RadioButton Content="{helpers:Loc Key=LangDefault}"
                                          FontSize="14"
                                          GroupName="AppLanguage"

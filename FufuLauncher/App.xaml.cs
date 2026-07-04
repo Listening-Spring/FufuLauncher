@@ -613,6 +613,7 @@ public partial class App : Application
                     AppLanguage.ru => "ru-RU",
                     AppLanguage.ja => "ja-JP",
                     AppLanguage.es => "es-ES",
+                    AppLanguage.ko => "ko-KR",
                     _ => Windows.System.UserProfile.GlobalizationPreferences.Languages.FirstOrDefault() ?? "zh-CN"
                 };
 
