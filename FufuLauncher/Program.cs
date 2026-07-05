@@ -45,6 +45,23 @@ namespace FufuLauncher
             }
 
             var key = "FufuLauncher";
+            
+            if (args.Length > 0 && string.Equals(args[0], "restart", StringComparison.OrdinalIgnoreCase))
+            {
+                const int maxRetries = 50;
+                const int retryDelayMs = 100;
+                for (int i = 0; i < maxRetries; i++)
+                {
+                    var instance = AppInstance.FindOrRegisterForKey(key);
+                    if (instance.IsCurrent)
+                    {
+                        goto startApp;
+                    }
+                    instance.UnregisterKey();
+                    Thread.Sleep(retryDelayMs);
+                }
+            }
+
             var mainInstance = AppInstance.FindOrRegisterForKey(key);
 
             if (!mainInstance.IsCurrent)
@@ -55,6 +72,7 @@ namespace FufuLauncher
                 return;
             }
 
+            startApp:
             Application.Start((p) =>
             {
                 var context = new DispatcherQueueSynchronizationContext(

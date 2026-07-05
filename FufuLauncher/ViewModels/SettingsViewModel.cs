@@ -1777,7 +1777,8 @@ var cpuWarningThresholdJson = await _localSettingsService.ReadSettingAsync(Proce
                     }
                 };
                 process.Start();
-                App.MainWindow.Close();
+                
+                Environment.Exit(0);
             }
             catch (Exception ex)
             {
