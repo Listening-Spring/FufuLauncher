@@ -693,6 +693,7 @@ private void SetupVideoPlayer(MediaSource source, InMemoryRandomAccessStream str
             IsLoopingEnabled = true,
             IsMuted = true
         };
+        MediaPlayerHelper.DisableSystemMediaControls(BackgroundVideoPlayer);
         BackgroundVideoPlayer.MediaFailed += BackgroundVideoPlayer_MediaFailed;
     }
     BackgroundVideoPlayer.Source = source; 
