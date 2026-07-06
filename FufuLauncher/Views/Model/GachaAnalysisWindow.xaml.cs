@@ -791,6 +791,7 @@ namespace FufuLauncher.Views
                 if (string.IsNullOrEmpty(path)) return;
 
                 using var stream = await RenderElementToStreamAsync(AnalysisExportTarget);
+                stream.Seek(0);
                 using var fileStream = new FileStream(path, FileMode.Create, FileAccess.Write);
                 stream.AsStream().CopyTo(fileStream);
 

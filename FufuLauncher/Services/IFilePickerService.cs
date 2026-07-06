@@ -19,7 +19,7 @@ namespace FufuLauncher.Services
 
     public class FilePickerService : IFilePickerService
     {
-        private const string AdminMessage = "当前以管理员权限运行，无法使用文件选择器，请关闭管理员权限后重试";
+        private const string COMFailureMessage = "文件选择器调用失败，若以管理员权限运行请尝试切换为普通用户模式";
 
         private static readonly IReadOnlyList<(string Label, string[] Extensions)> AudioFilters =
             new[] { ("音频文件", new[] { "*.mp3", "*.wav", "*.wma", "*.m4a", "*.flac", "*.aac" }) };
@@ -29,13 +29,6 @@ namespace FufuLauncher.Services
 
         public static bool InitializeWithValidWindow(object target, out string? errorMessage, Window? window = null)
         {
-            if (SystemEnvironmentHelper.IsRunningAsAdministrator())
-            {
-                errorMessage = AdminMessage;
-                Debug.WriteLine($"[FilePickerService] {errorMessage}");
-                return false;
-            }
-
             if (window != null)
             {
                 var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(window);
@@ -99,14 +92,14 @@ namespace FufuLauncher.Services
 
                 foreach (var (label, exts) in filters)
                     foreach (var ext in exts)
-                        picker.FileTypeFilter.Add(ext.StartsWith("*") ? ext : "*" + ext);
+                        picker.FileTypeFilter.Add(NormalizeWinRtExtension(ext));
 
                 var file = await picker.PickSingleFileAsync();
                 return file?.Path;
             }
             catch (COMException)
             {
-                onError?.Invoke(AdminMessage);
+                onError?.Invoke(COMFailureMessage);
                 return null;
             }
             catch (Exception ex)
@@ -147,7 +140,7 @@ namespace FufuLauncher.Services
 
                 foreach (var (label, exts) in filters)
                 {
-                    var cleanExts = exts.Select(e => e.StartsWith("*") ? e : "*" + e).ToList();
+                    var cleanExts = exts.Select(NormalizeWinRtExtension).ToList();
                     picker.FileTypeChoices.Add(label, cleanExts);
                 }
 
@@ -159,7 +152,7 @@ namespace FufuLauncher.Services
             }
             catch (COMException)
             {
-                onError?.Invoke(AdminMessage);
+                onError?.Invoke(COMFailureMessage);
                 return null;
             }
             catch (Exception ex)
@@ -207,7 +200,7 @@ namespace FufuLauncher.Services
             }
             catch (COMException)
             {
-                onError?.Invoke(AdminMessage);
+                onError?.Invoke(COMFailureMessage);
                 return null;
             }
             catch (Exception ex)
@@ -271,6 +264,13 @@ namespace FufuLauncher.Services
                 dlg.InitialDirectory = initialPath;
         }
 
+        private static string NormalizeWinRtExtension(string ext)
+        {
+            if (string.IsNullOrEmpty(ext)) return "*";
+            if (ext == "*") return "*";
+            return ext.TrimStart('*');
+        }
+
         private static string BuildWinFormsFilter(IReadOnlyList<(string Label, string[] Extensions)> filters)
         {
             if (filters == null || filters.Count == 0) return "";
@@ -280,7 +280,7 @@ namespace FufuLauncher.Services
                 var spec = string.Join(";", exts.Select(e => e.StartsWith("*") ? e : "*" + e));
                 parts.Add($"{label}|{spec}");
             }
-            parts.Add($"所有文件|*.*");
+            parts.Add("所有文件|*.*");
             return string.Join("|", parts);
         }
 

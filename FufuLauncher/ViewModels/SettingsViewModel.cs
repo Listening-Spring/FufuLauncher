@@ -759,7 +759,7 @@ namespace FufuLauncher.ViewModels
             response.EnsureSuccessStatusCode();
 
             using var stream = await response.Content.ReadAsStreamAsync();
-            await using var fileStream = File.OpenWrite(path);
+            await using var fileStream = new FileStream(path, FileMode.Create, FileAccess.Write);
             await stream.CopyToAsync(fileStream);
 
             ShowDialogMessage("下载成功", $"{typeName} 已保存至：\n{path}");
