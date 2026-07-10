@@ -272,7 +272,7 @@ namespace Updater
                 "j.1lin.dpdns.org", "github.starrlzy.cn", "ghm.078465.xyz", "ghf.无名氏.top",
                 "jiashu.1win.eu.org", "tvv.tw", "j.1win.ggff.net", "gh.catmak.name",
                 "gh.b52m.cn", "slink.ltd", "github.tmby.shop", "ghpr.cc", "gh.tryxd.cn",
-                "gitproxy.click", "gh.monlor.com", "ghpxy.hwinzniej.top", "git.669966.xyz",
+                "gh.monlor.com", "ghpxy.hwinzniej.top", "git.669966.xyz",
                 "github.geekery.cn", "ghproxy.1888866.xyz", "github.xxlab.tech", "free.cn.eu.org",
                 "gh.chjina.com", "ghp.keleyaa.com", "proxy.yaoyaoling.net", "ghproxy.monkeyray.net",
                 "gh.noki.icu", "g.blfrp.cn"
