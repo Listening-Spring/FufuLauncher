@@ -9,7 +9,7 @@
 
 #### [Injection Module Open Source Repository](https://github.com/CodeCubist/FufuLauncher.UnlockerIsland)
 
-#### [English](./README-en.md)
+#### [中文](./README-CN.md)
 
 ### Before asking a question, please check if you have updated to the latest version. And please add tags to your questions!
 
