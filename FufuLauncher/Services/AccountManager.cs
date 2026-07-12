@@ -191,8 +191,17 @@ public class AccountManager
         string path = Path.Combine(_cookiesDir, entry.CookieFilePath);
         if (!File.Exists(path)) return null;
 
-        var json = await File.ReadAllTextAsync(path);
-        return JsonSerializer.Deserialize<Dictionary<string, string>>(json);
+        try
+        {
+            var json = await File.ReadAllTextAsync(path);
+            return JsonSerializer.Deserialize<Dictionary<string, string>>(json);
+        }
+        catch (JsonException ex)
+        {
+            System.Diagnostics.Debug.WriteLine(
+                $"[AccountManager] Cookie 文件解析失败 ({entry.CookieFilePath}): {ex.Message}");
+            return null;
+        }
     }
 
 

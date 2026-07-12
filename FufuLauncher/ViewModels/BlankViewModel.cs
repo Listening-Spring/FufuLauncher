@@ -412,8 +412,17 @@ namespace FufuLauncher.ViewModels
                 if (!File.Exists(_accountsFilePath))
                     return new List<GameAccount>();
 
-                var json = File.ReadAllText(_accountsFilePath, Encoding.UTF8);
-                return JsonSerializer.Deserialize<List<GameAccount>>(json) ?? new List<GameAccount>();
+                try
+                {
+                    var json = File.ReadAllText(_accountsFilePath, Encoding.UTF8);
+                    return JsonSerializer.Deserialize<List<GameAccount>>(json) ?? new List<GameAccount>();
+                }
+                catch (JsonException ex)
+                {
+                    System.Diagnostics.Debug.WriteLine(
+                        $"[BlankViewModel] 游戏账号文件解析失败: {ex.Message}");
+                    return new List<GameAccount>();
+                }
             });
         }
 

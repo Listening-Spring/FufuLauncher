@@ -2496,7 +2496,15 @@ private async Task ImportUigfAsync()
             {
                 ids = new List<int>();
             }
-            var names = JsonSerializer.Deserialize<List<string>>(upItemNamesJson) ?? new List<string>();
+            List<string> names;
+            try
+            {
+                names = JsonSerializer.Deserialize<List<string>>(upItemNamesJson) ?? new List<string>();
+            }
+            catch (JsonException)
+            {
+                names = new List<string>();
+            }
 
             var upItems = new List<GachaPoolItem>();
             for (var i = 0; i < ids.Count; i++)

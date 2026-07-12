@@ -161,14 +161,36 @@ public sealed partial class AchievementWindow : Window
             closeConn = true;
         }
 
-        string jsonContent = File.ReadAllText(jsonPath);
+        string jsonContent;
+        try
+        {
+            jsonContent = File.ReadAllText(jsonPath);
+        }
+        catch (IOException ex)
+        {
+            System.Diagnostics.Debug.WriteLine(
+                $"[AchievementWindow] 读取成就文件失败 ({jsonPath}): {ex.Message}");
+            return;
+        }
+
         var options = new JsonSerializerOptions { 
             PropertyNameCaseInsensitive = true, 
             NumberHandling = JsonNumberHandling.AllowReadingFromString, 
             ReadCommentHandling = JsonCommentHandling.Skip,
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase
         };
-        var rawCategories = JsonSerializer.Deserialize<List<AchievementCategory>>(jsonContent, options);
+
+        List<AchievementCategory> rawCategories;
+        try
+        {
+            rawCategories = JsonSerializer.Deserialize<List<AchievementCategory>>(jsonContent, options);
+        }
+        catch (JsonException ex)
+        {
+            System.Diagnostics.Debug.WriteLine(
+                $"[AchievementWindow] 成就 JSON 解析失败 ({jsonPath}): {ex.Message}");
+            return;
+        }
         if (rawCategories == null) return;
 
         using var transaction = connection.BeginTransaction();
