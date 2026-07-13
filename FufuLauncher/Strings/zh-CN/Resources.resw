@@ -1434,6 +1434,51 @@
   <data name="PluginStoreHashMismatch" xml:space="preserve"><value>文件完整性校验失败，下载可能已损坏或被篡改</value></data>
   <data name="PluginStoreLuaHashMismatch" xml:space="preserve"><value>安装脚本完整性校验失败</value></data>
   <data name="PluginStoreSecurityBlocked" xml:space="preserve"><value>安装已阻止: {0}</value></data>
+  <data name="PluginStoreSecurityBlockedShort" xml:space="preserve"><value>安全阻止</value></data>
   <data name="PluginStorePathTraversal" xml:space="preserve"><value>安全: 已阻止路径穿越尝试</value></data>
   <data name="PluginStoreHashVerified" xml:space="preserve"><value>完整性校验通过</value></data>
+  <data name="PluginStoreDiscover" xml:space="preserve"><value>探索与发现</value></data>
+  <data name="PluginStoreSearchPlaceholder" xml:space="preserve"><value>搜索插件名称或关键字...</value></data>
+  <data name="PluginStoreRefresh" xml:space="preserve"><value>刷新</value></data>
+  <data name="PluginStoreSyncing" xml:space="preserve"><value>正在同步插件列表...</value></data>
+  <data name="PluginStoreDeveloper" xml:space="preserve"><value>开发提供</value></data>
+  <data name="PluginStoreDetails" xml:space="preserve"><value>功能详情</value></data>
+  <data name="PluginStoreUpdateNow" xml:space="preserve"><value>立刻更新</value></data>
+  <data name="PluginStoreInstallPlugin" xml:space="preserve"><value>安装此插件</value></data>
+  <data name="PluginStoreCancel" xml:space="preserve"><value>取消返回</value></data>
+  <data name="PluginStoreNoMatch" xml:space="preserve"><value>没有找到匹配的插件</value></data>
+  <data name="PluginStoreNoAvailable" xml:space="preserve"><value>暂无可用的插件</value></data>
+  <data name="PluginStoreTotalPlugins" xml:space="preserve"><value>共 {0} 个插件</value></data>
+  <data name="PluginStoreConnectionFailed" xml:space="preserve"><value>连接失败</value></data>
+  <data name="PluginStoreLoadFailed" xml:space="preserve"><value>加载插件列表失败，请稍后重试</value></data>
+  <data name="PluginStoreInstallComplete" xml:space="preserve"><value>安装完成</value></data>
+  <data name="PluginStoreHashFailed" xml:space="preserve"><value>校验失败</value></data>
+  <data name="PluginStoreCancelled" xml:space="preserve"><value>已取消</value></data>
+  <data name="PluginStoreInstallFailedShort" xml:space="preserve"><value>安装失败</value></data>
+  <data name="PluginStoreUninstalling" xml:space="preserve"><value>卸载中...</value></data>
+  <data name="PluginStoreUninstallComplete" xml:space="preserve"><value>已卸载</value></data>
+  <data name="PluginStoreUninstallFailed" xml:space="preserve"><value>卸载失败</value></data>
+  <data name="PluginStoreServerUnreachable" xml:space="preserve"><value>无法连接到插件商城服务器，请检查网络或服务器状态</value></data>
+  <data name="PluginStoreServerTimeout" xml:space="preserve"><value>连接插件商城超时，请稍后重试</value></data>
+  <data name="PluginStoreLoadListFailed" xml:space="preserve"><value>加载插件列表失败: {0}</value></data>
+  <data name="PluginStoreDownloadLuaFailed" xml:space="preserve"><value>无法下载安装脚本，服务器不可用</value></data>
+  <data name="PluginStoreDownloadLuaError" xml:space="preserve"><value>下载安装脚本失败: {0}</value></data>
+  <data name="PluginStoreDownloading" xml:space="preserve"><value>下载中 {0}%</value></data>
+  <data name="PluginStoreDownloadFileFailed" xml:space="preserve"><value>无法下载插件文件，服务器不可用</value></data>
+  <data name="PluginStoreDownloadFileError" xml:space="preserve"><value>下载插件文件失败: {0}</value></data>
+  <data name="PluginStoreDownloadCountWan" xml:space="preserve"><value>{0:F1}万</value></data>
+  <data name="PluginStoreDownloadCountK" xml:space="preserve"><value>{0:F1}k</value></data>
+  <data name="PluginStoreScriptDownloading" xml:space="preserve"><value>下载安装脚本...</value></data>
+  <data name="PluginStoreScriptScanning" xml:space="preserve"><value>扫描中...</value></data>
+  <data name="PluginStoreScriptExecuting" xml:space="preserve"><value>执行安装脚本...</value></data>
+  <data name="PluginStoreLuaSecurityFailed" xml:space="preserve"><value>Lua脚本未通过安全验证。</value></data>
+  <data name="PluginStoreLuaScriptError" xml:space="preserve"><value>Lua脚本错误: {0}</value></data>
+  <data name="PluginStoreLuaScriptFailed" xml:space="preserve"><value>Lua脚本执行失败: {0}</value></data>
+  <data name="PluginStoreDialogClose" xml:space="preserve"><value>关闭</value></data>
+  <data name="PluginStoreSecurityEmptyPath" xml:space="preserve"><value>安全: {0} 操作传入了空路径。</value></data>
+  <data name="PluginStoreSecurityInvalidPath" xml:space="preserve"><value>安全: 无效路径 ({0}): {1}</value></data>
+  <data name="PluginStoreSecurityOutsideDir" xml:space="preserve"><value>安全: 路径必须在插件目录内 ({0})。</value></data>
+  <data name="PluginStoreSecurityBannedOp" xml:space="preserve"><value>脚本包含禁止的操作 ({0})。</value></data>
+  <data name="PluginStoreSecurityPathTraversalShort" xml:space="preserve"><value>路径穿越尝试</value></data>
+  <data name="PluginStoreSecurityScriptTooLarge" xml:space="preserve"><value>脚本过大</value></data>
 </root>

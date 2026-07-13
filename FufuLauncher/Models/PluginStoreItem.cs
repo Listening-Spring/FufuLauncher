@@ -258,10 +258,24 @@ public class PluginStoreItem : INotifyPropertyChanged
 
     private static string FormatDownloadCount(long count)
     {
-        if (count >= 10000)
-            return $"{count / 10000.0:F1}万";
-        if (count >= 1000)
-            return $"{count / 1000.0:F1}k";
+        var culture = ResourceExtensions.CurrentCulture ?? "";
+        var isChinese = culture.StartsWith("zh", StringComparison.OrdinalIgnoreCase);
+
+        if (isChinese)
+        {
+            if (count >= 10000)
+                return string.Format("PluginStoreDownloadCountWan".GetLocalized(), count / 10000.0);
+            if (count >= 1000)
+                return string.Format("PluginStoreDownloadCountK".GetLocalized(), count / 1000.0);
+        }
+        else
+        {
+            if (count >= 1000000)
+                return string.Format("PluginStoreDownloadCountWan".GetLocalized(), count / 1000000.0);
+            if (count >= 1000)
+                return string.Format("PluginStoreDownloadCountK".GetLocalized(), count / 1000.0);
+        }
+
         return count.ToString();
     }
 

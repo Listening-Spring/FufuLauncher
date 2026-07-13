@@ -190,7 +190,7 @@
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
                 
-                <NavigationViewItem Content="插件商城" Tag="FufuLauncher.ViewModels.PluginStoreViewModel">
+                <NavigationViewItem Content="{helpers:Loc Key=PluginStoreTitle}" Tag="FufuLauncher.ViewModels.PluginStoreViewModel">
                     <NavigationViewItem.Icon>
                         <FontIcon Glyph="&#xE90F;" FontFamily="{StaticResource ActionIconFont}" FontSize="24"/>
                     </NavigationViewItem.Icon>

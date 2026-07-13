@@ -15,6 +15,14 @@ public static class ResourceExtensions
     private static bool _loaded;
 
     /// <summary>
+    /// Gets the currently active culture name (e.g., "zh-CN", "en-US"), or null if not set.
+    /// </summary>
+    public static string? CurrentCulture
+    {
+        get { lock (_lock) { return _currentCulture; } }
+    }
+
+    /// <summary>
     /// Sets the language for resource resolution.
     /// Pass null or empty to use the system default (first available).
     /// </summary>

@@ -1386,6 +1386,51 @@ Details: {0}</value></data>
   <data name="PluginStoreHashMismatch" xml:space="preserve"><value>File integrity check failed. The download may be corrupted or tampered.</value></data>
   <data name="PluginStoreLuaHashMismatch" xml:space="preserve"><value>Install script integrity check failed.</value></data>
   <data name="PluginStoreSecurityBlocked" xml:space="preserve"><value>Install blocked: {0}</value></data>
+  <data name="PluginStoreSecurityBlockedShort" xml:space="preserve"><value>Security blocked</value></data>
   <data name="PluginStorePathTraversal" xml:space="preserve"><value>Security: path traversal attempt blocked</value></data>
   <data name="PluginStoreHashVerified" xml:space="preserve"><value>Integrity verified</value></data>
+  <data name="PluginStoreDiscover" xml:space="preserve"><value>Explore &amp; Discover</value></data>
+  <data name="PluginStoreSearchPlaceholder" xml:space="preserve"><value>Search plugin name or keywords...</value></data>
+  <data name="PluginStoreRefresh" xml:space="preserve"><value>Refresh</value></data>
+  <data name="PluginStoreSyncing" xml:space="preserve"><value>Syncing plugin list...</value></data>
+  <data name="PluginStoreDeveloper" xml:space="preserve"><value>Developer</value></data>
+  <data name="PluginStoreDetails" xml:space="preserve"><value>Details</value></data>
+  <data name="PluginStoreUpdateNow" xml:space="preserve"><value>Update Now</value></data>
+  <data name="PluginStoreInstallPlugin" xml:space="preserve"><value>Install Plugin</value></data>
+  <data name="PluginStoreCancel" xml:space="preserve"><value>Cancel</value></data>
+  <data name="PluginStoreNoMatch" xml:space="preserve"><value>No matching plugins found</value></data>
+  <data name="PluginStoreNoAvailable" xml:space="preserve"><value>No plugins available</value></data>
+  <data name="PluginStoreTotalPlugins" xml:space="preserve"><value>{0} plugins total</value></data>
+  <data name="PluginStoreConnectionFailed" xml:space="preserve"><value>Connection failed</value></data>
+  <data name="PluginStoreLoadFailed" xml:space="preserve"><value>Failed to load plugin list. Please try again later.</value></data>
+  <data name="PluginStoreInstallComplete" xml:space="preserve"><value>Install complete</value></data>
+  <data name="PluginStoreHashFailed" xml:space="preserve"><value>Hash verification failed</value></data>
+  <data name="PluginStoreCancelled" xml:space="preserve"><value>Cancelled</value></data>
+  <data name="PluginStoreInstallFailedShort" xml:space="preserve"><value>Install failed</value></data>
+  <data name="PluginStoreUninstalling" xml:space="preserve"><value>Uninstalling...</value></data>
+  <data name="PluginStoreUninstallComplete" xml:space="preserve"><value>Uninstalled</value></data>
+  <data name="PluginStoreUninstallFailed" xml:space="preserve"><value>Uninstall failed</value></data>
+  <data name="PluginStoreServerUnreachable" xml:space="preserve"><value>Cannot connect to plugin store server. Check your network or server status.</value></data>
+  <data name="PluginStoreServerTimeout" xml:space="preserve"><value>Plugin store connection timed out. Please try again later.</value></data>
+  <data name="PluginStoreLoadListFailed" xml:space="preserve"><value>Failed to load plugin list: {0}</value></data>
+  <data name="PluginStoreDownloadLuaFailed" xml:space="preserve"><value>Cannot download install script. Server unavailable.</value></data>
+  <data name="PluginStoreDownloadLuaError" xml:space="preserve"><value>Download script failed: {0}</value></data>
+  <data name="PluginStoreDownloading" xml:space="preserve"><value>Downloading {0}%</value></data>
+  <data name="PluginStoreDownloadFileFailed" xml:space="preserve"><value>Cannot download plugin file. Server unavailable.</value></data>
+  <data name="PluginStoreDownloadFileError" xml:space="preserve"><value>Download file failed: {0}</value></data>
+  <data name="PluginStoreDownloadCountWan" xml:space="preserve"><value>{0:F1}M</value></data>
+  <data name="PluginStoreDownloadCountK" xml:space="preserve"><value>{0:F1}K</value></data>
+  <data name="PluginStoreScriptDownloading" xml:space="preserve"><value>Downloading install script...</value></data>
+  <data name="PluginStoreScriptScanning" xml:space="preserve"><value>Scanning...</value></data>
+  <data name="PluginStoreScriptExecuting" xml:space="preserve"><value>Executing install script...</value></data>
+  <data name="PluginStoreLuaSecurityFailed" xml:space="preserve"><value>Lua script failed security check.</value></data>
+  <data name="PluginStoreLuaScriptError" xml:space="preserve"><value>Lua script error: {0}</value></data>
+  <data name="PluginStoreLuaScriptFailed" xml:space="preserve"><value>Lua script execution failed: {0}</value></data>
+  <data name="PluginStoreDialogClose" xml:space="preserve"><value>Close</value></data>
+  <data name="PluginStoreSecurityEmptyPath" xml:space="preserve"><value>Security: {0} operation received an empty path.</value></data>
+  <data name="PluginStoreSecurityInvalidPath" xml:space="preserve"><value>Security: Invalid path ({0}): {1}</value></data>
+  <data name="PluginStoreSecurityOutsideDir" xml:space="preserve"><value>Security: Path must be within the plugins directory ({0}).</value></data>
+  <data name="PluginStoreSecurityBannedOp" xml:space="preserve"><value>Script contains forbidden operation ({0}).</value></data>
+  <data name="PluginStoreSecurityPathTraversalShort" xml:space="preserve"><value>Path traversal attempt</value></data>
+  <data name="PluginStoreSecurityScriptTooLarge" xml:space="preserve"><value>Script too large</value></data>
 </root>

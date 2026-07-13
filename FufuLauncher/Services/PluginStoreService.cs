@@ -9,6 +9,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using FufuLauncher.Constants;
 using FufuLauncher.Models;
+using FufuLauncher.Helpers;
 
 namespace FufuLauncher.Services;
 
@@ -47,6 +48,15 @@ public class PluginStoreService
         };
     }
     
+    /// <summary>
+    /// Returns the current UI language tag (e.g., "zh-CN", "en-US") or empty string.
+    /// </summary>
+    private static string GetCurrentLang()
+    {
+        var culture = ResourceExtensions.CurrentCulture;
+        return string.IsNullOrEmpty(culture) ? "" : culture;
+    }
+    
     public async Task<PluginListData> GetPluginListAsync(
         string? category = null,
         string? search = null,
@@ -60,6 +70,10 @@ public class PluginStoreService
             $"page={page}",
             $"page_size={pageSize}"
         };
+
+        var lang = GetCurrentLang();
+        if (!string.IsNullOrEmpty(lang))
+            queryParams.Add($"lang={Uri.EscapeDataString(lang)}");
 
         if (!string.IsNullOrWhiteSpace(category))
             queryParams.Add($"category={Uri.EscapeDataString(category)}");
@@ -78,23 +92,26 @@ public class PluginStoreService
         catch (HttpRequestException ex) when (ex.InnerException is System.Net.Sockets.SocketException)
         {
             Debug.WriteLine($"[PluginStoreService] Server unreachable: {ex.Message}");
-            throw new InvalidOperationException("无法连接到插件商城服务器，请检查网络或服务器状态", ex);
+            throw new InvalidOperationException("PluginStoreServerUnreachable".GetLocalized(), ex);
         }
         catch (TaskCanceledException)
         {
             Debug.WriteLine("[PluginStoreService] Request timed out");
-            throw new InvalidOperationException("连接插件商城超时，请稍后重试");
+            throw new InvalidOperationException("PluginStoreServerTimeout".GetLocalized());
         }
         catch (Exception ex)
         {
             Debug.WriteLine($"[PluginStoreService] Error fetching plugin list: {ex.Message}");
-            throw new InvalidOperationException($"加载插件列表失败: {ex.Message}", ex);
+            throw new InvalidOperationException(string.Format("PluginStoreLoadListFailed".GetLocalized(), ex.Message), ex);
         }
     }
     
     public async Task<PluginStoreItem?> GetPluginDetailAsync(string pluginId)
     {
         var url = $"{ApiEndpoints.PluginStoreDetailUrl}?id={Uri.EscapeDataString(pluginId)}";
+        var lang = GetCurrentLang();
+        if (!string.IsNullOrEmpty(lang))
+            url += $"&lang={Uri.EscapeDataString(lang)}";
 
         try
         {
@@ -106,12 +123,12 @@ public class PluginStoreService
         catch (HttpRequestException ex) when (ex.InnerException is System.Net.Sockets.SocketException)
         {
             Debug.WriteLine($"[PluginStoreService] Server unreachable: {ex.Message}");
-            throw new InvalidOperationException("无法连接到插件商城服务器，请检查网络或服务器状态", ex);
+            throw new InvalidOperationException("PluginStoreServerUnreachable".GetLocalized(), ex);
         }
         catch (TaskCanceledException)
         {
             Debug.WriteLine("[PluginStoreService] Request timed out");
-            throw new InvalidOperationException("连接插件商城超时，请稍后重试");
+            throw new InvalidOperationException("PluginStoreServerTimeout".GetLocalized());
         }
         catch (Exception ex)
         {
@@ -125,7 +142,11 @@ public class PluginStoreService
         try
         {
             Debug.WriteLine($"[PluginStoreService] Fetching categories: {ApiEndpoints.PluginStoreCategoriesUrl}");
-            var response = await _httpClient.GetStringAsync(ApiEndpoints.PluginStoreCategoriesUrl);
+            var url = ApiEndpoints.PluginStoreCategoriesUrl;
+            var lang = GetCurrentLang();
+            if (!string.IsNullOrEmpty(lang))
+                url += $"?lang={Uri.EscapeDataString(lang)}";
+            var response = await _httpClient.GetStringAsync(url);
             var result = DeserializeResponse<CategoriesData>(response);
             return result?.Data?.Categories ?? new List<PluginStoreCategory>();
         }
@@ -167,12 +188,12 @@ public class PluginStoreService
         }
         catch (HttpRequestException ex) when (ex.InnerException is System.Net.Sockets.SocketException)
         {
-            throw new InvalidOperationException("无法下载安装脚本，服务器不可用", ex);
+            throw new InvalidOperationException("PluginStoreDownloadLuaFailed".GetLocalized(), ex);
         }
         catch (Exception ex)
         {
             Debug.WriteLine($"[PluginStoreService] Error downloading Lua script: {ex.Message}");
-            throw new InvalidOperationException($"下载安装脚本失败: {ex.Message}", ex);
+            throw new InvalidOperationException(string.Format("PluginStoreDownloadLuaError".GetLocalized(), ex.Message), ex);
         }
     }
     
@@ -211,7 +232,7 @@ public class PluginStoreService
                 if (totalBytes > 0 && progress != null)
                 {
                     var percent = (int)(totalRead * 100 / totalBytes);
-                    progress.Report((percent, $"下载中 {percent}%"));
+                    progress.Report((percent, string.Format("PluginStoreDownloading".GetLocalized(), percent)));
                 }
             }
             
@@ -233,7 +254,7 @@ public class PluginStoreService
                     catch (Exception ex) { Debug.WriteLine($"[PluginStoreService] Failed to delete bad file: {ex.Message}"); }
 
                     throw new HashMismatchException(
-                        $"文件完整性校验失败，下载可能已损坏或被篡改。");
+                        "PluginStoreHashMismatch".GetLocalized());
                 }
                 Debug.WriteLine($"[PluginStoreService] Hash verified OK");
             }
@@ -245,12 +266,12 @@ public class PluginStoreService
         catch (HttpRequestException ex) when (ex.InnerException is System.Net.Sockets.SocketException)
         {
             Debug.WriteLine($"[PluginStoreService] Server unreachable during file download: {ex.Message}");
-            throw new InvalidOperationException("无法下载插件文件，服务器不可用", ex);
+            throw new InvalidOperationException("PluginStoreDownloadFileFailed".GetLocalized(), ex);
         }
         catch (Exception ex)
         {
             Debug.WriteLine($"[PluginStoreService] Error downloading file: {ex.Message}");
-            throw new InvalidOperationException($"下载插件文件失败: {ex.Message}", ex);
+            throw new InvalidOperationException(string.Format("PluginStoreDownloadFileError".GetLocalized(), ex.Message), ex);
         }
     }
 

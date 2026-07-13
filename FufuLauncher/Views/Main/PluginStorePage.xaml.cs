@@ -4,6 +4,7 @@ Licensed under the MIT License.
 */
 using FufuLauncher.Models;
 using FufuLauncher.ViewModels;
+using FufuLauncher.Helpers;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
@@ -125,17 +126,17 @@ public sealed partial class PluginStorePage : Page
             Margin = new Thickness(0, 0, 0, 8)
         });
 
-        infoPanel.Children.Add(CreateInfoRow("版本信息", item.VersionDisplay));
-        infoPanel.Children.Add(CreateInfoRow("开发提供", item.Developer));
-        infoPanel.Children.Add(CreateInfoRow("预估大小", item.SizeDisplay));
-        infoPanel.Children.Add(CreateInfoRow("用户评分", $"{item.RatingDisplay}"));
-        infoPanel.Children.Add(CreateInfoRow("总下载量", item.DownloadsDisplay));
+        infoPanel.Children.Add(CreateInfoRow("PluginStoreVersion".GetLocalized(), item.VersionDisplay));
+        infoPanel.Children.Add(CreateInfoRow("PluginStoreDeveloper".GetLocalized(), item.Developer));
+        infoPanel.Children.Add(CreateInfoRow("PluginStoreSize".GetLocalized(), item.SizeDisplay));
+        infoPanel.Children.Add(CreateInfoRow("PluginStoreRating".GetLocalized(), $"{item.RatingDisplay}"));
+        infoPanel.Children.Add(CreateInfoRow("PluginStoreDownloads".GetLocalized(), item.DownloadsDisplay));
 
         if (!string.IsNullOrEmpty(item.LongDescription))
         {
             infoPanel.Children.Add(new TextBlock
             {
-                Text = "功能详情",
+                Text = "PluginStoreDetails".GetLocalized(),
                 FontSize = 14,
                 FontWeight = Microsoft.UI.Text.FontWeights.SemiBold,
                 Margin = new Thickness(0, 16, 0, -8)
@@ -167,8 +168,8 @@ public sealed partial class PluginStorePage : Page
         {
             Title = item.Name,
             Content = scrollViewer,
-            PrimaryButtonText = isUpdate ? "立刻更新" : (isInstalledOrUpdate ? "卸载插件" : "安装此插件"),
-            SecondaryButtonText = "取消返回",
+            PrimaryButtonText = isUpdate ? "PluginStoreUpdateNow".GetLocalized() : (isInstalledOrUpdate ? "PluginStoreUninstall".GetLocalized() : "PluginStoreInstallPlugin".GetLocalized()),
+            SecondaryButtonText = "PluginStoreCancel".GetLocalized(),
             DefaultButton = ContentDialogButton.Primary,
             XamlRoot = XamlRoot
         };

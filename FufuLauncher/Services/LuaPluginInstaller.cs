@@ -7,6 +7,7 @@ using System.IO.Compression;
 using System.Text;
 using CommunityToolkit.Mvvm.Messaging;
 using FufuLauncher.Messages;
+using FufuLauncher.Helpers;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -41,22 +42,22 @@ public class LuaPluginInstaller
         _expectedLuaHash = expectedLuaHash;
         _expectedFileHash = expectedFileHash;
 
-        ReportProgress(0, "下载安装脚本...");
+        ReportProgress(0, "PluginStoreScriptDownloading".GetLocalized());
         LogMessage($"Downloading Lua script from: {luaScriptUrl}");
 
         var luaScript = await _storeService.DownloadLuaScriptAsync(luaScriptUrl, expectedLuaHash);
         
-        ReportProgress(3, "扫描中...");
+        ReportProgress(3, "PluginStoreScriptScanning".GetLocalized());
         LogMessage("Running Lua security validation...");
         var securityResult = PluginVerifier.ValidateLuaSecurity(luaScript);
         if (!securityResult.IsValid)
         {
             LogMessage($"SECURITY BLOCK: {securityResult.Reason}");
-            throw new SecurityViolationException(securityResult.Reason ?? "Lua脚本未通过安全验证。");
+            throw new SecurityViolationException(securityResult.Reason ?? "PluginStoreLuaSecurityFailed".GetLocalized());
         }
         LogMessage("Lua security scan passed.");
 
-        ReportProgress(5, "执行安装脚本...");
+        ReportProgress(5, "PluginStoreScriptExecuting".GetLocalized());
         LogMessage("Executing Lua install script...");
 
         await ExecuteScriptAsync(luaScript, cancellationToken);
@@ -85,7 +86,7 @@ public class LuaPluginInstaller
             {
                 Debug.WriteLine($"[LuaInstaller] Lua error: {ex.Message}");
                 LogMessage($"Lua脚本错误: {ex.Message}");
-                throw new InvalidOperationException($"Lua脚本执行失败: {ex.Message}", ex);
+                throw new InvalidOperationException(string.Format("PluginStoreLuaScriptFailed".GetLocalized(), ex.Message), ex);
             }
         }, cancellationToken);
     }
@@ -267,7 +268,7 @@ public class LuaPluginInstaller
                     if (!string.IsNullOrEmpty(closeText))
                         dialog.CloseButtonText = closeText;
                     else
-                        dialog.CloseButtonText = "关闭";
+                        dialog.CloseButtonText = "PluginStoreDialogClose".GetLocalized();
 
                     var result = await dialog.ShowAsync();
                     tcs.TrySetResult(result.ToString().ToLowerInvariant());
@@ -297,14 +298,14 @@ public class LuaPluginInstaller
     {
         if (string.IsNullOrWhiteSpace(rawPath))
         {
-            throw new SecurityViolationException($"安全: {operation} 操作传入了空路径。");
+            throw new SecurityViolationException(string.Format("PluginStoreSecurityEmptyPath".GetLocalized(), operation));
         }
         
         if (rawPath.Contains(".."))
         {
             Debug.WriteLine($"[LuaInstaller] SECURITY: Path traversal attempt blocked in {operation}: {rawPath}");
             throw new SecurityViolationException(
-                $"安全: 已阻止路径穿越尝试 ({operation})。");
+                string.Format("PluginStorePathTraversal".GetLocalized()));
         }
         
         string fullPath;
@@ -315,7 +316,7 @@ public class LuaPluginInstaller
         catch (Exception ex)
         {
             throw new SecurityViolationException(
-                $"安全: 无效路径 ({operation}): {ex.Message}");
+                string.Format("PluginStoreSecurityInvalidPath".GetLocalized(), operation, ex.Message));
         }
         
         var pluginsDirFull = Path.GetFullPath(_pluginsDir);
@@ -324,7 +325,7 @@ public class LuaPluginInstaller
         {
             Debug.WriteLine($"[LuaInstaller] SECURITY: Path outside plugins dir blocked in {operation}: {fullPath}");
             throw new SecurityViolationException(
-                $"安全: 路径必须在插件目录内 ({operation})。");
+                string.Format("PluginStoreSecurityOutsideDir".GetLocalized(), operation));
         }
 
         return fullPath;

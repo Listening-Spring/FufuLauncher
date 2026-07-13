@@ -5,6 +5,7 @@ Licensed under the MIT License.
 using System.Diagnostics;
 using System.Security.Cryptography;
 using System.Text;
+using FufuLauncher.Helpers;
 
 namespace FufuLauncher.Services;
 
@@ -64,7 +65,7 @@ public static class PluginVerifier
             catch (Exception ex) { Debug.WriteLine($"[PluginVerifier] Failed to delete bad file: {ex.Message}"); }
 
             throw new HashMismatchException(
-                $"文件完整性校验失败，下载可能已损坏或被篡改\nExpected: {expectedHash[..16]}...\nActual: {actualHash[..16]}...");
+                "PluginStoreHashMismatch".GetLocalized());
         }
 
         Debug.WriteLine($"[PluginVerifier] Hash verified OK for {description}");
@@ -86,7 +87,7 @@ public static class PluginVerifier
             Debug.WriteLine($"  Expected: {expectedHash}");
             Debug.WriteLine($"  Actual:   {actualHash}");
 
-            throw new HashMismatchException("安装脚本完整性校验失败，脚本可能已被篡改");
+            throw new HashMismatchException("PluginStoreLuaHashMismatch".GetLocalized());
         }
 
         Debug.WriteLine("[PluginVerifier] Lua hash verified OK");
@@ -119,7 +120,7 @@ public static class PluginVerifier
             if (lowerScript.Contains(pattern))
             {
                 Debug.WriteLine($"[PluginVerifier] SECURITY BLOCK: {description}");
-                return SecurityValidationResult.Fail($"脚本包含禁止的操作 ({description})。");
+                return SecurityValidationResult.Fail(string.Format("PluginStoreSecurityBannedOp".GetLocalized(), description));
             }
         }
         
@@ -138,7 +139,7 @@ public static class PluginVerifier
             if (hasPathTraversal)
             {
                 Debug.WriteLine("[PluginVerifier] SECURITY BLOCK: Path traversal attempt detected");
-                return SecurityValidationResult.Fail("路径穿越尝试");
+                return SecurityValidationResult.Fail("PluginStoreSecurityPathTraversalShort".GetLocalized());
             }
         }
         
@@ -166,7 +167,7 @@ public static class PluginVerifier
         if (luaScript.Length > maxScriptLength)
         {
             Debug.WriteLine($"[PluginVerifier] SECURITY BLOCK: Script too large ({luaScript.Length} bytes)");
-            return SecurityValidationResult.Fail("脚本过大");
+            return SecurityValidationResult.Fail("PluginStoreSecurityScriptTooLarge".GetLocalized());
         }
         
         var base64Pattern = new System.Text.RegularExpressions.Regex(@"[A-Za-z0-9+/]{200,}={0,2}");

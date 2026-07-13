@@ -10,6 +10,7 @@ using System.Windows.Input;
 using CommunityToolkit.Mvvm.Input;
 using FufuLauncher.Models;
 using FufuLauncher.Services;
+using FufuLauncher.Helpers;
 using Microsoft.UI.Dispatching;
 
 namespace FufuLauncher.ViewModels;
@@ -168,7 +169,7 @@ public class PluginStoreViewModel : INotifyPropertyChanged
                 Categories.Add(new PluginStoreCategory
                 {
                     Key = "",
-                    DisplayName = "全部",
+                    DisplayName = "PluginStoreAll".GetLocalized(),
                     Icon = "\uE71D"
                 });
 
@@ -186,7 +187,7 @@ public class PluginStoreViewModel : INotifyPropertyChanged
             if (Categories.Count == 0)
             {
                 Categories.Clear();
-                Categories.Add(new PluginStoreCategory { Key = "", DisplayName = "全部", Icon = "\uE71D" });
+                Categories.Add(new PluginStoreCategory { Key = "", DisplayName = "PluginStoreAll".GetLocalized(), Icon = "\uE71D" });
                 Categories.Add(new PluginStoreCategory { Key = "utility", DisplayName = "utility", Icon = "\uE90F" });
                 Categories.Add(new PluginStoreCategory { Key = "gameplay", DisplayName = "gameplay", Icon = "\uE7FC" });
                 Categories.Add(new PluginStoreCategory { Key = "visuals", DisplayName = "visuals", Icon = "\uE790" });
@@ -202,7 +203,7 @@ public class PluginStoreViewModel : INotifyPropertyChanged
             IsLoading = true;
             HasError = false;
             ErrorMessage = string.Empty;
-            StatusMessage = "加载中...";
+            StatusMessage = "PluginStoreLoading".GetLocalized();
 
             var category = SelectedCategory?.Key;
             var search = string.IsNullOrWhiteSpace(SearchText) ? null : SearchText.Trim();
@@ -233,13 +234,13 @@ public class PluginStoreViewModel : INotifyPropertyChanged
             if (IsEmpty)
             {
                 if (!string.IsNullOrWhiteSpace(SearchText) || (SelectedCategory != null && !string.IsNullOrEmpty(SelectedCategory.Key)))
-                    StatusMessage = "没有找到匹配的插件";
+                    StatusMessage = "PluginStoreNoMatch".GetLocalized();
                 else
-                    StatusMessage = "暂无可用的插件";
+                    StatusMessage = "PluginStoreNoAvailable".GetLocalized();
             }
             else
             {
-                StatusMessage = $"共 {TotalPlugins} 个插件";
+                StatusMessage = string.Format("PluginStoreTotalPlugins".GetLocalized(), TotalPlugins);
             }
         }
         catch (InvalidOperationException ex)
@@ -247,15 +248,15 @@ public class PluginStoreViewModel : INotifyPropertyChanged
             Debug.WriteLine($"[PluginStoreVM] {ex.Message}");
             HasError = true;
             ErrorMessage = ex.Message;
-            StatusMessage = "连接失败";
+            StatusMessage = "PluginStoreConnectionFailed".GetLocalized();
             IsEmpty = Plugins.Count == 0;
         }
         catch (Exception ex)
         {
             Debug.WriteLine($"[PluginStoreVM] Error loading plugins: {ex}");
             HasError = true;
-            ErrorMessage = $"加载插件列表失败，请稍后重试";
-            StatusMessage = "加载失败";
+            ErrorMessage = "PluginStoreLoadFailed".GetLocalized();
+            StatusMessage = "PluginStoreError".GetLocalized();
             IsEmpty = Plugins.Count == 0;
         }
         finally
@@ -304,7 +305,7 @@ public class PluginStoreViewModel : INotifyPropertyChanged
             item.State = StorePluginState.Installing;
             item.IsInstallInProgress = true;
             item.InstallProgress = 0;
-            item.InstallStatusText = "验证中...";
+            item.InstallStatusText = "PluginStoreVerifying".GetLocalized();
 
             await _luaInstaller.ExecuteInstallScriptAsync(
                 item.LuaInstallUrl,
@@ -319,38 +320,38 @@ public class PluginStoreViewModel : INotifyPropertyChanged
             
             item.State = StorePluginState.Installed;
             item.InstallProgress = 100;
-            item.InstallStatusText = "安装完成";
-            StatusMessage = $"已安装: {item.Name}";
+            item.InstallStatusText = "PluginStoreInstallComplete".GetLocalized();
+            StatusMessage = string.Format("PluginStoreInstallSuccess".GetLocalized(), item.Name);
         }
         catch (HashMismatchException ex)
         {
             Debug.WriteLine($"[PluginStoreVM] Hash mismatch: {ex.Message}");
             item.State = StorePluginState.Available;
             item.InstallProgress = 0;
-            item.InstallStatusText = "校验失败";
-            StatusMessage = $"安装失败: {ex.Message}";
+            item.InstallStatusText = "PluginStoreHashFailed".GetLocalized();
+            StatusMessage = string.Format("PluginStoreInstallFailed".GetLocalized(), ex.Message);
         }
         catch (SecurityViolationException ex)
         {
             Debug.WriteLine($"[PluginStoreVM] Security violation: {ex.Message}");
             item.State = StorePluginState.Available;
             item.InstallProgress = 0;
-            item.InstallStatusText = "安全阻止";
-            StatusMessage = $"安装已阻止: {ex.Message}";
+            item.InstallStatusText = "PluginStoreSecurityBlockedShort".GetLocalized();
+            StatusMessage = string.Format("PluginStoreSecurityBlocked".GetLocalized(), ex.Message);
         }
         catch (OperationCanceledException)
         {
             item.State = StorePluginState.Available;
             item.InstallProgress = 0;
-            item.InstallStatusText = "已取消";
+            item.InstallStatusText = "PluginStoreCancelled".GetLocalized();
         }
         catch (Exception ex)
         {
             Debug.WriteLine($"[PluginStoreVM] Install error: {ex}");
             item.State = StorePluginState.Available;
             item.InstallProgress = 0;
-            item.InstallStatusText = "安装失败";
-            StatusMessage = $"安装失败: {ex.Message}";
+            item.InstallStatusText = "PluginStoreInstallFailedShort".GetLocalized();
+            StatusMessage = string.Format("PluginStoreInstallFailed".GetLocalized(), ex.Message);
         }
         finally
         {
@@ -368,7 +369,7 @@ public class PluginStoreViewModel : INotifyPropertyChanged
         {
             item.IsInstallInProgress = true;
             item.State = StorePluginState.Installing;
-            item.InstallStatusText = "卸载中...";
+            item.InstallStatusText = "PluginStoreUninstalling".GetLocalized();
 
             if (!string.IsNullOrEmpty(item.LuaUninstallUrl))
             {
@@ -385,14 +386,14 @@ public class PluginStoreViewModel : INotifyPropertyChanged
 
             item.State = StorePluginState.Available;
             item.InstallProgress = 0;
-            item.InstallStatusText = "已卸载";
-            StatusMessage = $"已卸载: {item.Name}";
+            item.InstallStatusText = "PluginStoreUninstallComplete".GetLocalized();
+            StatusMessage = string.Format("PluginStoreUninstallSuccess".GetLocalized(), item.Name);
         }
         catch (Exception ex)
         {
             Debug.WriteLine($"[PluginStoreVM] Uninstall error: {ex}");
             item.State = StorePluginState.Installed;
-            item.InstallStatusText = "卸载失败";
+            item.InstallStatusText = "PluginStoreUninstallFailed".GetLocalized();
         }
         finally
         {
