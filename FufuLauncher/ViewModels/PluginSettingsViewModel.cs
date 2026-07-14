@@ -528,7 +528,19 @@ public async Task TriggerBackgroundAuthCheckAsync()
 
         if (!Directory.Exists(_presetsDir))
         {
-            Directory.CreateDirectory(_presetsDir);
+            try
+            {
+                Directory.CreateDirectory(_presetsDir);
+            }
+            catch (UnauthorizedAccessException)
+            {
+                // If the resolved path is not writable (e.g. under Program Files),
+                // fall back to the default AppData-based location.
+                _presetsDir = Path.Combine(
+                    Path.Combine(AppPaths.RootDir, "Data", "PluginPresets"),
+                    Path.GetFileName(_presetsDir));
+                Directory.CreateDirectory(_presetsDir);
+            }
         }
     }
 
@@ -549,6 +561,12 @@ public async Task TriggerBackgroundAuthCheckAsync()
             {
                 Directory.CreateDirectory(_presetsDir);
             }
+        }
+        catch (UnauthorizedAccessException)
+        {
+            _presetsDir = Path.Combine(AppPaths.RootDir, "Data", "PluginPresets");
+            try { Directory.CreateDirectory(_presetsDir); }
+            catch (Exception inner) { System.Diagnostics.Debug.WriteLine($"目录创建失败: {inner.Message}"); }
         }
         catch (Exception ex)
         {

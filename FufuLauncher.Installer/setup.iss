@@ -88,6 +88,7 @@ Filename: "{app}\{#AppExe}"; Description: "立即启动 {#AppName}"; Flags: nowa
 
 [InstallDelete]
 Type: filesandordirs; Name: "{app}\Cache"
+Type: files; Name: "{app}\resources.pri"
 
 [UninstallDelete]
 Type: filesandordirs; Name: "{app}\Cache"
