@@ -149,99 +149,119 @@ public sealed class GeetestService
         return await resp.Content.ReadAsStringAsync();
     }
 
-    // ShowGeetestWebViewAsync 保持不变
     private static async Task<GeetestResult> ShowGeetestWebViewAsync(string gt, string challenge)
     {
         TaskCompletionSource<GeetestResult> tcs = new();
 
+        if (App.MainWindow == null)
+        {
+            Debug.WriteLine("[GeetestService] App.MainWindow 为 null，无法显示验证码窗口");
+            tcs.TrySetResult(null);
+            return await tcs.Task;
+        }
+
         App.MainWindow.DispatcherQueue.TryEnqueue(async () =>
         {
-            Window geetestWindow = new();
-            geetestWindow.SystemBackdrop = new MicaBackdrop();
-            geetestWindow.Title = "Geetest_CaptchaTitle".GetLocalized();
-
-            Grid rootGrid = new() { Background = new SolidColorBrush(Colors.Transparent) };
-            rootGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(32) });
-            rootGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
-
-            Grid titleBar = new() { Height = 32 };
-            titleBar.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
-            titleBar.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
-
-            Image icon = new()
+            try
             {
-                Source = new Microsoft.UI.Xaml.Media.Imaging.BitmapImage(new Uri("ms-appx:///Assets/WindowIcon.ico")),
-                Height = 16,
-                Width = 16,
-                Margin = new Thickness(16, 0, 12, 0)
-            };
-            Grid.SetColumn(icon, 0);
-            titleBar.Children.Add(icon);
+                Window geetestWindow = new();
+                geetestWindow.SystemBackdrop = new MicaBackdrop();
+                geetestWindow.Title = "Geetest_CaptchaTitle".GetLocalized();
 
-            TextBlock titleText = new()
-            {
-                Text = "Geetest_CaptchaTitle".GetLocalized(),
-                VerticalAlignment = VerticalAlignment.Center,
-                Style = (Style)Application.Current.Resources["CaptionTextBlockStyle"]
-            };
-            Grid.SetColumn(titleText, 1);
-            titleBar.Children.Add(titleText);
+                Grid rootGrid = new() { Background = new SolidColorBrush(Colors.Transparent) };
+                rootGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(32) });
+                rootGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
 
-            Grid.SetRow(titleBar, 0);
-            rootGrid.Children.Add(titleBar);
+                Grid titleBar = new() { Height = 32 };
+                titleBar.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+                titleBar.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
 
-            WebView2 webView = new()
-            {
-                HorizontalAlignment = HorizontalAlignment.Stretch,
-                VerticalAlignment = VerticalAlignment.Stretch
-            };
-            Grid.SetRow(webView, 1);
-            rootGrid.Children.Add(webView);
-
-            geetestWindow.Content = rootGrid;
-
-            AppWindow appWindow = geetestWindow.AppWindow;
-            appWindow.TitleBar.ExtendsContentIntoTitleBar = true;
-            appWindow.TitleBar.ButtonBackgroundColor = Colors.Transparent;
-            appWindow.TitleBar.ButtonInactiveBackgroundColor = Colors.Transparent;
-            appWindow.Resize(new SizeInt32(1270, 720));
-
-            AppWindow mainAppWindow = App.MainWindow.AppWindow;
-            PointInt32 mainPos = mainAppWindow.Position;
-            SizeInt32 mainSize = mainAppWindow.Size;
-            appWindow.Move(new PointInt32(
-                mainPos.X + (mainSize.Width - 400) / 2,
-                mainPos.Y + (mainSize.Height - 450) / 2));
-
-            geetestWindow.SetTitleBar(titleBar);
-
-            await webView.EnsureCoreWebView2Async();
-            webView.CoreWebView2.Settings.AreDefaultContextMenusEnabled = false;
-            webView.CoreWebView2.Settings.IsStatusBarEnabled = false;
-
-            webView.CoreWebView2.WebMessageReceived += (s, e) =>
-            {
-                try
+                Image icon = new()
                 {
-                    string msg = e.WebMessageAsJson;
-                    GeetestResult result = JsonSerializer.Deserialize<GeetestResult>(msg);
-                    tcs.TrySetResult(result);
-                    geetestWindow.Close();
+                    Source = new Microsoft.UI.Xaml.Media.Imaging.BitmapImage(new Uri("ms-appx:///Assets/WindowIcon.ico")),
+                    Height = 16,
+                    Width = 16,
+                    Margin = new Thickness(16, 0, 12, 0)
+                };
+                Grid.SetColumn(icon, 0);
+                titleBar.Children.Add(icon);
+
+                TextBlock titleText = new()
+                {
+                    Text = "Geetest_CaptchaTitle".GetLocalized(),
+                    VerticalAlignment = VerticalAlignment.Center,
+                    Style = (Style)Application.Current.Resources["CaptionTextBlockStyle"]
+                };
+                Grid.SetColumn(titleText, 1);
+                titleBar.Children.Add(titleText);
+
+                Grid.SetRow(titleBar, 0);
+                rootGrid.Children.Add(titleBar);
+
+                WebView2 webView = new()
+                {
+                    HorizontalAlignment = HorizontalAlignment.Stretch,
+                    VerticalAlignment = VerticalAlignment.Stretch
+                };
+                Grid.SetRow(webView, 1);
+                rootGrid.Children.Add(webView);
+
+                geetestWindow.Content = rootGrid;
+                
+                AppWindow appWindow = geetestWindow.AppWindow;
+                if (appWindow != null)
+                {
+                    appWindow.TitleBar.ExtendsContentIntoTitleBar = true;
+                    appWindow.TitleBar.ButtonBackgroundColor = Colors.Transparent;
+                    appWindow.TitleBar.ButtonInactiveBackgroundColor = Colors.Transparent;
+                    appWindow.Resize(new SizeInt32(1270, 720));
+
+                    AppWindow mainAppWindow = App.MainWindow.AppWindow;
+                    if (mainAppWindow != null)
+                    {
+                        PointInt32 mainPos = mainAppWindow.Position;
+                        SizeInt32 mainSize = mainAppWindow.Size;
+                        appWindow.Move(new PointInt32(
+                            mainPos.X + (mainSize.Width - 400) / 2,
+                            mainPos.Y + (mainSize.Height - 450) / 2));
+                    }
                 }
-                catch
+
+                geetestWindow.SetTitleBar(titleBar);
+
+                await webView.EnsureCoreWebView2Async();
+                webView.CoreWebView2.Settings.AreDefaultContextMenusEnabled = false;
+                webView.CoreWebView2.Settings.IsStatusBarEnabled = false;
+
+                webView.CoreWebView2.WebMessageReceived += (s, e) =>
+                {
+                    try
+                    {
+                        string msg = e.WebMessageAsJson;
+                        GeetestResult result = JsonSerializer.Deserialize<GeetestResult>(msg);
+                        tcs.TrySetResult(result);
+                        geetestWindow.Close();
+                    }
+                    catch
+                    {
+                        tcs.TrySetResult(null);
+                    }
+                };
+
+                geetestWindow.Closed += (s, e) =>
                 {
                     tcs.TrySetResult(null);
-                }
-            };
+                };
 
-            geetestWindow.Closed += (s, e) =>
+                string html = GetGeetestHtml(gt, challenge);
+                webView.NavigateToString(html);
+                geetestWindow.Activate();
+            }
+            catch (Exception ex)
             {
+                Debug.WriteLine($"[GeetestService] 验证码窗口创建失败: {ex.Message}");
                 tcs.TrySetResult(null);
-            };
-
-            string html = GetGeetestHtml(gt, challenge);
-            webView.NavigateToString(html);
-            geetestWindow.Activate();
+            }
         });
 
         return await tcs.Task;
