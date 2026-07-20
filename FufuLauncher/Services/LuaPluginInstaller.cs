@@ -32,11 +32,58 @@ public class LuaPluginInstaller
     public static DispatcherQueue? UIDispatcher { get; set; }
     
     public static XamlRoot? MainXamlRoot { get; set; }
+    
+    public List<string> CollectedLogs { get; } = new();
 
     public LuaPluginInstaller(PluginStoreService storeService)
     {
         _storeService = storeService;
         _pluginsDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Plugins");
+    }
+    
+    public void ClearCollectedLogs()
+    {
+        lock (CollectedLogs)
+        {
+            CollectedLogs.Clear();
+        }
+    }
+    
+    public void SaveLogsToFile(string filePath)
+    {
+        var dir = Path.GetDirectoryName(filePath);
+        if (!string.IsNullOrEmpty(dir) && !Directory.Exists(dir))
+            Directory.CreateDirectory(dir);
+
+        lock (CollectedLogs)
+        {
+            File.WriteAllLines(filePath, CollectedLogs, Encoding.UTF8);
+        }
+    }
+    
+    public async Task ExecuteUserScriptAsync(string luaScript,
+        CancellationToken cancellationToken = default)
+    {
+        ClearCollectedLogs();
+
+        LogMessage("开始");
+        LogMessage($"脚本长度: {luaScript.Length} 字符");
+        LogMessage($"沙箱目录: {_pluginsDir}");
+
+        ReportProgress(0, "正在执行脚本...");
+
+        try
+        {
+            await ExecuteScriptAsync(luaScript, cancellationToken);
+            LogMessage("无异常");
+            ReportProgress(100, "执行完成");
+        }
+        catch (Exception ex)
+        {
+            LogMessage($"脚本测试异常终止: {ex.Message}");
+            ReportProgress(100, "执行失败");
+            throw;
+        }
     }
     
     public async Task ExecuteInstallScriptAsync(string luaScriptUrl,
@@ -1150,5 +1197,10 @@ public class LuaPluginInstaller
     {
         Debug.WriteLine($"[LuaInstaller] {message}");
         LogReceived?.Invoke(message);
+
+        lock (CollectedLogs)
+        {
+            CollectedLogs.Add($"[{DateTime.Now:yyyy-MM-dd HH:mm:ss}] {message}");
+        }
     }
 }

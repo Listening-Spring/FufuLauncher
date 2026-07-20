@@ -64,6 +64,7 @@ public class PluginStoreViewModel : INotifyPropertyChanged
         NextPageCommand = new RelayCommand(async () => await GoToPageAsync(_currentPage + 1));
         PrevPageCommand = new RelayCommand(async () => await GoToPageAsync(_currentPage - 1));
         AddPrivatePluginCommand = new RelayCommand(async () => await AddPrivatePluginAsync());
+        LuaTestCommand = new RelayCommand(async () => await ExecuteLuaTestAsync());
     }
 
     public ObservableCollection<PluginStoreItem> Plugins
@@ -157,6 +158,7 @@ public class PluginStoreViewModel : INotifyPropertyChanged
     public ICommand NextPageCommand { get; }
     public ICommand PrevPageCommand { get; }
     public ICommand AddPrivatePluginCommand { get; }
+    public ICommand LuaTestCommand { get; }
 
     public async Task InitializeAsync()
     {
@@ -982,6 +984,242 @@ public class PluginStoreViewModel : INotifyPropertyChanged
     private void OnInstallLog(string message)
     {
         Debug.WriteLine($"[PluginStore] {message}");
+    }
+
+    public async Task ExecuteLuaTestAsync()
+    {
+        string? luaCode = null;
+        
+        var dialogCompleted = new TaskCompletionSource<string?>();
+
+        App.MainWindow.DispatcherQueue.TryEnqueue(async () =>
+        {
+            try
+            {
+                var inputBox = new TextBox
+                {
+                    PlaceholderText = "PluginStoreLuaTestInputHint".GetLocalized(),
+                    AcceptsReturn = true,
+                    TextWrapping = TextWrapping.NoWrap,
+                    Height = 300,
+                    Width = 560,
+                    FontFamily = new Microsoft.UI.Xaml.Media.FontFamily("Consolas, Cascadia Code, monospace"),
+                    FontSize = 13,
+                    IsSpellCheckEnabled = false
+                };
+                ScrollViewer.SetHorizontalScrollBarVisibility(inputBox, ScrollBarVisibility.Auto);
+                ScrollViewer.SetVerticalScrollBarVisibility(inputBox, ScrollBarVisibility.Auto);
+
+                var infoText = new TextBlock
+                {
+                    Text = "PluginStoreLuaTestDescription".GetLocalized(),
+                    TextWrapping = TextWrapping.Wrap,
+                    FontSize = 13,
+                    Opacity = 0.8,
+                    Margin = new Thickness(0, 0, 0, 12)
+                };
+
+                var panel = new StackPanel { Spacing = 8 };
+                panel.Children.Add(infoText);
+                panel.Children.Add(inputBox);
+
+                var dialog = new ContentDialog
+                {
+                    Title = "PluginStoreLuaTestTitle".GetLocalized(),
+                    Content = panel,
+                    PrimaryButtonText = "PluginStoreLuaTestRun".GetLocalized(),
+                    SecondaryButtonText = "PluginStoreLuaTestClose".GetLocalized(),
+                    DefaultButton = ContentDialogButton.Primary,
+                    XamlRoot = App.MainWindow.Content.XamlRoot
+                };
+
+                var result = await dialog.ShowAsync();
+                if (result == ContentDialogResult.Primary && !string.IsNullOrWhiteSpace(inputBox.Text))
+                {
+                    dialogCompleted.TrySetResult(inputBox.Text.Trim());
+                }
+                else
+                {
+                    dialogCompleted.TrySetResult(null);
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[PluginStoreVM] Lua test dialog error: {ex.Message}");
+                dialogCompleted.TrySetResult(null);
+            }
+        });
+
+        luaCode = await dialogCompleted.Task;
+        if (string.IsNullOrWhiteSpace(luaCode))
+            return;
+        
+        var securityResult = PluginVerifier.ValidateLuaSecurity(luaCode);
+        if (!securityResult.IsValid)
+        {
+            var proceed = await ShowLuaTestSecurityWarningAsync(securityResult.Reason ?? "Unknown security issue");
+            if (!proceed)
+            {
+                StatusMessage = string.Format("Lua 测试已取消（安全阻止: {0}）", securityResult.Reason);
+                return;
+            }
+        }
+        
+        StatusMessage = "PluginStoreLuaTestExecuting".GetLocalized();
+        bool success = false;
+        string? errorMessage = null;
+
+        try
+        {
+            var cts = new CancellationTokenSource(TimeSpan.FromMinutes(5));
+            await _luaInstaller.ExecuteUserScriptAsync(luaCode, cts.Token);
+            success = true;
+        }
+        catch (SecurityViolationException ex)
+        {
+            errorMessage = string.Format("安全违规: {0}", ex.Message);
+        }
+        catch (InvalidOperationException ex)
+        {
+            errorMessage = string.Format("Lua 执行错误: {0}", ex.Message);
+        }
+        catch (OperationCanceledException)
+        {
+            errorMessage = "脚本执行超时（5分钟）";
+        }
+        catch (Exception ex)
+        {
+            errorMessage = string.Format("未预期的错误: {0}", ex.Message);
+        }
+        
+        var logDir = Path.Combine(AppContext.BaseDirectory, "Logs");
+        var logFileName = $"lua_test_{DateTime.Now:yyyyMMdd_HHmmss}.log";
+        var logFilePath = Path.Combine(logDir, logFileName);
+
+        try
+        {
+            _luaInstaller.SaveLogsToFile(logFilePath);
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"[PluginStoreVM] Failed to save log file: {ex.Message}");
+            errorMessage = (errorMessage != null)
+                ? errorMessage + $"\n日志保存失败: {ex.Message}"
+                : $"日志保存失败: {ex.Message}";
+        }
+        
+        await ShowLuaTestResultDialogAsync(success, logFilePath, errorMessage);
+
+        StatusMessage = success
+            ? "Lua 脚本测试完成"
+            : string.Format("Lua 脚本测试失败: {0}", errorMessage ?? "未知错误");
+    }
+
+    private static async Task<bool> ShowLuaTestSecurityWarningAsync(string reason)
+    {
+        var tcs = new TaskCompletionSource<bool>();
+
+        App.MainWindow.DispatcherQueue.TryEnqueue(async () =>
+        {
+            var dialog = new ContentDialog
+            {
+                Title = "PluginStoreLuaTestSecurityWarning".GetLocalized(),
+                Content = string.Format("PluginStoreLuaTestSecurityBlocked".GetLocalized(), reason),
+                PrimaryButtonText = "强制执行（不推荐）",
+                SecondaryButtonText = "取消",
+                DefaultButton = ContentDialogButton.Secondary,
+                XamlRoot = App.MainWindow.Content.XamlRoot
+            };
+
+            var result = await dialog.ShowAsync();
+            tcs.TrySetResult(result == ContentDialogResult.Primary);
+        });
+
+        return await tcs.Task;
+    }
+
+    private static async Task ShowLuaTestResultDialogAsync(bool success, string logPath, string? errorMessage)
+    {
+        var tcs = new TaskCompletionSource<bool>();
+
+        App.MainWindow.DispatcherQueue.TryEnqueue(async () =>
+        {
+            var messagePanel = new StackPanel { Spacing = 12 };
+
+            var statusIcon = success ? "\uE73E" : "\uE783"; // Checkmark or Error
+            var statusColor = success
+                ? new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.LimeGreen)
+                : new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.OrangeRed);
+
+            var statusRow = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 8 };
+            statusRow.Children.Add(new FontIcon
+            {
+                Glyph = statusIcon,
+                FontSize = 20,
+                Foreground = statusColor
+            });
+            statusRow.Children.Add(new TextBlock
+            {
+                Text = success ? "PluginStoreLuaTestSuccess".GetLocalized() : "PluginStoreLuaTestFailed".GetLocalized(),
+                FontSize = 16,
+                FontWeight = Microsoft.UI.Text.FontWeights.SemiBold,
+                VerticalAlignment = VerticalAlignment.Center
+            });
+            messagePanel.Children.Add(statusRow);
+
+            if (!string.IsNullOrEmpty(errorMessage))
+            {
+                messagePanel.Children.Add(new TextBlock
+                {
+                    Text = errorMessage,
+                    Foreground = statusColor,
+                    TextWrapping = TextWrapping.Wrap,
+                    FontSize = 13
+                });
+            }
+
+            messagePanel.Children.Add(new TextBlock
+            {
+                Text = string.Format("PluginStoreLuaTestLogSaved".GetLocalized(), logPath),
+                TextWrapping = TextWrapping.Wrap,
+                FontSize = 13,
+                Opacity = 0.8,
+                Margin = new Thickness(0, 8, 0, 0)
+            });
+
+            var dialog = new ContentDialog
+            {
+                Title = success ? "PluginStoreLuaTestSuccess".GetLocalized() : "PluginStoreLuaTestFailed".GetLocalized(),
+                Content = messagePanel,
+                PrimaryButtonText = "PluginStoreLuaTestOpenLog".GetLocalized(),
+                SecondaryButtonText = "PluginStoreLuaTestClose".GetLocalized(),
+                DefaultButton = ContentDialogButton.Primary,
+                XamlRoot = App.MainWindow.Content.XamlRoot
+            };
+
+            var result = await dialog.ShowAsync();
+            if (result == ContentDialogResult.Primary)
+            {
+                try
+                {
+                    // Open the log file with the system default text editor
+                    var psi = new System.Diagnostics.ProcessStartInfo
+                    {
+                        FileName = logPath,
+                        UseShellExecute = true
+                    };
+                    System.Diagnostics.Process.Start(psi);
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"[PluginStoreVM] Failed to open log file: {ex.Message}");
+                }
+            }
+
+            tcs.TrySetResult(true);
+        });
+
+        await tcs.Task;
     }
 
     public event PropertyChangedEventHandler? PropertyChanged;

@@ -290,6 +290,10 @@
                                             Click="OnAddPrivatePluginClick"
                                             ToolTipService.ToolTip="添加私密插件（需要插件ID和访问密钥）"/>
                                     <Button Style="{StaticResource StoreInstallButtonStyle}" 
+                                            Content="{helpers:Loc Key=PluginStoreLuaTestButton}" 
+                                            Click="OnLuaTestClick"
+                                            ToolTipService.ToolTip="测试执行 Lua 插件安装脚本并查看日志"/>
+                                    <Button Style="{StaticResource StoreInstallButtonStyle}" 
                                             Content="{helpers:Loc Key=PluginStoreUpload}" 
                                             Click="OnUploadPluginClick"
                                             ToolTipService.ToolTip="{helpers:Loc Key=PluginStoreUploadTooltip}"/>

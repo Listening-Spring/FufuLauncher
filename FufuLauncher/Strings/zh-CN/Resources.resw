@@ -1483,4 +1483,22 @@
   <data name="PluginStoreSecurityScriptTooLarge" xml:space="preserve"><value>脚本过大</value></data>
   <data name="PluginStoreUpload" xml:space="preserve"><value>上传插件</value></data>
   <data name="PluginStoreUploadTooltip" xml:space="preserve"><value>前往 GitHub 提交你的插件</value></data>
+  <data name="PluginStoreLuaTestButton" xml:space="preserve"><value>Lua测试</value></data>
+  <data name="PluginStoreLuaTestTitle" xml:space="preserve"><value>Lua 插件安装脚本测试</value></data>
+  <data name="PluginStoreLuaTestDescription" xml:space="preserve"><value>在下方输入 Lua 插件安装脚本，点击执行测试来验证脚本。脚本将在沙箱环境中运行，所有文件操作限制在 Plugins 目录内。</value></data>
+  <data name="PluginStoreLuaTestInputHint" xml:space="preserve"><value>-- 在此输入 Lua 插件安装脚本
+-- 可使用的 API: install.download(), install.extract(), install.download_plugin(id) 等
+-- 详见 Lua 插件开发指南</value></data>
+  <data name="PluginStoreLuaTestRun" xml:space="preserve"><value>执行测试</value></data>
+  <data name="PluginStoreLuaTestSecurityWarning" xml:space="preserve"><value>安全警告</value></data>
+  <data name="PluginStoreLuaTestSecurityBlocked" xml:space="preserve"><value>脚本未通过安全验证：{0}
+
+是否仍要执行？（不推荐）</value></data>
+  <data name="PluginStoreLuaTestExecuting" xml:space="preserve"><value>正在执行 Lua 脚本...</value></data>
+  <data name="PluginStoreLuaTestSuccess" xml:space="preserve"><value>Lua 脚本执行成功</value></data>
+  <data name="PluginStoreLuaTestFailed" xml:space="preserve"><value>Lua 脚本执行失败</value></data>
+  <data name="PluginStoreLuaTestLogSaved" xml:space="preserve"><value>日志已保存至：
+{0}</value></data>
+  <data name="PluginStoreLuaTestOpenLog" xml:space="preserve"><value>打开日志文件</value></data>
+  <data name="PluginStoreLuaTestClose" xml:space="preserve"><value>关闭</value></data>
 </root>

@@ -1435,4 +1435,22 @@ Details: {0}</value></data>
   <data name="PluginStoreSecurityScriptTooLarge" xml:space="preserve"><value>Script too large</value></data>
   <data name="PluginStoreUpload" xml:space="preserve"><value>Upload Plugin</value></data>
   <data name="PluginStoreUploadTooltip" xml:space="preserve"><value>Submit your plugin on GitHub</value></data>
+  <data name="PluginStoreLuaTestButton" xml:space="preserve"><value>Lua Test</value></data>
+  <data name="PluginStoreLuaTestTitle" xml:space="preserve"><value>Lua Plugin Install Script Test</value></data>
+  <data name="PluginStoreLuaTestDescription" xml:space="preserve"><value>Enter your Lua plugin install script below and click Execute Test to validate it. The script runs in a sandboxed environment — all file operations are restricted to the Plugins directory.</value></data>
+  <data name="PluginStoreLuaTestInputHint" xml:space="preserve"><value>-- Enter Lua plugin install script here
+-- Available APIs: install.download(), install.extract(), install.download_plugin(id), etc.
+-- See Lua Plugin Dev Guide for details</value></data>
+  <data name="PluginStoreLuaTestRun" xml:space="preserve"><value>Execute Test</value></data>
+  <data name="PluginStoreLuaTestSecurityWarning" xml:space="preserve"><value>Security Warning</value></data>
+  <data name="PluginStoreLuaTestSecurityBlocked" xml:space="preserve"><value>The script did not pass security validation: {0}
+
+Do you still want to execute it? (Not recommended)</value></data>
+  <data name="PluginStoreLuaTestExecuting" xml:space="preserve"><value>Executing Lua script...</value></data>
+  <data name="PluginStoreLuaTestSuccess" xml:space="preserve"><value>Lua script executed successfully</value></data>
+  <data name="PluginStoreLuaTestFailed" xml:space="preserve"><value>Lua script execution failed</value></data>
+  <data name="PluginStoreLuaTestLogSaved" xml:space="preserve"><value>Log saved to:
+{0}</value></data>
+  <data name="PluginStoreLuaTestOpenLog" xml:space="preserve"><value>Open Log File</value></data>
+  <data name="PluginStoreLuaTestClose" xml:space="preserve"><value>Close</value></data>
 </root>

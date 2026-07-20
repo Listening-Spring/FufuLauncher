@@ -65,6 +65,11 @@ public sealed partial class PluginStorePage : Page
         ViewModel.AddPrivatePluginCommand.Execute(null);
     }
 
+    private void OnLuaTestClick(object sender, RoutedEventArgs e)
+    {
+        ViewModel.LuaTestCommand.Execute(null);
+    }
+
     private async void OnRefreshClick(object sender, RoutedEventArgs e)
     {
         await ViewModel.InitializeAsync();
