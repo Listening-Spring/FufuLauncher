@@ -973,6 +973,40 @@ public class LuaPluginInstaller
         });
 
         script.Globals["install"] = installTable;
+        
+        DynValue systemTable = DynValue.NewTable(script);
+        var sysTable = systemTable.Table;
+
+        sysTable["get_gpu"] = (Func<DynValue>)(() =>
+        {
+            var table = new Table(script);
+            table["name"] = DynValue.NewString(SystemEnvironmentHelper.GetGpuName());
+            table["vendor"] = DynValue.NewString(SystemEnvironmentHelper.GetGpuVendor());
+            return DynValue.NewTable(table);
+        });
+
+        sysTable["get_cpu"] = (Func<DynValue>)(() =>
+        {
+            var table = new Table(script);
+            table["name"] = DynValue.NewString(SystemEnvironmentHelper.GetCpuName());
+            return DynValue.NewTable(table);
+        });
+
+        sysTable["get_memory"] = (Func<DynValue>)(() =>
+        {
+            var table = new Table(script);
+            table["total_gb"] = DynValue.NewNumber(SystemEnvironmentHelper.GetTotalMemoryGB());
+            return DynValue.NewTable(table);
+        });
+
+        sysTable["get_os"] = (Func<DynValue>)(() =>
+        {
+            var table = new Table(script);
+            table["version"] = DynValue.NewString(SystemEnvironmentHelper.GetOsVersion());
+            return DynValue.NewTable(table);
+        });
+
+        script.Globals["system"] = systemTable;
     }
     
     private string SanitizePath(string rawPath, string operation)

@@ -4,6 +4,7 @@ Licensed under the MIT License.
 */
 using System;
 using System.Linq;
+using System.Management;
 using System.Runtime.InteropServices;
 using System.Security.Principal;
 using Microsoft.Win32;
@@ -177,6 +178,104 @@ namespace FufuLauncher.Helpers
             }
             catch { }
             return string.Empty;
+        }
+        
+        public static string GetGpuName()
+        {
+            try
+            {
+                string fallback = string.Empty;
+                using (var searcher = new ManagementObjectSearcher("select Name from Win32_VideoController"))
+                {
+                    foreach (var item in searcher.Get())
+                    {
+                        var name = item["Name"]?.ToString()?.Trim() ?? string.Empty;
+                        if (string.IsNullOrEmpty(name)) continue;
+
+                        if (string.IsNullOrEmpty(fallback))
+                            fallback = name;
+
+                        if (name.Contains("NVIDIA", StringComparison.OrdinalIgnoreCase) ||
+                            name.Contains("AMD", StringComparison.OrdinalIgnoreCase))
+                        {
+                            return name;
+                        }
+                    }
+                }
+                return string.IsNullOrEmpty(fallback) ? "Unknown" : fallback;
+            }
+            catch
+            {
+                return "Unknown";
+            }
+        }
+        
+        public static string GetGpuVendor()
+        {
+            var name = GetGpuName();
+            if (string.IsNullOrEmpty(name) || name == "Unknown")
+                return "Unknown";
+
+            if (name.Contains("NVIDIA", StringComparison.OrdinalIgnoreCase))
+                return "NVIDIA";
+            if (name.Contains("AMD", StringComparison.OrdinalIgnoreCase) ||
+                name.Contains("Radeon", StringComparison.OrdinalIgnoreCase))
+                return "AMD";
+            if (name.Contains("Intel", StringComparison.OrdinalIgnoreCase))
+                return "Intel";
+
+            return "Unknown";
+        }
+        
+        public static string GetCpuName()
+        {
+            try
+            {
+                using (var searcher = new ManagementObjectSearcher("select Name from Win32_Processor"))
+                {
+                    foreach (var item in searcher.Get())
+                    {
+                        var name = item["Name"]?.ToString()?.Trim();
+                        if (!string.IsNullOrWhiteSpace(name))
+                            return name;
+                    }
+                }
+            }
+            catch { }
+            return "Unknown";
+        }
+        
+        public static long GetTotalMemoryGB()
+        {
+            try
+            {
+                long totalBytes = 0;
+                using (var searcher = new ManagementObjectSearcher("select Capacity from Win32_PhysicalMemory"))
+                {
+                    foreach (var item in searcher.Get())
+                    {
+                        if (long.TryParse(item["Capacity"]?.ToString(), out long capacity))
+                            totalBytes += capacity;
+                    }
+                }
+                return totalBytes > 0 ? totalBytes / (1024 * 1024 * 1024) : 0;
+            }
+            catch
+            {
+                return 0;
+            }
+        }
+        
+        public static string GetOsVersion()
+        {
+            try
+            {
+                return RuntimeInformation.OSDescription;
+            }
+            catch
+            {
+                return "Unknown";
+            }
         }
     }
 }
