@@ -2,9 +2,9 @@
 Copyright (c) FufuLauncher Dev Team. All rights reserved.
 Licensed under the MIT License.
 */
+using System.Reflection;
 using FufuLauncher.Models;
 using FufuLauncher.ViewModels;
-using FufuLauncher.Helpers;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
@@ -16,6 +16,9 @@ namespace FufuLauncher.Views;
 public sealed partial class PluginStorePage : Page
 {
     public PluginStoreViewModel ViewModel { get; }
+
+    private static readonly string CurrentAppVersion =
+        Assembly.GetEntryAssembly()?.GetName().Version?.ToString() ?? "1.0.0.0";
 
     public PluginStorePage()
     {
@@ -55,6 +58,11 @@ public sealed partial class PluginStorePage : Page
     private async void OnUploadPluginClick(object sender, RoutedEventArgs e)
     {
         await Windows.System.Launcher.LaunchUriAsync(new Uri("https://github.com/FufuLauncher/FufuLauncher/issues"));
+    }
+
+    private async void OnAddPrivatePluginClick(object sender, RoutedEventArgs e)
+    {
+        ViewModel.AddPrivatePluginCommand.Execute(null);
     }
 
     private async void OnRefreshClick(object sender, RoutedEventArgs e)
@@ -120,7 +128,7 @@ public sealed partial class PluginStorePage : Page
     private async Task ShowPluginDetailDialogAsync(PluginStoreItem item)
     {
         var infoPanel = new StackPanel { Spacing = 16, Padding = new Thickness(0, 12, 0, 12) };
-
+        
         infoPanel.Children.Add(new TextBlock
         {
             Text = item.Description,
@@ -130,18 +138,73 @@ public sealed partial class PluginStorePage : Page
             LineHeight = 22,
             Margin = new Thickness(0, 0, 0, 8)
         });
+        
+        infoPanel.Children.Add(CreateInfoRow("版本", item.VersionDisplay));
+        infoPanel.Children.Add(CreateInfoRow("开发者", item.Developer));
+        infoPanel.Children.Add(CreateInfoRow("大小", item.SizeDisplay));
+        infoPanel.Children.Add(CreateInfoRow("下载量", item.DownloadsDisplay));
+        
+        if (item.HasUpdateType)
+        {
+            infoPanel.Children.Add(CreateInfoRow("更新类型", item.UpdateTypeDisplay));
+        }
+        
+        if (!string.IsNullOrWhiteSpace(item.MinAppVersion))
+        {
+            var versionSatisfied = IsVersionSatisfied(CurrentAppVersion, item.MinAppVersion);
+            var versionRow = CreateInfoRow("最低启动器版本", $"v{item.MinAppVersion}");
+            if (!versionSatisfied)
+            {
+                var valueBlock = versionRow.Children[1] as TextBlock;
+                if (valueBlock != null)
+                {
+                    valueBlock.Text = $"v{item.MinAppVersion} ⚠ 当前版本 {CurrentAppVersion} 过低";
+                    valueBlock.Foreground = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.OrangeRed);
+                }
+            }
+            infoPanel.Children.Add(versionRow);
+        }
+        
+        if (item.IsPrivate)
+        {
+            var privateRow = CreateInfoRow("可见性", "私密插件");
+            infoPanel.Children.Add(privateRow);
+        }
+        
+        if (item.HasDependencies)
+        {
+            infoPanel.Children.Add(new TextBlock
+            {
+                Text = "依赖",
+                FontSize = 14,
+                FontWeight = Microsoft.UI.Text.FontWeights.SemiBold,
+                Margin = new Thickness(0, 16, 0, -8)
+            });
 
-        infoPanel.Children.Add(CreateInfoRow("PluginStoreVersion".GetLocalized(), item.VersionDisplay));
-        infoPanel.Children.Add(CreateInfoRow("PluginStoreDeveloper".GetLocalized(), item.Developer));
-        infoPanel.Children.Add(CreateInfoRow("PluginStoreSize".GetLocalized(), item.SizeDisplay));
-        infoPanel.Children.Add(CreateInfoRow("PluginStoreRating".GetLocalized(), $"{item.RatingDisplay}"));
-        infoPanel.Children.Add(CreateInfoRow("PluginStoreDownloads".GetLocalized(), item.DownloadsDisplay));
+            var depsPanel = new StackPanel { Spacing = 8 };
+            foreach (var dep in item.Dependencies.Where(d => !d.IsEmpty))
+            {
+                var depGrid = new Grid();
+                depGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
 
+                var depText = new TextBlock
+                {
+                    Text = dep.ToString(),
+                    FontSize = 13,
+                    Opacity = 0.75,
+                    TextWrapping = TextWrapping.Wrap
+                };
+                depGrid.Children.Add(depText);
+                depsPanel.Children.Add(depGrid);
+            }
+            infoPanel.Children.Add(depsPanel);
+        }
+        
         if (!string.IsNullOrEmpty(item.LongDescription))
         {
             infoPanel.Children.Add(new TextBlock
             {
-                Text = "PluginStoreDetails".GetLocalized(),
+                Text = "详细介绍",
                 FontSize = 14,
                 FontWeight = Microsoft.UI.Text.FontWeights.SemiBold,
                 Margin = new Thickness(0, 16, 0, -8)
@@ -173,8 +236,8 @@ public sealed partial class PluginStorePage : Page
         {
             Title = item.Name,
             Content = scrollViewer,
-            PrimaryButtonText = isUpdate ? "PluginStoreUpdateNow".GetLocalized() : (isInstalledOrUpdate ? "PluginStoreUninstall".GetLocalized() : "PluginStoreInstallPlugin".GetLocalized()),
-            SecondaryButtonText = "PluginStoreCancel".GetLocalized(),
+            PrimaryButtonText = isUpdate ? "立即更新" : (isInstalledOrUpdate ? "卸载" : "安装插件"),
+            SecondaryButtonText = "取消",
             DefaultButton = ContentDialogButton.Primary,
             XamlRoot = XamlRoot
         };
@@ -201,7 +264,7 @@ public sealed partial class PluginStorePage : Page
     private static Grid CreateInfoRow(string label, string value)
     {
         var grid = new Grid();
-        grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(80) });
+        grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(100) });
         grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
 
         var labelBlock = new TextBlock
@@ -229,5 +292,19 @@ public sealed partial class PluginStorePage : Page
         grid.Children.Add(valueBlock);
 
         return grid;
+    }
+
+    private static bool IsVersionSatisfied(string currentVersion, string minVersion)
+    {
+        try
+        {
+            var cur = new Version(currentVersion);
+            var min = new Version(minVersion);
+            return cur >= min;
+        }
+        catch
+        {
+            return true;
+        }
     }
 }

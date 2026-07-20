@@ -5,13 +5,17 @@ Licensed under the MIT License.
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.Text.Json;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.Input;
 using FufuLauncher.Models;
 using FufuLauncher.Services;
 using FufuLauncher.Helpers;
 using Microsoft.UI.Dispatching;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 
 namespace FufuLauncher.ViewModels;
 
@@ -38,6 +42,10 @@ public class PluginStoreViewModel : INotifyPropertyChanged
 
     private CancellationTokenSource? _installCts;
 
+    /// <summary>Current launcher version for min-version checks.</summary>
+    private static readonly string CurrentAppVersion =
+        Assembly.GetEntryAssembly()?.GetName().Version?.ToString() ?? "1.0.0.0";
+
     public PluginStoreViewModel(PluginStoreService storeService, LuaPluginInstaller luaInstaller)
     {
         _pluginsDir = Path.Combine(AppContext.BaseDirectory, "Plugins");
@@ -55,6 +63,7 @@ public class PluginStoreViewModel : INotifyPropertyChanged
         UninstallCommand = new RelayCommand<PluginStoreItem>(async (item) => await UninstallPluginAsync(item!));
         NextPageCommand = new RelayCommand(async () => await GoToPageAsync(_currentPage + 1));
         PrevPageCommand = new RelayCommand(async () => await GoToPageAsync(_currentPage - 1));
+        AddPrivatePluginCommand = new RelayCommand(async () => await AddPrivatePluginAsync());
     }
 
     public ObservableCollection<PluginStoreItem> Plugins
@@ -147,11 +156,12 @@ public class PluginStoreViewModel : INotifyPropertyChanged
     public ICommand UninstallCommand { get; }
     public ICommand NextPageCommand { get; }
     public ICommand PrevPageCommand { get; }
-    
+    public ICommand AddPrivatePluginCommand { get; }
+
     public async Task InitializeAsync()
     {
         _dispatcher = DispatcherQueue.GetForCurrentThread();
-        
+
         await LoadCategoriesAsync();
         await LoadPluginsAsync();
     }
@@ -165,7 +175,7 @@ public class PluginStoreViewModel : INotifyPropertyChanged
             if (cats.Count > 0)
             {
                 Categories.Clear();
-                
+
                 Categories.Add(new PluginStoreCategory
                 {
                     Key = "",
@@ -291,7 +301,10 @@ public class PluginStoreViewModel : INotifyPropertyChanged
         CurrentPage = page;
         await LoadPluginsAsync();
     }
-    
+
+    // ──────────────────────────────────────────────
+    //  Install flow with captcha gate + private plugin support
+    // ──────────────────────────────────────────────
 
     private async Task InstallPluginAsync(PluginStoreItem item)
     {
@@ -306,44 +319,59 @@ public class PluginStoreViewModel : INotifyPropertyChanged
             item.IsInstallInProgress = true;
             item.InstallProgress = 0;
             item.InstallStatusText = "PluginStoreVerifying".GetLocalized();
+            
+            if (!string.IsNullOrWhiteSpace(item.MinAppVersion))
+            {
+                if (!IsVersionSatisfied(CurrentAppVersion, item.MinAppVersion))
+                {
+                    await ShowMinVersionWarningAsync(item);
+                    item.State = StorePluginState.Available;
+                    item.InstallProgress = 0;
+                    item.InstallStatusText = "PluginStoreVersionTooLow".GetLocalized();
+                    return;
+                }
+            }
+            
+            if (item.IsPrivate && string.IsNullOrWhiteSpace(item.AccessToken))
+            {
+                var accessKey = await ShowPrivateAccessDialogAsync(item);
+                if (string.IsNullOrWhiteSpace(accessKey))
+                {
+                    item.State = StorePluginState.Available;
+                    item.InstallProgress = 0;
+                    item.InstallStatusText = string.Empty;
+                    return;
+                }
 
-            await _luaInstaller.ExecuteInstallScriptAsync(
-                item.LuaInstallUrl,
-                item.LuaHash,
-                item.FileHash,
-                _installCts.Token,
-                item.DllFileName,
-                item.Id);
-            
-            var pluginDir = Path.Combine(_pluginsDir, item.Id);
-            _luaInstaller.EnsureConfigFileEntry(pluginDir, item.DllFileName);
-            
-            item.State = StorePluginState.Installed;
-            item.InstallProgress = 100;
-            item.InstallStatusText = "PluginStoreInstallComplete".GetLocalized();
-            StatusMessage = string.Format("PluginStoreInstallSuccess".GetLocalized(), item.Name);
-        }
-        catch (HashMismatchException ex)
-        {
-            Debug.WriteLine($"[PluginStoreVM] Hash mismatch: {ex.Message}");
-            item.State = StorePluginState.Available;
-            item.InstallProgress = 0;
-            item.InstallStatusText = "PluginStoreHashFailed".GetLocalized();
-            StatusMessage = string.Format("PluginStoreInstallFailed".GetLocalized(), ex.Message);
-        }
-        catch (SecurityViolationException ex)
-        {
-            Debug.WriteLine($"[PluginStoreVM] Security violation: {ex.Message}");
-            item.State = StorePluginState.Available;
-            item.InstallProgress = 0;
-            item.InstallStatusText = "PluginStoreSecurityBlockedShort".GetLocalized();
-            StatusMessage = string.Format("PluginStoreSecurityBlocked".GetLocalized(), ex.Message);
-        }
-        catch (OperationCanceledException)
-        {
-            item.State = StorePluginState.Available;
-            item.InstallProgress = 0;
-            item.InstallStatusText = "PluginStoreCancelled".GetLocalized();
+                try
+                {
+                    var accessResult = await _storeService.GetPrivateAccessAsync(item.Id, accessKey);
+                    item.AccessToken = accessResult.AccessToken;
+                    
+                    if (accessResult.Plugin != null)
+                    {
+                        item.Version = accessResult.Plugin.Version;
+                        item.FileHash = accessResult.Plugin.FileHash;
+                        item.LuaHash = accessResult.Plugin.LuaHash;
+                        item.LuaInstallUrl = accessResult.Plugin.LuaInstallUrl;
+                        item.LuaUninstallUrl = accessResult.Plugin.LuaUninstallUrl;
+                        item.DownloadUrl = accessResult.Plugin.DownloadUrl;
+                        item.SizeBytes = accessResult.Plugin.SizeBytes;
+                        item.DllFileName = accessResult.Plugin.DllFileName;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"[PluginStoreVM] Private access failed: {ex.Message}");
+                    item.State = StorePluginState.Available;
+                    item.InstallProgress = 0;
+                    item.InstallStatusText = "PluginStorePrivateAccessDenied".GetLocalized();
+                    StatusMessage = ex.Message;
+                    return;
+                }
+            }
+
+            await DoInstallAsync(item);
         }
         catch (Exception ex)
         {
@@ -352,12 +380,368 @@ public class PluginStoreViewModel : INotifyPropertyChanged
             item.InstallProgress = 0;
             item.InstallStatusText = "PluginStoreInstallFailedShort".GetLocalized();
             StatusMessage = string.Format("PluginStoreInstallFailed".GetLocalized(), ex.Message);
+            
+            CleanupPluginDir(item.Id);
         }
         finally
         {
             item.IsInstallInProgress = false;
             _installCts?.Dispose();
             _installCts = null;
+        }
+    }
+    
+    private async Task DoInstallAsync(PluginStoreItem item)
+    {
+        var maxCaptchaRetries = 3;
+        var attempt = 0;
+
+        while (attempt < maxCaptchaRetries)
+        {
+            try
+            {
+                item.InstallStatusText = attempt > 0
+                    ? "PluginStoreRetrying".GetLocalized()
+                    : "PluginStoreDownloadingLua".GetLocalized();
+
+                await _luaInstaller.ExecuteInstallScriptAsync(
+                    item.LuaInstallUrl,
+                    item.LuaHash,
+                    item.FileHash,
+                    _installCts?.Token ?? CancellationToken.None,
+                    item.DllFileName,
+                    item.Id,
+                    item.DlToken,
+                    item.AccessToken);
+
+                var pluginDir = Path.Combine(_pluginsDir, item.Id);
+                _luaInstaller.EnsureConfigFileEntry(pluginDir, item.DllFileName);
+
+                item.State = StorePluginState.Installed;
+                item.InstallProgress = 100;
+                item.InstallStatusText = "PluginStoreInstallComplete".GetLocalized();
+                StatusMessage = string.Format("PluginStoreInstallSuccess".GetLocalized(), item.Name);
+                return;
+            }
+            catch (CaptchaRequiredException captchaEx)
+            {
+                Debug.WriteLine($"[PluginStoreVM] Captcha required: {captchaEx.VerifyUrl}");
+                item.InstallStatusText = "PluginStoreCaptchaRequired".GetLocalized();
+                
+                var dlToken = await ShowGeetestCaptchaAsync(captchaEx.VerifyUrl);
+
+                if (string.IsNullOrWhiteSpace(dlToken))
+                {
+                    throw new OperationCanceledException("PluginStoreCaptchaCancelled".GetLocalized());
+                }
+
+                item.DlToken = dlToken;
+                attempt++;
+                Debug.WriteLine($"[PluginStoreVM] Got dl_token, retrying download (attempt {attempt})...");
+            }
+            catch (PrivatePluginAccessException privEx)
+            {
+                Debug.WriteLine($"[PluginStoreVM] Private access required: {privEx.Message}");
+                item.InstallStatusText = "PluginStorePrivateAccessRequired".GetLocalized();
+
+                var accessKey = await ShowPrivateAccessDialogAsync(item);
+                if (string.IsNullOrWhiteSpace(accessKey))
+                    throw new OperationCanceledException("PluginStorePrivateAccessCancelled".GetLocalized());
+
+                var accessResult = await _storeService.GetPrivateAccessAsync(item.Id, accessKey);
+                item.AccessToken = accessResult.AccessToken;
+                if (accessResult.Plugin != null)
+                {
+                    item.FileHash = accessResult.Plugin.FileHash;
+                    item.LuaHash = accessResult.Plugin.LuaHash;
+                }
+                attempt++;
+            }
+            catch (HashMismatchException ex)
+            {
+                Debug.WriteLine($"[PluginStoreVM] Hash mismatch: {ex.Message}");
+                item.State = StorePluginState.Available;
+                item.InstallProgress = 0;
+                item.InstallStatusText = "PluginStoreHashFailed".GetLocalized();
+                StatusMessage = string.Format("PluginStoreInstallFailed".GetLocalized(), ex.Message);
+                CleanupPluginDir(item.Id);
+                return;
+            }
+            catch (SecurityViolationException ex)
+            {
+                Debug.WriteLine($"[PluginStoreVM] Security violation: {ex.Message}");
+                item.State = StorePluginState.Available;
+                item.InstallProgress = 0;
+                item.InstallStatusText = "PluginStoreSecurityBlockedShort".GetLocalized();
+                StatusMessage = string.Format("PluginStoreSecurityBlocked".GetLocalized(), ex.Message);
+                CleanupPluginDir(item.Id);
+                return;
+            }
+            catch (OperationCanceledException)
+            {
+                item.State = StorePluginState.Available;
+                item.InstallProgress = 0;
+                item.InstallStatusText = "PluginStoreCancelled".GetLocalized();
+                CleanupPluginDir(item.Id);
+                return;
+            }
+            catch (InvalidOperationException ex) when (ex.Message.Contains("download") || ex.Message.Contains("Download"))
+            {
+                Debug.WriteLine($"[PluginStoreVM] Download error (may need captcha): {ex.Message}");
+                attempt++;
+                if (attempt >= maxCaptchaRetries) throw;
+            }
+        }
+
+        throw new InvalidOperationException("PluginStoreCaptchaRetryExhausted".GetLocalized());
+    }
+    
+    private static async Task<string?> ShowGeetestCaptchaAsync(string verifyUrl)
+    {
+        var tcs = new TaskCompletionSource<string?>();
+
+        App.MainWindow.DispatcherQueue.TryEnqueue(async () =>
+        {
+            var captchaWindow = new Window();
+            captchaWindow.SystemBackdrop = new Microsoft.UI.Xaml.Media.MicaBackdrop();
+            captchaWindow.Title = "人机验证";
+
+            var rootGrid = new Grid();
+            rootGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(32) });
+            rootGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
+            
+            var titleBar = new Grid { Height = 32 };
+            titleBar.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+            titleBar.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+
+            var titleText = new TextBlock
+            {
+                Text = "下载验证",
+                VerticalAlignment = VerticalAlignment.Center,
+                Margin = new Thickness(16, 0, 0, 0)
+            };
+            Grid.SetColumn(titleText, 1);
+            titleBar.Children.Add(titleText);
+
+            Grid.SetRow(titleBar, 0);
+            rootGrid.Children.Add(titleBar);
+
+            var webView = new WebView2
+            {
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Stretch
+            };
+            Grid.SetRow(webView, 1);
+            rootGrid.Children.Add(webView);
+
+            captchaWindow.Content = rootGrid;
+            
+            var appWindow = captchaWindow.AppWindow;
+            appWindow.TitleBar.ExtendsContentIntoTitleBar = true;
+            appWindow.TitleBar.ButtonBackgroundColor = Microsoft.UI.Colors.Transparent;
+            appWindow.TitleBar.ButtonInactiveBackgroundColor = Microsoft.UI.Colors.Transparent;
+            appWindow.Resize(new Windows.Graphics.SizeInt32(1280, 720));
+
+            var mainAppWindow = App.MainWindow.AppWindow;
+            var mainPos = mainAppWindow.Position;
+            var mainSize = mainAppWindow.Size;
+            appWindow.Move(new Windows.Graphics.PointInt32(
+                mainPos.X + (mainSize.Width - 1280) / 2,
+                mainPos.Y + (mainSize.Height - 720) / 2));
+
+            captchaWindow.SetTitleBar(titleBar);
+
+            await webView.EnsureCoreWebView2Async();
+            webView.CoreWebView2.Settings.AreDefaultContextMenusEnabled = false;
+            webView.CoreWebView2.Settings.IsStatusBarEnabled = false;
+
+            var pollCts = new CancellationTokenSource();
+            var pollToken = pollCts.Token;
+            
+            webView.CoreWebView2.NavigationCompleted += async (s, e) =>
+            {
+                if (!e.IsSuccess) return;
+                Debug.WriteLine($"[PluginStoreVM] Gate page loaded, starting poll for dl_token...");
+
+                try
+                {
+                    for (var i = 0; i < 120 && !pollToken.IsCancellationRequested; i++)
+                    {
+                        await Task.Delay(500, pollToken);
+
+                        string raw;
+                        try { raw = await webView.CoreWebView2.ExecuteScriptAsync("document.body.textContent"); }
+                        catch { continue; }
+
+                        if (string.IsNullOrWhiteSpace(raw)) continue;
+                        
+                        var unescaped = raw.Trim('"').Replace("\\\"", "\"").Replace("\\\\", "\\");
+
+                        if (!unescaped.StartsWith("{")) continue;
+
+                        try
+                        {
+                            using var doc = JsonDocument.Parse(unescaped);
+                            var root = doc.RootElement;
+                            if (root.TryGetProperty("retcode", out var rc) && rc.GetInt32() == 0 &&
+                                root.TryGetProperty("data", out var data) &&
+                                data.TryGetProperty("dl_token", out var dlToken))
+                            {
+                                var token = dlToken.GetString();
+                                if (!string.IsNullOrWhiteSpace(token))
+                                {
+                                    Debug.WriteLine($"[PluginStoreVM] Got dl_token: {token[..12]}...");
+                                    pollCts.Cancel();
+                                    tcs.TrySetResult(token);
+                                    captchaWindow.DispatcherQueue.TryEnqueue(() => captchaWindow.Close());
+                                    return;
+                                }
+                            }
+                        }
+                        catch (JsonException) { }
+                    }
+                }
+                catch (TaskCanceledException) { }
+            };
+
+            captchaWindow.Closed += (s, e) =>
+            {
+                pollCts.Cancel();
+                tcs.TrySetResult(null);
+            };
+
+            Debug.WriteLine($"[PluginStoreVM] Navigating to captcha gate: {verifyUrl}");
+            webView.CoreWebView2.Navigate(verifyUrl);
+            captchaWindow.Activate();
+        });
+
+        return await tcs.Task;
+    }
+    
+    private static async Task<string?> ShowPrivateAccessDialogAsync(PluginStoreItem item)
+    {
+        var tcs = new TaskCompletionSource<string?>();
+
+        App.MainWindow.DispatcherQueue.TryEnqueue(async () =>
+        {
+            var inputBox = new TextBox
+            {
+                PlaceholderText = "请输入访问密钥",
+                Width = 300
+            };
+
+            var stackPanel = new StackPanel { Spacing = 12 };
+            stackPanel.Children.Add(new TextBlock
+            {
+                Text = $"插件 \"{item.Name}\"ID{item.Id}为私密插件",
+                TextWrapping = TextWrapping.Wrap,
+                Margin = new Thickness(0, 0, 0, 8)
+            });
+            stackPanel.Children.Add(inputBox);
+
+            var dialog = new ContentDialog
+            {
+                Title = "私密插件访问",
+                Content = stackPanel,
+                PrimaryButtonText = "确认",
+                SecondaryButtonText = "取消",
+                DefaultButton = ContentDialogButton.Primary,
+                XamlRoot = App.MainWindow.Content.XamlRoot
+            };
+
+            var result = await dialog.ShowAsync();
+            if (result == ContentDialogResult.Primary && !string.IsNullOrWhiteSpace(inputBox.Text))
+            {
+                tcs.TrySetResult(inputBox.Text.Trim());
+            }
+            else
+            {
+                tcs.TrySetResult(null);
+            }
+        });
+
+        return await tcs.Task;
+    }
+    
+    private static async Task ShowMinVersionWarningAsync(PluginStoreItem item)
+    {
+        App.MainWindow.DispatcherQueue.TryEnqueue(async () =>
+        {
+            var dialog = new ContentDialog
+            {
+                Title = "版本过低",
+                Content = $"插件 \"{item.Name}\" 要求启动器版本≥ {item.MinAppVersion}，当前版本为 {CurrentAppVersion}\n\n请先更新启动器后再安装此插件",
+                CloseButtonText = "知道了",
+                DefaultButton = ContentDialogButton.Close,
+                XamlRoot = App.MainWindow.Content.XamlRoot
+            };
+            await dialog.ShowAsync();
+        });
+    }
+
+    private async Task AddPrivatePluginAsync()
+    {
+        string? pluginId = null;
+        string? accessKey = null;
+
+        App.MainWindow.DispatcherQueue.TryEnqueue(async () =>
+        {
+            var idBox = new TextBox { PlaceholderText = "插件ID", Width = 300 };
+            var keyBox = new TextBox { PlaceholderText = "访问密钥", Width = 300 };
+
+            var panel = new StackPanel { Spacing = 12 };
+            panel.Children.Add(new TextBlock { Text = "输入私密插件的 ID 和访问密钥：" });
+            panel.Children.Add(new TextBlock { Text = "插件ID", FontSize = 12, Opacity = 0.7 });
+            panel.Children.Add(idBox);
+            panel.Children.Add(new TextBlock { Text = "访问密钥", FontSize = 12, Opacity = 0.7 });
+            panel.Children.Add(keyBox);
+
+            var dialog = new ContentDialog
+            {
+                Title = "添加私密插件",
+                Content = panel,
+                PrimaryButtonText = "添加",
+                SecondaryButtonText = "取消",
+                DefaultButton = ContentDialogButton.Primary,
+                XamlRoot = App.MainWindow.Content.XamlRoot
+            };
+
+            var result = await dialog.ShowAsync();
+            if (result == ContentDialogResult.Primary)
+            {
+                pluginId = idBox.Text.Trim();
+                accessKey = keyBox.Text.Trim();
+            }
+        });
+
+        if (string.IsNullOrWhiteSpace(pluginId) || string.IsNullOrWhiteSpace(accessKey))
+            return;
+
+        try
+        {
+            IsLoading = true;
+            StatusMessage = "正在验证私密插件访问...";
+
+            var accessResult = await _storeService.GetPrivateAccessAsync(pluginId, accessKey);
+            if (accessResult.Plugin != null)
+            {
+                accessResult.Plugin.AccessToken = accessResult.AccessToken;
+                UpdateLocalState(accessResult.Plugin);
+                
+                Plugins.Insert(0, accessResult.Plugin);
+                TotalPlugins++;
+                IsEmpty = false;
+                StatusMessage = string.Format("已添加私密插件: {0}", accessResult.Plugin.Name);
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"[PluginStoreVM] AddPrivatePlugin error: {ex.Message}");
+            StatusMessage = string.Format("私密插件添加失败: {0}", ex.Message);
+        }
+        finally
+        {
+            IsLoading = false;
         }
     }
 
@@ -370,18 +754,96 @@ public class PluginStoreViewModel : INotifyPropertyChanged
             item.IsInstallInProgress = true;
             item.State = StorePluginState.Installing;
             item.InstallStatusText = "PluginStoreUninstalling".GetLocalized();
-
+            
             if (!string.IsNullOrEmpty(item.LuaUninstallUrl))
             {
-                await _luaInstaller.ExecuteInstallScriptAsync(item.LuaUninstallUrl);
-            }
-            else
-            {
-                var pluginDir = Path.Combine(_pluginsDir, item.Id);
-                if (Directory.Exists(pluginDir))
+                var maxCaptchaRetries = 3;
+                var attempt = 0;
+                var luaSuccess = false;
+
+                while (attempt < maxCaptchaRetries)
                 {
-                    Directory.Delete(pluginDir, true);
+                    try
+                    {
+                        item.InstallStatusText = attempt > 0
+                            ? "PluginStoreRetrying".GetLocalized()
+                            : "PluginStoreUninstalling".GetLocalized();
+
+                        var uninstallUrl = AppendTokenToUrl(item.LuaUninstallUrl, item.AccessToken);
+                        await _luaInstaller.ExecuteInstallScriptAsync(
+                            uninstallUrl,
+                            expectedLuaHash: null,
+                            expectedFileHash: null,
+                            cancellationToken: CancellationToken.None,
+                            dllFileName: null,
+                            pluginId: item.Id,
+                            dlToken: item.DlToken,
+                            accessToken: item.AccessToken);
+
+                        luaSuccess = true;
+                        break;
+                    }
+                    catch (CaptchaRequiredException captchaEx)
+                    {
+                        Debug.WriteLine($"[PluginStoreVM] Uninstall captcha required: {captchaEx.VerifyUrl}");
+                        item.InstallStatusText = "PluginStoreCaptchaRequired".GetLocalized();
+
+                        var dlToken = await ShowGeetestCaptchaAsync(captchaEx.VerifyUrl);
+
+                        if (string.IsNullOrWhiteSpace(dlToken))
+                        {
+                            Debug.WriteLine("[PluginStoreVM] Uninstall captcha cancelled, falling back to directory delete");
+                            break;
+                        }
+
+                        item.DlToken = dlToken;
+                        attempt++;
+                        Debug.WriteLine($"[PluginStoreVM] Uninstall: got dl_token, retrying (attempt {attempt})...");
+                    }
+                    catch (PrivatePluginAccessException privEx)
+                    {
+                        Debug.WriteLine($"[PluginStoreVM] Uninstall private access required: {privEx.Message}");
+                        item.InstallStatusText = "PluginStorePrivateAccessRequired".GetLocalized();
+
+                        var accessKey = await ShowPrivateAccessDialogAsync(item);
+                        if (string.IsNullOrWhiteSpace(accessKey))
+                        {
+                            Debug.WriteLine("[PluginStoreVM] Uninstall private access cancelled, falling back to directory delete");
+                            break;
+                        }
+
+                        var accessResult = await _storeService.GetPrivateAccessAsync(item.Id, accessKey);
+                        item.AccessToken = accessResult.AccessToken;
+                        attempt++;
+                    }
+                    catch (InvalidOperationException ex) when (ex.Message.Contains("download") || ex.Message.Contains("Download"))
+                    {
+                        Debug.WriteLine($"[PluginStoreVM] Uninstall download error (may need captcha): {ex.Message}");
+                        attempt++;
+                        if (attempt >= maxCaptchaRetries)
+                        {
+                            Debug.WriteLine("[PluginStoreVM] Uninstall captcha retries exhausted, falling back to directory delete");
+                            break;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine($"[PluginStoreVM] Lua uninstall error, falling back to directory delete: {ex.Message}");
+                        break;
+                    }
                 }
+
+                if (luaSuccess)
+                {
+                    Debug.WriteLine("[PluginStoreVM] Lua uninstall script completed successfully");
+                }
+            }
+            
+            var pluginDir = Path.Combine(_pluginsDir, item.Id);
+            if (Directory.Exists(pluginDir))
+            {
+                Directory.Delete(pluginDir, true);
+                Debug.WriteLine($"[PluginStoreVM] Deleted plugin directory: {pluginDir}");
             }
 
             item.State = StorePluginState.Available;
@@ -401,6 +863,23 @@ public class PluginStoreViewModel : INotifyPropertyChanged
         }
     }
     
+    private void CleanupPluginDir(string pluginId)
+    {
+        try
+        {
+            var pluginDir = Path.Combine(_pluginsDir, pluginId);
+            if (Directory.Exists(pluginDir))
+            {
+                Directory.Delete(pluginDir, true);
+                Debug.WriteLine($"[PluginStoreVM] Cleaned up partial install: {pluginDir}");
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"[PluginStoreVM] Failed to clean up plugin dir: {ex.Message}");
+        }
+    }
+
     private void UpdateLocalState(PluginStoreItem storeItem)
     {
         if (!Directory.Exists(_pluginsDir)) return;
@@ -437,7 +916,6 @@ public class PluginStoreViewModel : INotifyPropertyChanged
 
                     if (!string.IsNullOrEmpty(localVersion))
                     {
-                        // Compare versions
                         if (localVersion != storeItem.Version)
                         {
                             storeItem.State = StorePluginState.UpdateAvailable;
@@ -463,6 +941,30 @@ public class PluginStoreViewModel : INotifyPropertyChanged
             }
         }
     }
+    
+    private static bool IsVersionSatisfied(string currentVersion, string minVersion)
+    {
+        try
+        {
+            var cur = new Version(currentVersion);
+            var min = new Version(minVersion);
+            return cur >= min;
+        }
+        catch
+        {
+            return true;
+        }
+    }
+
+    private static string AppendTokenToUrl(string url, string? accessToken)
+    {
+        if (string.IsNullOrWhiteSpace(accessToken)) return url;
+        var uriBuilder = new UriBuilder(url);
+        var query = System.Web.HttpUtility.ParseQueryString(uriBuilder.Query);
+        query["access_token"] = accessToken;
+        uriBuilder.Query = query.ToString();
+        return uriBuilder.ToString();
+    }
 
     private void OnInstallProgress(int percent, string status)
     {
@@ -481,7 +983,6 @@ public class PluginStoreViewModel : INotifyPropertyChanged
     {
         Debug.WriteLine($"[PluginStore] {message}");
     }
-    
 
     public event PropertyChangedEventHandler? PropertyChanged;
 

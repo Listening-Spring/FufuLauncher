@@ -22,7 +22,6 @@ public class PluginStoreItem : INotifyPropertyChanged
     private List<string> _screenshots = new();
     private string _category = string.Empty;
     private List<string> _tags = new();
-    private double _rating;
     private long _downloads;
     private long _sizeBytes;
     private string _minAppVersion = string.Empty;
@@ -112,13 +111,6 @@ public class PluginStoreItem : INotifyPropertyChanged
         set { _tags = value; OnPropertyChanged(); OnPropertyChanged(nameof(TagsDisplay)); }
     }
 
-    [JsonPropertyName("rating")]
-    public double Rating
-    {
-        get => _rating;
-        set { _rating = value; OnPropertyChanged(); OnPropertyChanged(nameof(RatingDisplay)); }
-    }
-
     [JsonPropertyName("downloads")]
     public long Downloads
     {
@@ -183,12 +175,69 @@ public class PluginStoreItem : INotifyPropertyChanged
     }
 
     private string _dllFileName = string.Empty;
+    
     [JsonPropertyName("dll_file_name")]
     public string DllFileName
     {
         get => _dllFileName;
         set { _dllFileName = value; OnPropertyChanged(); }
     }
+
+    private string _visibility = "public";
+    
+    [JsonPropertyName("visibility")]
+    public string Visibility
+    {
+        get => _visibility;
+        set { _visibility = value; OnPropertyChanged(); OnPropertyChanged(nameof(IsPrivate)); }
+    }
+
+    private string _updateType = string.Empty;
+    
+    [JsonPropertyName("update_type")]
+    public string UpdateType
+    {
+        get => _updateType;
+        set { _updateType = value; OnPropertyChanged(); OnPropertyChanged(nameof(UpdateTypeDisplay)); }
+    }
+
+    private List<PluginDependency> _dependencies = new();
+    
+    [JsonPropertyName("dependencies")]
+    public List<PluginDependency> Dependencies
+    {
+        get => _dependencies;
+        set { _dependencies = value; OnPropertyChanged(); OnPropertyChanged(nameof(HasDependencies)); OnPropertyChanged(nameof(DependenciesDisplay)); }
+    }
+    
+    [JsonIgnore]
+    public string AccessToken { get; set; } = string.Empty;
+    
+    [JsonIgnore]
+    public string DlToken { get; set; } = string.Empty;
+
+    [JsonIgnore]
+    public bool IsPrivate => Visibility == "private";
+
+    [JsonIgnore]
+    public bool HasDependencies => Dependencies?.Any(d => !d.IsEmpty) ?? false;
+
+    [JsonIgnore]
+    public string DependenciesDisplay
+    {
+        get
+        {
+            if (Dependencies == null || Dependencies.Count == 0) return string.Empty;
+            var real = Dependencies.Where(d => !d.IsEmpty).Select(d => d.ToString()).Where(s => !string.IsNullOrEmpty(s));
+            return string.Join("; ", real);
+        }
+    }
+
+    [JsonIgnore]
+    public string UpdateTypeDisplay => string.IsNullOrEmpty(UpdateType) ? "" : UpdateType;
+
+    [JsonIgnore]
+    public bool HasUpdateType => !string.IsNullOrEmpty(UpdateType);
 
     [JsonIgnore]
     public StorePluginState State
@@ -231,8 +280,6 @@ public class PluginStoreItem : INotifyPropertyChanged
     public bool HasScreenshots => Screenshots.Count > 0;
 
     public string VersionDisplay => string.IsNullOrEmpty(Version) ? "" : $"v{Version}";
-
-    public string RatingDisplay => Rating > 0 ? $"{Rating:F1}" : "—";
 
     public string DownloadsDisplay => FormatDownloadCount(Downloads);
 

@@ -33,7 +33,6 @@
                 </ResourceDictionary>
             </ResourceDictionary.ThemeDictionaries>
 
-            <converters:RatingToTextConverter x:Key="RatingToTextConverter"/>
             <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
             <converters:BoolInverterConverter x:Key="BoolInverterConverter"/>
             <converters:StringToImageSourceConverter x:Key="StringToImageSourceConverter"/>
@@ -146,6 +145,7 @@
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="Auto" MaxWidth="70"/>
                                         <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
                                         <ColumnDefinition Width="*"/>
                                     </Grid.ColumnDefinitions>
                                     
@@ -153,12 +153,20 @@
                                         <TextBlock Text="{x:Bind Category, Mode=OneWay}" FontSize="10" Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}" MaxLines="1" TextTrimming="CharacterEllipsis" VerticalAlignment="Center"/>
                                     </Border>
                                     
-                                    <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="4" VerticalAlignment="Center" Margin="0,0,8,0">
-                                        <FontIcon Glyph="&#xE735;" FontSize="10" Foreground="#FFD88417" VerticalAlignment="Center" Margin="0,0,0,1"/>
-                                        <TextBlock Text="{x:Bind RatingDisplay, Mode=OneWay}" FontSize="11" Foreground="{ThemeResource SafeSecondaryTextBrush}" VerticalAlignment="Center"/>
-                                    </StackPanel>
+                                    <Border Grid.Column="1" Background="#33FF6B35" CornerRadius="4" Padding="5,2" VerticalAlignment="Center" Margin="0,0,8,0"
+                                            Visibility="{x:Bind IsPrivate, Mode=OneWay}">
+                                        <StackPanel Orientation="Horizontal" Spacing="3">
+                                            <FontIcon Glyph="&#xE72E;" FontSize="9" Foreground="#FF6B35" VerticalAlignment="Center"/>
+                                            <TextBlock Text="Private" FontSize="10" Foreground="#FF6B35" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                    </Border>
                                     
-                                    <TextBlock Grid.Column="2" Text="{x:Bind SizeDisplay, Mode=OneWay}" FontSize="11" Foreground="{ThemeResource SafeSecondaryTextBrush}" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" MaxLines="1"/>
+                                    <Border Grid.Column="2" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" CornerRadius="4" Padding="5,2" VerticalAlignment="Center" Margin="0,0,8,0"
+                                            Visibility="{x:Bind HasUpdateType, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
+                                        <TextBlock Text="{x:Bind UpdateTypeDisplay, Mode=OneWay}" FontSize="10" Foreground="{ThemeResource SafeSecondaryTextBrush}" VerticalAlignment="Center"/>
+                                    </Border>
+                                    
+                                    <TextBlock Grid.Column="3" Text="{x:Bind SizeDisplay, Mode=OneWay}" FontSize="11" Foreground="{ThemeResource SafeSecondaryTextBrush}" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" MaxLines="1"/>
                                 </Grid>
                                 
                                 <Grid Grid.Column="1" VerticalAlignment="Center" Visibility="{x:Bind StateIsInProgress, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=Invert, Mode=OneWay}">
@@ -268,6 +276,10 @@
 
                                 <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="8" HorizontalAlignment="Right" VerticalAlignment="Center">
                                     <Button Style="{StaticResource StoreInstallButtonStyle}" 
+                                            Content="私密插件" 
+                                            Click="OnAddPrivatePluginClick"
+                                            ToolTipService.ToolTip="添加私密插件（需要插件ID和访问密钥）"/>
+                                    <Button Style="{StaticResource StoreInstallButtonStyle}" 
                                             Content="{helpers:Loc Key=PluginStoreUpload}" 
                                             Click="OnUploadPluginClick"
                                             ToolTipService.ToolTip="{helpers:Loc Key=PluginStoreUploadTooltip}"/>
@@ -280,7 +292,6 @@
                                             <MenuFlyout>
                                                 <MenuFlyoutItem Text="{helpers:Loc Key=PluginStoreSortPopular}" Click="OnSortClick" Tag="popular"/>
                                                 <MenuFlyoutItem Text="{helpers:Loc Key=PluginStoreSortNewest}" Click="OnSortClick" Tag="newest"/>
-                                                <MenuFlyoutItem Text="{helpers:Loc Key=PluginStoreSortRating}" Click="OnSortClick" Tag="rating"/>
                                             </MenuFlyout>
                                         </Button.Flyout>
                                     </Button>
