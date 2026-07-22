@@ -11,6 +11,12 @@ jobs:
 
     runs-on: windows-latest
 
+    # fork 自测：本仓库没有 SIGNPATH_API_TOKEN，此值为 "false"，下方签名步骤会自动跳过；
+    # 原作者仓库配有 token 时为 "true"，签名照常。
+    # 注意：if 条件里不能直接用 secrets 上下文，所以在这里中转成 env 变量。
+    env:
+      SIGN_ENABLED: ${{ secrets.SIGNPATH_API_TOKEN != '' }}
+
     steps:
     - name: Checkout
       uses: actions/checkout@v4
@@ -79,6 +85,7 @@ jobs:
         }
 
     - name: Collect PE files for signing
+      if: ${{ env.SIGN_ENABLED == 'true' }}
       shell: pwsh
       run: |
         $outputDir = "FufuLauncher\bin\x64\Release\net8.0-windows10.0.26100.0"
@@ -94,6 +101,7 @@ jobs:
         Write-Host "Collected $((Get-ChildItem -Path $signDir -Include *.exe,*.dll -Recurse).Count) PE files for signing"
 
     - name: Upload PE files for signing
+      if: ${{ env.SIGN_ENABLED == 'true' }}
       id: upload-pe-files
       uses: actions/upload-artifact@v4
       with:
@@ -101,6 +109,7 @@ jobs:
         path: pe-files-to-sign\**
 
     - name: Sign PE files with SignPath
+      if: ${{ env.SIGN_ENABLED == 'true' }}
       uses: signpath/github-action-submit-signing-request@v2
       with:
         api-token: '${{ secrets.SIGNPATH_API_TOKEN }}'
@@ -113,6 +122,7 @@ jobs:
         output-artifact-directory: 'signed-pe-files'
 
     - name: Replace build output with signed PE files
+      if: ${{ env.SIGN_ENABLED == 'true' }}
       shell: pwsh
       run: |
         $outputDir = "FufuLauncher\bin\x64\Release\net8.0-windows10.0.26100.0"
@@ -162,6 +172,7 @@ jobs:
         path: FufuLauncher.Installer\installer\*.exe
 
     - name: Sign Installer with SignPath
+      if: ${{ env.SIGN_ENABLED == 'true' }}
       uses: signpath/github-action-submit-signing-request@v2
       with:
         api-token: '${{ secrets.SIGNPATH_API_TOKEN }}'
@@ -174,6 +185,7 @@ jobs:
         output-artifact-directory: 'signed-output'
 
     - name: Upload Signed Installer
+      if: ${{ env.SIGN_ENABLED == 'true' }}
       uses: actions/upload-artifact@v4
       with:
         name: ${{ env.EXE_NAME }}-signed
