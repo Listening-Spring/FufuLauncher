@@ -8,52 +8,39 @@ namespace FufuLauncher.Data.Repositories;
 
 public class MetadataRepository
 {
-    public MetadataRepository(string dbPath)
-    {
-        // The dbPath parameter is retained for backward compatibility with DI
-        // registration, but the actual path is always resolved dynamically from
-        // AppPaths.MetadataDb so that the repository stays in sync when
-        // AppPaths.DataDir is changed during the first-run agreement flow.
-    }
+    private string DbPath => AppPaths.MetadataDb;
+
+    public MetadataRepository() { }
 
     private static readonly object _migrateLock = new();
-    private static bool _migrated;
-
-    private static string CurrentDbPath => AppPaths.MetadataDb;
+    private static readonly System.Collections.Concurrent.ConcurrentDictionary<string, bool> _migratedPaths
+        = new(StringComparer.OrdinalIgnoreCase);
 
     private MetadataDbContext CreateContext()
     {
-        if (!_migrated)
+        var dbPath = DbPath;
+        if (!_migratedPaths.ContainsKey(dbPath))
         {
             lock (_migrateLock)
             {
-                if (!_migrated)
+                if (!_migratedPaths.ContainsKey(dbPath))
                 {
-                    PerformMigration();
-                    _migrated = true;
+                    PerformMigration(dbPath);
+                    _migratedPaths[dbPath] = true;
                 }
             }
         }
-        return new MetadataDbContext(CurrentDbPath);
+        return new MetadataDbContext(dbPath);
     }
 
-    /// <summary>
-    /// Safely ensures the database is ready for use.
-    /// For existing databases created by the old raw-SQLite version (which lack
-    /// __EFMigrationsHistory), we skip Migrate() entirely and manually create the
-    /// history record. This avoids a failed Migrate() transaction that can leave
-    /// the SQLite connection in a broken state.
-    /// </summary>
-    private void PerformMigration()
+    private void PerformMigration(string dbPath)
     {
-        var dbPath = CurrentDbPath;
         try
         {
             var dir = Path.GetDirectoryName(dbPath);
             if (!string.IsNullOrEmpty(dir))
                 Directory.CreateDirectory(dir);
 
-            // Check whether the Metadata table already exists (pre-EF database)
             bool tableExists = false;
             try
             {
@@ -64,10 +51,7 @@ public class MetadataRepository
                     "SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name='Metadata';";
                 tableExists = (long)checkCmd.ExecuteScalar()! > 0;
             }
-            catch
-            {
-                // If we can't open the connection, let Migrate() handle it
-            }
+            catch { }
 
             if (tableExists)
             {
@@ -81,7 +65,7 @@ public class MetadataRepository
             else
             {
                 using var context = new MetadataDbContext(dbPath);
-                context.Database.Migrate();
+                context.Database.EnsureCreated();
                 Debug.WriteLine("MetadataRepository: 已创建新数据库");
             }
         }

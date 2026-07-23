@@ -8,55 +8,39 @@ namespace FufuLauncher.Data.Repositories;
 
 public class LocalSettingsRepository
 {
-    public LocalSettingsRepository(string dbPath)
-    {
-        // The dbPath parameter is retained for backward compatibility with DI
-        // registration, but the actual path is always resolved dynamically from
-        // AppPaths.LocalSettingsDb so that the repository stays in sync when
-        // AppPaths.DataDir is changed during the first-run agreement flow.
-    }
+    private string DbPath => AppPaths.LocalSettingsDb;
+
+    public LocalSettingsRepository() { }
 
     private static readonly object _migrateLock = new();
-    private static bool _migrated;
-
-    private static string CurrentDbPath => AppPaths.LocalSettingsDb;
+    private static readonly System.Collections.Concurrent.ConcurrentDictionary<string, bool> _migratedPaths
+        = new(StringComparer.OrdinalIgnoreCase);
 
     private LocalSettingsDbContext CreateContext()
     {
-        if (!_migrated)
+        var dbPath = DbPath;
+        if (!_migratedPaths.ContainsKey(dbPath))
         {
             lock (_migrateLock)
             {
-                if (!_migrated)
+                if (!_migratedPaths.ContainsKey(dbPath))
                 {
-                    PerformMigration();
-                    _migrated = true;
+                    PerformMigration(dbPath);
+                    _migratedPaths[dbPath] = true;
                 }
             }
         }
-        return new LocalSettingsDbContext(CurrentDbPath);
+        return new LocalSettingsDbContext(dbPath);
     }
 
-    /// <summary>
-    /// Safely ensures the database is ready for use.
-    /// For existing databases created by the old raw-SQLite version (which lack
-    /// __EFMigrationsHistory), we skip Migrate() entirely and manually create the
-    /// history record. This avoids a failed Migrate() transaction that can leave
-    /// the SQLite connection in a broken state and cause data loss.
-    /// </summary>
-    private void PerformMigration()
+    private void PerformMigration(string dbPath)
     {
-        var dbPath = CurrentDbPath;
         try
         {
-            // Ensure the directory exists so SQLite can create the DB file
             var dir = Path.GetDirectoryName(dbPath);
             if (!string.IsNullOrEmpty(dir))
                 Directory.CreateDirectory(dir);
 
-            // Check whether the Settings table already exists (pre-EF database
-            // from v1.4.2.2 and earlier).  We use a short-lived connection so
-            // we never pollute an EF context with a potentially failed migration.
             bool tableExists = false;
             try
             {
@@ -67,16 +51,10 @@ public class LocalSettingsRepository
                     "SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name='Settings';";
                 tableExists = (long)checkCmd.ExecuteScalar()! > 0;
             }
-            catch
-            {
-                // If we can't even open the connection, let Migrate() handle it
-            }
+            catch { }
 
             if (tableExists)
             {
-                // Pre-existing database — skip Migrate() to avoid a failed
-                // CREATE TABLE.  Manually create the migration history so EF
-                // knows the InitialCreate migration has been applied.
                 using var context = new LocalSettingsDbContext(dbPath);
                 context.Database.ExecuteSqlRaw(
                     "CREATE TABLE IF NOT EXISTS __EFMigrationsHistory (MigrationId TEXT PRIMARY KEY, ProductVersion TEXT);");
@@ -86,9 +64,8 @@ public class LocalSettingsRepository
             }
             else
             {
-                // Fresh database — let EF Migrate() create everything
                 using var context = new LocalSettingsDbContext(dbPath);
-                context.Database.Migrate();
+                context.Database.EnsureCreated();
                 Debug.WriteLine("LocalSettingsRepository: 已创建新数据库");
             }
         }
@@ -96,11 +73,11 @@ public class LocalSettingsRepository
         {
             Debug.WriteLine($"LocalSettingsRepository: 数据库迁移处理异常 - {ex.Message}");
 
-            // Last-resort fallback: try to create the migration history manually
-            // on a fresh context, so the app can at least start.
             try
             {
                 using var context = new LocalSettingsDbContext(dbPath);
+                context.Database.ExecuteSqlRaw(
+                    "CREATE TABLE IF NOT EXISTS \"Settings\" (\"Key\" TEXT NOT NULL PRIMARY KEY, \"Value\" TEXT);");
                 context.Database.ExecuteSqlRaw(
                     "CREATE TABLE IF NOT EXISTS __EFMigrationsHistory (MigrationId TEXT PRIMARY KEY, ProductVersion TEXT);");
                 context.Database.ExecuteSqlRaw(

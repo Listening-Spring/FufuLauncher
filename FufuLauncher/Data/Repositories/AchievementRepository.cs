@@ -7,71 +7,60 @@ namespace FufuLauncher.Data.Repositories;
 
 public class AchievementRepository
 {
-    private string _dbPath;
+    private string? _overridePath;
+    private string DbPath => _overridePath ?? Path.Combine(Helpers.AppPaths.DataDir, "achievements.db");
 
-    public AchievementRepository(string dbPath)
-    {
-        _dbPath = dbPath;
-    }
+    public AchievementRepository() { }
 
-    public void ChangeDatabase(string newDbPath)
+    public void ChangeDatabase(string? newDbPath)
     {
-        _dbPath = newDbPath;
+        _overridePath = newDbPath;
     }
 
     private static readonly object _migrateLock = new();
-    private static bool _migrated;
+    private static readonly System.Collections.Concurrent.ConcurrentDictionary<string, bool> _migratedPaths
+        = new(StringComparer.OrdinalIgnoreCase);
 
     private AchievementDbContext CreateContext()
     {
-        if (!_migrated)
+        var dbPath = DbPath;
+        if (!_migratedPaths.ContainsKey(dbPath))
         {
             lock (_migrateLock)
             {
-                if (!_migrated)
+                if (!_migratedPaths.ContainsKey(dbPath))
                 {
-                    PerformMigration();
-                    _migrated = true;
+                    PerformMigration(dbPath);
+                    _migratedPaths[dbPath] = true;
                 }
             }
         }
-        return new AchievementDbContext(_dbPath);
+        return new AchievementDbContext(dbPath);
     }
 
-    /// <summary>
-    /// Safely ensures the database is ready for use.
-    /// For existing databases created by the old raw-SQLite version (which lack
-    /// __EFMigrationsHistory), we skip Migrate() entirely and manually create the
-    /// history record. This avoids a failed Migrate() transaction that can leave
-    /// the SQLite connection in a broken state.
-    /// </summary>
-    private void PerformMigration()
+    private void PerformMigration(string dbPath)
     {
         try
         {
-            var dir = Path.GetDirectoryName(_dbPath);
+            var dir = Path.GetDirectoryName(dbPath);
             if (!string.IsNullOrEmpty(dir))
                 Directory.CreateDirectory(dir);
 
-            // Check whether the Categories table already exists (pre-EF database)
             bool tableExists = false;
             try
             {
-                using var checkConn = new SqliteConnection($"Data Source={_dbPath}");
+                using var checkConn = new SqliteConnection($"Data Source={dbPath}");
                 checkConn.Open();
                 using var checkCmd = checkConn.CreateCommand();
                 checkCmd.CommandText =
                     "SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name='Categories';";
                 tableExists = (long)checkCmd.ExecuteScalar()! > 0;
             }
-            catch
-            {
-                // If we can't open the connection, let Migrate() handle it
-            }
+            catch { }
 
             if (tableExists)
             {
-                using var context = new AchievementDbContext(_dbPath);
+                using var context = new AchievementDbContext(dbPath);
                 context.Database.ExecuteSqlRaw(
                     "CREATE TABLE IF NOT EXISTS __EFMigrationsHistory (MigrationId TEXT PRIMARY KEY, ProductVersion TEXT);");
                 context.Database.ExecuteSqlRaw(
@@ -80,8 +69,8 @@ public class AchievementRepository
             }
             else
             {
-                using var context = new AchievementDbContext(_dbPath);
-                context.Database.Migrate();
+                using var context = new AchievementDbContext(dbPath);
+                context.Database.EnsureCreated();
                 Debug.WriteLine("AchievementRepository: 已创建新数据库");
             }
         }
@@ -91,7 +80,7 @@ public class AchievementRepository
 
             try
             {
-                using var context = new AchievementDbContext(_dbPath);
+                using var context = new AchievementDbContext(dbPath);
                 context.Database.ExecuteSqlRaw(
                     "CREATE TABLE IF NOT EXISTS __EFMigrationsHistory (MigrationId TEXT PRIMARY KEY, ProductVersion TEXT);");
                 context.Database.ExecuteSqlRaw(

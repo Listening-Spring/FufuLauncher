@@ -120,12 +120,9 @@ public partial class App : Application
                 {
                     services.AddTransient<ActivationHandler<LaunchActivatedEventArgs>, DefaultActivationHandler>();
 
-                    services.AddSingleton<LocalSettingsRepository>(_ =>
-                        new LocalSettingsRepository(Helpers.AppPaths.LocalSettingsDb));
-                    services.AddSingleton<MetadataRepository>(_ =>
-                        new MetadataRepository(Helpers.AppPaths.MetadataDb));
-                    services.AddSingleton<AchievementRepository>(_ =>
-                        new AchievementRepository(Path.Combine(Helpers.AppPaths.DataDir, "achievements.db")));
+                    services.AddSingleton<LocalSettingsRepository>();
+                    services.AddSingleton<MetadataRepository>();
+                    services.AddSingleton<AchievementRepository>();
 
                     services.AddSingleton<ILocalSettingsService, LocalSettingsService>();
                     services.AddSingleton<IThemeSelectorService, ThemeSelectorService>();
