@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using FufuLauncher.Data.Entities;
+using FufuLauncher.Helpers;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 
@@ -7,15 +8,18 @@ namespace FufuLauncher.Data.Repositories;
 
 public class LocalSettingsRepository
 {
-    private readonly string _dbPath;
-
     public LocalSettingsRepository(string dbPath)
     {
-        _dbPath = dbPath;
+        // The dbPath parameter is retained for backward compatibility with DI
+        // registration, but the actual path is always resolved dynamically from
+        // AppPaths.LocalSettingsDb so that the repository stays in sync when
+        // AppPaths.DataDir is changed during the first-run agreement flow.
     }
 
     private static readonly object _migrateLock = new();
     private static bool _migrated;
+
+    private static string CurrentDbPath => AppPaths.LocalSettingsDb;
 
     private LocalSettingsDbContext CreateContext()
     {
@@ -30,7 +34,7 @@ public class LocalSettingsRepository
                 }
             }
         }
-        return new LocalSettingsDbContext(_dbPath);
+        return new LocalSettingsDbContext(CurrentDbPath);
     }
 
     /// <summary>
@@ -42,10 +46,11 @@ public class LocalSettingsRepository
     /// </summary>
     private void PerformMigration()
     {
+        var dbPath = CurrentDbPath;
         try
         {
             // Ensure the directory exists so SQLite can create the DB file
-            var dir = Path.GetDirectoryName(_dbPath);
+            var dir = Path.GetDirectoryName(dbPath);
             if (!string.IsNullOrEmpty(dir))
                 Directory.CreateDirectory(dir);
 
@@ -55,7 +60,7 @@ public class LocalSettingsRepository
             bool tableExists = false;
             try
             {
-                using var checkConn = new SqliteConnection($"Data Source={_dbPath}");
+                using var checkConn = new SqliteConnection($"Data Source={dbPath}");
                 checkConn.Open();
                 using var checkCmd = checkConn.CreateCommand();
                 checkCmd.CommandText =
@@ -72,7 +77,7 @@ public class LocalSettingsRepository
                 // Pre-existing database — skip Migrate() to avoid a failed
                 // CREATE TABLE.  Manually create the migration history so EF
                 // knows the InitialCreate migration has been applied.
-                using var context = new LocalSettingsDbContext(_dbPath);
+                using var context = new LocalSettingsDbContext(dbPath);
                 context.Database.ExecuteSqlRaw(
                     "CREATE TABLE IF NOT EXISTS __EFMigrationsHistory (MigrationId TEXT PRIMARY KEY, ProductVersion TEXT);");
                 context.Database.ExecuteSqlRaw(
@@ -82,7 +87,7 @@ public class LocalSettingsRepository
             else
             {
                 // Fresh database — let EF Migrate() create everything
-                using var context = new LocalSettingsDbContext(_dbPath);
+                using var context = new LocalSettingsDbContext(dbPath);
                 context.Database.Migrate();
                 Debug.WriteLine("LocalSettingsRepository: 已创建新数据库");
             }
@@ -95,7 +100,7 @@ public class LocalSettingsRepository
             // on a fresh context, so the app can at least start.
             try
             {
-                using var context = new LocalSettingsDbContext(_dbPath);
+                using var context = new LocalSettingsDbContext(dbPath);
                 context.Database.ExecuteSqlRaw(
                     "CREATE TABLE IF NOT EXISTS __EFMigrationsHistory (MigrationId TEXT PRIMARY KEY, ProductVersion TEXT);");
                 context.Database.ExecuteSqlRaw(
