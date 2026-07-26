@@ -1406,6 +1406,15 @@
                                         VerticalAlignment="Bottom" />
                             </StackPanel>
                         </StackPanel>
+                        <ToggleSwitch Header="{helpers:Loc Key=DisableCaptchaPopup}"
+                                      OffContent="{helpers:Loc Key=Show}"
+                                      OnContent="{helpers:Loc Key=Hide}"
+                                      IsOn="{x:Bind ViewModel.IsCaptchaPopupDisabled, Mode=TwoWay}"
+                                      Margin="0,16,0,0" />
+                        <TextBlock Text="{helpers:Loc Key=DisableCaptchaPopupCaption}"
+                                   Style="{ThemeResource CaptionTextBlockStyle}"
+                                   Opacity="0.7"
+                                   Margin="0,0,0,0" />
                         <Button HorizontalAlignment="Center"
                                 Margin="0,20,0,10"
                                 Padding="16,8"

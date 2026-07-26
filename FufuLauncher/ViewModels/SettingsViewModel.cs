@@ -180,6 +180,14 @@ namespace FufuLauncher.ViewModels
 
         [ObservableProperty] private bool _isUseThirdPartyCDNEnabled = true;
 
+        [ObservableProperty] private bool _isCaptchaPopupDisabled;
+
+        partial void OnIsCaptchaPopupDisabledChanged(bool value)
+        {
+            if (_isInitializing) return;
+            _ = _localSettingsService.SaveSettingAsync("IsCaptchaPopupDisabled", value);
+        }
+
         partial void OnIsScreenshotEnabledChanged(bool value)
         {
             if (_isInitializing) return;
@@ -1049,6 +1057,7 @@ namespace FufuLauncher.ViewModels
                 OnPropertyChanged(nameof(IsCpuUsageWarningEnabled));
                 OnPropertyChanged(nameof(CpuUsageWarningThreshold));
                 OnPropertyChanged(nameof(IsRedeemCodeNotificationEnabled));
+                OnPropertyChanged(nameof(IsCaptchaPopupDisabled));
                 LoadMonitors();
             }
             finally
@@ -1149,7 +1158,7 @@ namespace FufuLauncher.ViewModels
             var cpuWarningEnabledJson = await _localSettingsService.ReadSettingAsync(ProcessCpuUsageMonitor.IsEnabledSettingKey);
             IsCpuUsageWarningEnabled = cpuWarningEnabledJson == null || Convert.ToBoolean(cpuWarningEnabledJson);
 
-var cpuWarningThresholdJson = await _localSettingsService.ReadSettingAsync(ProcessCpuUsageMonitor.ThresholdSettingKey);
+            var cpuWarningThresholdJson = await _localSettingsService.ReadSettingAsync(ProcessCpuUsageMonitor.ThresholdSettingKey);
             CpuUsageWarningThreshold = cpuWarningThresholdJson != null
                 ? Math.Clamp(Convert.ToDouble(cpuWarningThresholdJson), 5.0, 100.0)
                 : ProcessCpuUsageMonitor.DefaultCpuThreshold;
@@ -1346,6 +1355,9 @@ var cpuWarningThresholdJson = await _localSettingsService.ReadSettingAsync(Proce
                 AppProcessPriority = AppProcessPriority.Normal;
             }
             ApplyProcessPriority(AppProcessPriority);
+            
+            var captchaPopupJson = await _localSettingsService.ReadSettingAsync("IsCaptchaPopupDisabled");
+            IsCaptchaPopupDisabled = captchaPopupJson != null && Convert.ToBoolean(captchaPopupJson);
         }
         
         private void CheckAndLimitDailyNoteItems(string settingName, Action revertAction)
