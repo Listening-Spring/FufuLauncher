@@ -10,6 +10,7 @@
         <PublishProfile>Properties\PublishProfiles\win-$(Platform).pubxml</PublishProfile>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <LangVersion>preview</LangVersion>
         <UseWinUI>true</UseWinUI>
 
         <EnableMsixTooling>true</EnableMsixTooling>
@@ -29,9 +30,9 @@
 
         <PublishReadyToRun>true</PublishReadyToRun>
 
-        <Version>1.4.3.3</Version>
-        <AssemblyVersion>1.4.3.3</AssemblyVersion>
-        <FileVersion>1.4.3.3</FileVersion>
+        <Version>1.4.4.0</Version>
+        <AssemblyVersion>1.4.4.0</AssemblyVersion>
+        <FileVersion>1.4.4.0</FileVersion>
         <Copyright>Copyright © FufuLauncher Development Team</Copyright>
     </PropertyGroup>
 
@@ -132,8 +133,11 @@
         <Content Include="Assets\Flags\**\*">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
+        <Content Include="Assets\Backpack\**\*">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
     </ItemGroup>
-
+    
     <ItemGroup>
         <Compile Remove="Models\GameConfig.cs" />
         <Compile Update="Views\Model\BrowserConfig.cs">

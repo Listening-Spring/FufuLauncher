@@ -1,5 +1,5 @@
 #define AppName       "FufuLauncher"
-#define AppVersion    "1.4.3.3"
+#define AppVersion    "1.4.4.0"
 #define AppPublisher  "FufuLauncher"
 #define AppExe        "FufuLauncher.exe"
 #define AppId         "{{A7B2C3D4-E5F6-7890-AB12-CD34EF567890}"
@@ -36,6 +36,8 @@ OutputBaseFilename={#AppName}_Setup_v{#AppVersion}
 Compression=lzma2/ultra64
 SolidCompression=yes
 LZMAUseSeparateProcess=yes
+LZMADictionarySize=1048576
+LZMANumFastBytes=273
 
 WizardStyle=modern
 WizardSizePercent=110
