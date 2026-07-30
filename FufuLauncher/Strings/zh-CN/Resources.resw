@@ -1058,6 +1058,11 @@
   <data name="WishBannerImage" xml:space="preserve"><value> 卡池图片</value></data>
   <data name="HelpPage_SearchResults" xml:space="preserve"><value>找到 {0} 个结果，点击条目打开</value></data>
   <data name="HelpPage_NoResults" xml:space="preserve"><value>未找到匹配的文档</value></data>
+  <data name="HelpPage_TranslateBtn" xml:space="preserve"><value>翻译</value></data>
+  <data name="HelpPage_ShowOriginalBtn" xml:space="preserve"><value>查看原文</value></data>
+  <data name="HelpPage_Translating" xml:space="preserve"><value>翻译中 ({0}/{1})...</value></data>
+  <data name="HelpPage_TranslateFailed" xml:space="preserve"><value>翻译失败</value></data>
+  <data name="HelpPage_TranslateComplete" xml:space="preserve"><value>翻译完成</value></data>
   <data name="Success" xml:space="preserve"><value>成功</value></data>
   <data name="Failure" xml:space="preserve"><value>失败</value></data>
   <data name="Settings_Disclaimer" xml:space="preserve"><value>声明</value></data>
@@ -1692,13 +1697,13 @@
   <data name="DataPage_BannerAdviceItem" xml:space="preserve"><value>{0}（{1} · 深渊登场 {2}）</value></data>
   <data name="DataPage_ListSeparator" xml:space="preserve"><value>、</value></data>
   <data name="DataPage_ClauseSeparator" xml:space="preserve"><value>；</value></data>
-  <data name="DataPage_ExportPdf" xml:space="preserve"><value>导出专业 PDF 分析报告</value></data>
-  <data name="DataPage_ExportPdfFileType" xml:space="preserve"><value>PDF 文档</value></data>
-  <data name="DataPage_Exporting" xml:space="preserve"><value>正在生成 FufuLauncher 数据分析报告…</value></data>
-  <data name="DataPage_Exported" xml:space="preserve"><value>PDF 报告已导出：{0}</value></data>
-  <data name="DataPage_ExportFailed" xml:space="preserve"><value>PDF 导出失败：{0}</value></data>
-  <data name="DataPage_ExportSuccessTitle" xml:space="preserve"><value>PDF 报告已导出</value></data>
-  <data name="DataPage_ExportFailedTitle" xml:space="preserve"><value>PDF 导出失败</value></data>
+  <data name="DataPage_ExportPdf" xml:space="preserve"><value>导出PDF分析报告</value></data>
+  <data name="DataPage_ExportPdfFileType" xml:space="preserve"><value>PDF文档</value></data>
+  <data name="DataPage_Exporting" xml:space="preserve"><value>正在生成FufuLauncher数据分析报告…</value></data>
+  <data name="DataPage_Exported" xml:space="preserve"><value>PDF报告已导出：{0}</value></data>
+  <data name="DataPage_ExportFailed" xml:space="preserve"><value>PDF导出失败：{0}</value></data>
+  <data name="DataPage_ExportSuccessTitle" xml:space="preserve"><value>PDF报告已导出</value></data>
+  <data name="DataPage_ExportFailedTitle" xml:space="preserve"><value>PDF导出失败</value></data>
   <data name="Backpack_TabWeapon.Header" xml:space="preserve">
     <value>武器</value>
   </data>
