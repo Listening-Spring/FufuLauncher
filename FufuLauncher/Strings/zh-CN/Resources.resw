@@ -246,6 +246,24 @@
   <data name="MinWindowSizeLimitTitle" xml:space="preserve">
     <value>窗口最小大小限制</value>
   </data>
+  <data name="NotificationPositionTitle" xml:space="preserve">
+    <value>通知弹窗位置</value>
+  </data>
+  <data name="NotificationPositionCaption" xml:space="preserve">
+    <value>设置通知弹窗在窗口中的显示位置</value>
+  </data>
+  <data name="PositionBottomRight" xml:space="preserve">
+    <value>右下角</value>
+  </data>
+  <data name="PositionTopRight" xml:space="preserve">
+    <value>右上角</value>
+  </data>
+  <data name="PositionTopLeft" xml:space="preserve">
+    <value>左上角</value>
+  </data>
+  <data name="PositionBottomLeft" xml:space="preserve">
+    <value>左下角</value>
+  </data>
   <data name="GameNewsTextColorTitle" xml:space="preserve">
     <value>游戏资讯卡片文字颜色与透明度</value>
   </data>
@@ -2023,9 +2041,6 @@
   <data name="HelpPage_SearchPlaceholder" xml:space="preserve">
     <value>搜索标题、文件名或内容...</value>
   </data>
-  <data name="AboutPage_GetBuildFromActions" xml:space="preserve">
-    <value>从Github Actions获取构建</value>
-  </data>
   <data name="AboutPage_Contributors" xml:space="preserve">
     <value>贡献者名单</value>
   </data>
@@ -3237,38 +3252,11 @@ UIGF v4.x/3.0/2.x</value>
   <data name="AboutPage_ConfirmNav" xml:space="preserve">
     <value>确认跳转/复制</value>
   </data>
-  <data name="AboutPage_GitHubToken" xml:space="preserve">
-    <value>GitHub Token</value>
-  </data>
-  <data name="AboutPage_FetchSuccess" xml:space="preserve">
-    <value>获取成功! 已生成下载脚本.</value>
-  </data>
-  <data name="AboutPage_EnterToken" xml:space="preserve">
-    <value>请输入Token! </value>
-  </data>
-  <data name="AboutPage_FetchFailedArtifact" xml:space="preserve">
-    <value>获取失败 (未找到工件)</value>
-  </data>
-  <data name="AboutPage_FetchFailedRun" xml:space="preserve">
-    <value>获取失败 (未找到成功运行)</value>
-  </data>
-  <data name="AboutPage_FetchFailedWorkflow" xml:space="preserve">
-    <value>获取失败 (未找到工作流)</value>
-  </data>
-  <data name="AboutPage_Exception" xml:space="preserve">
-    <value>发生异常</value>
-  </data>
-  <data name="AboutPage_GitHubTokenPlaceholder" xml:space="preserve">
-    <value>请输入你的 GitHub Token</value>
-  </data>
   <data name="AboutPage_SelectContact" xml:space="preserve">
     <value>选择联系方式</value>
   </data>
   <data name="AboutPage_DiscordCopied" xml:space="preserve">
     <value>Discord ID 已复制!</value>
-  </data>
-  <data name="AboutPage_Loading" xml:space="preserve">
-    <value>正在获取...</value>
   </data>
   <data name="AchievementWindow_DefaultProfile" xml:space="preserve">
     <value>默认存档</value>
