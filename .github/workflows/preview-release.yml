@@ -52,19 +52,27 @@ jobs:
         $baseOutputDir = "FufuLauncher\bin\x64\Release\net8.0-windows10.0.26100.0"
 
         $launcherDll = Get-ChildItem -Path "FufuLauncher.UnlockerIsland_Repo" -Filter "Launcher.dll" -Recurse |
-            Where-Object { $_.FullName -match "x64" -and $_.FullName -match "Release" } |
+            Where-Object {
+                $_.FullName -match "x64" -and
+                $_.FullName -match "Release"
+            } |
             Select-Object -First 1
 
         $launcher2Exe = Get-ChildItem -Path "FufuLauncher.UnlockerIsland_Repo" -Filter "Launcher_2.exe" -Recurse |
-            Where-Object { $_.FullName -match "x64" -and $_.FullName -match "Release" } |
+            Where-Object {
+                $_.FullName -match "x64" -and
+                $_.FullName -match "Release"
+            } |
             Select-Object -First 1
 
         if ($launcherDll -and $launcher2Exe) {
             Copy-Item -Path $launcherDll.FullName -Destination "$baseOutputDir\Launcher.dll" -Force
             Copy-Item -Path $launcher2Exe.FullName -Destination "$baseOutputDir\Launcher_2.exe" -Force
-            Write-Host "成功替换Launcher.dll和Launcher_2.exe"
-        } else {
-            Write-Error "未能定位到Launcher.dll或Launcher_2.exe编译产物"
+
+            Write-Host "成功替换 Launcher.dll 和 Launcher_2.exe"
+        }
+        else {
+            Write-Error "未能定位到 Launcher.dll 或 Launcher_2.exe 编译产物"
             exit 1
         }
 
@@ -89,14 +97,18 @@ jobs:
         $baseOutputDir = "FufuLauncher\bin\x64\Release\net8.0-windows10.0.26100.0"
 
         $captureAppExe = Get-ChildItem -Path "FufuLauncher.CaptureApp_Repo" -Filter "CaptureApp.exe" -Recurse |
-            Where-Object { $_.FullName -match "Release" } |
+            Where-Object {
+                $_.FullName -match "Release"
+            } |
             Select-Object -First 1
 
         if ($captureAppExe) {
             Copy-Item -Path $captureAppExe.FullName -Destination "$baseOutputDir\CaptureApp.exe" -Force
-            Write-Host "成功替换CaptureApp.exe"
-        } else {
-            Write-Error "未能定位到CaptureApp.exe编译产物"
+
+            Write-Host "成功替换 CaptureApp.exe"
+        }
+        else {
+            Write-Error "未能定位到 CaptureApp.exe 编译产物"
             exit 1
         }
 
@@ -116,9 +128,11 @@ jobs:
 
         if ($fufuOutputDir) {
             Copy-Item -Path "PublishOutput\*" -Destination $fufuOutputDir.FullName -Force -Recurse
-            Write-Host "已将UpdateFufuLauncher的发布产物移动至$($fufuOutputDir.FullName)"
-        } else {
-            Write-Error "未能定位到FufuLauncher的构建输出目录"
+
+            Write-Host "已将 UpdateFufuLauncher 发布产物移动至 $($fufuOutputDir.FullName)"
+        }
+        else {
+            Write-Error "未能定位到 FufuLauncher 的构建输出目录"
             exit 1
         }
 
@@ -130,63 +144,42 @@ jobs:
       run: |
         $baseOutputDir = "FufuLauncher\bin\x64\Release\net8.0-windows10.0.26100.0"
 
-        Write-Host "Compressing Launcher.dll and Launcher_2.exe with UPX (best compression)..."
+        $launcherDll = "$baseOutputDir\Launcher.dll"
+        $launcher2Exe = "$baseOutputDir\Launcher_2.exe"
 
-        upx --best "$baseOutputDir\Launcher.dll"
-        upx --best "$baseOutputDir\Launcher_2.exe"
+        Write-Host "开始使用 UPX 压缩 Launcher 文件..."
 
-    - name: Regenerate hash.txt for modified files
+        if (Test-Path $launcherDll) {
+            upx --best $launcherDll
+        }
+        else {
+            Write-Error "找不到 Launcher.dll"
+            exit 1
+        }
+
+        if (Test-Path $launcher2Exe) {
+            upx --best $launcher2Exe
+        }
+        else {
+            Write-Error "找不到 Launcher_2.exe"
+            exit 1
+        }
+
+        Write-Host "UPX 压缩完成"
+
+    - name: Preserve hash.txt
       shell: pwsh
       run: |
         $outputDir = "FufuLauncher\bin\x64\Release\net8.0-windows10.0.26100.0"
         $hashFile = Join-Path $outputDir "Assets\Launcher\hash.txt"
-        $captureApp = Join-Path $outputDir "CaptureApp.exe"
-        $launcher = Join-Path $outputDir "Launcher.dll"
 
-        Write-Host "Hash file: $hashFile"
-
-        # hash.txt 不存在时直接跳过
-        if (-not (Test-Path $hashFile)) {
-            Write-Host "hash.txt not found, skipping hash update."
-            exit 0
+        if (Test-Path $hashFile) {
+            Write-Host "hash.txt found. Preserving original content:"
+            Get-Content -Path $hashFile
         }
-
-        # 强制转换为数组，避免空文件或单行文件导致索引异常
-        $existingLines = @(Get-Content -Path $hashFile -ErrorAction Stop)
-
-        Write-Host "Existing hash.txt lines: $($existingLines.Count)"
-
-        # hash.txt 存在但为空
-        if ($existingLines.Count -eq 0) {
-            Write-Warning "hash.txt exists but is empty. Skipping hash update."
-            exit 0
+        else {
+            Write-Warning "hash.txt not found."
         }
-
-        # 保留 hash.txt 第一行
-        $line1 = $existingLines[0]
-
-        # 更新 CaptureApp.exe 的 SHA512
-        if (Test-Path $captureApp) {
-            $line2 = (Get-FileHash $captureApp -Algorithm SHA512).Hash.ToLower()
-        } elseif ($existingLines.Count -gt 1) {
-            $line2 = $existingLines[1]
-        } else {
-            $line2 = ""
-        }
-
-        # 更新 Launcher.dll 的 SHA512
-        if (Test-Path $launcher) {
-            $line3 = (Get-FileHash $launcher -Algorithm SHA512).Hash.ToLower()
-        } elseif ($existingLines.Count -gt 2) {
-            $line3 = $existingLines[2]
-        } else {
-            $line3 = ""
-        }
-
-        # 写回 hash.txt
-        Set-Content -Path $hashFile -Value @($line1, $line2, $line3)
-
-        Write-Host "Updated hash.txt with UPX compressed file hashes"
 
     - name: Package Portable ZIP (Green Version)
       shell: pwsh
@@ -195,6 +188,8 @@ jobs:
         $zipPath = "FufuLauncher-Portable.zip"
 
         Compress-Archive -Path "$outputDir\*" -DestinationPath $zipPath -Force
+
+        Write-Host "Portable ZIP 打包完成: $zipPath"
 
     - name: Upload Portable ZIP Artifact
       uses: actions/upload-artifact@v4
@@ -216,8 +211,9 @@ jobs:
             Write-Output "### Build Successful" >> $env:GITHUB_STEP_SUMMARY
             Write-Output "Generated Installer: **$($exeFile.Name)**" >> $env:GITHUB_STEP_SUMMARY
             Write-Host "$($exeFile.BaseName)"
-        } else {
-            Write-Error "目录下未找到已打包的exe文件"
+        }
+        else {
+            Write-Error "目录下未找到已打包的 exe 文件"
             exit 1
         }
 
@@ -243,7 +239,10 @@ jobs:
             Copy-Item -Path "$stagingDir\FuFuPlugin.zip" -Destination "$stagingDir\FuFuPlugin.vmp2.zip" -Force
 
             Compress-Archive -Path "$stagingDir\*.zip" -DestinationPath "FuFuPlugin_Bundle.zip" -Force
-        } else {
+
+            Write-Host "FuFuPlugin Bundle 打包完成"
+        }
+        else {
             Write-Host "FuFuPlugin 目录为空或不存在，跳过打包。"
             New-Item -ItemType File -Force -Path "FuFuPlugin_Bundle.zip" | Out-Null
         }
