@@ -318,6 +318,9 @@
   <data name="LangPt" xml:space="preserve">
     <value>Português (Brasil)</value>
   </data>
+  <data name="LangHi" xml:space="preserve">
+    <value>हिन्दी</value>
+  </data>
   <data name="LangDefault" xml:space="preserve">
     <value>Use System Default Language</value>
   </data>
@@ -4255,6 +4258,9 @@ Files searched:
   </data>
   <data name="Geetest_CaptchaTitle" xml:space="preserve">
     <value>CAPTCHA Verification</value>
+  </data>
+  <data name="Launcher_DllNotFound" xml:space="preserve">
+    <value>Launcher.dll is missing. Injection is unavailable. Please ensure the file is built from FufuLauncher.UnlockerIsland.</value>
   </data>
   <data name="Launcher_DllNotLoaded" xml:space="preserve">
     <value>Launcher.dll failed to load due to missing C++ runtime or antivirus blocking. Cannot start.</value>
