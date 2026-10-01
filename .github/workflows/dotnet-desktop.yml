@@ -126,50 +126,7 @@ jobs:
             }
         }
 
-    - name: Collect PE files for signing
-      shell: pwsh
-      run: |
-        $outputDir = "${{ env.OUTPUT_DIR }}"
-        $signDir = "pe-files-to-sign"
-        New-Item -ItemType Directory -Force -Path $signDir | Out-Null
-        Get-ChildItem -Path $outputDir -Include *.exe,*.dll -Recurse | ForEach-Object {
-            $relativePath = $_.FullName.Substring((Resolve-Path $outputDir).Path.Length + 1)
-            $destPath = Join-Path $signDir $relativePath
-            $destDir = Split-Path $destPath -Parent
-            if (!(Test-Path $destDir)) { New-Item -ItemType Directory -Force -Path $destDir | Out-Null }
-            Copy-Item $_.FullName -Destination $destPath -Force
-        }
-
-    - name: Upload PE files for signing
-      id: upload-pe-files
-      uses: actions/upload-artifact@v4
-      with:
-        name: pe-files-unsigned
-        path: pe-files-to-sign\**
-
-    - name: Sign PE files with SignPath
-      uses: signpath/github-action-submit-signing-request@v2
-      with:
-        api-token: '${{ secrets.SIGNPATH_API_TOKEN }}'
-        organization-id: '73c13632-948a-4aa1-b946-5d9760dd50e5'
-        project-slug: 'FufuLauncher'
-        signing-policy-slug: 'release-signing'
-        artifact-configuration-slug: 'pe-files'
-        github-artifact-id: '${{ steps.upload-pe-files.outputs.artifact-id }}'
-        wait-for-completion: true
-        output-artifact-directory: 'signed-pe-files'
-
-    - name: Replace build output with signed PE files
-      shell: pwsh
-      run: |
-        $outputDir = "${{ env.OUTPUT_DIR }}"
-        Get-ChildItem -Path "signed-pe-files" -Include *.exe,*.dll -Recurse | ForEach-Object {
-            $relativePath = $_.FullName.Substring((Resolve-Path "signed-pe-files").Path.Length + 1)
-            $destPath = Join-Path $outputDir $relativePath
-            Copy-Item $_.FullName -Destination $destPath -Force
-        }
-
-    - name: Regenerate hash.txt for signed files
+    - name: Regenerate hash.txt for modified files
       shell: pwsh
       run: |
         $outputDir = "${{ env.OUTPUT_DIR }}"
@@ -220,29 +177,10 @@ jobs:
         }
 
     - name: Upload Installer Artifact
-      id: upload-unsigned-installer
       uses: actions/upload-artifact@v4
       with:
         name: ${{ env.EXE_NAME }}
         path: FufuLauncher.Installer\installer\*.exe
-
-    - name: Sign Installer with SignPath
-      uses: signpath/github-action-submit-signing-request@v2
-      with:
-        api-token: '${{ secrets.SIGNPATH_API_TOKEN }}'
-        organization-id: '73c13632-948a-4aa1-b946-5d9760dd50e5'
-        project-slug: 'FufuLauncher'
-        signing-policy-slug: 'release-signing'
-        artifact-configuration-slug: 'installer'
-        github-artifact-id: '${{ steps.upload-unsigned-installer.outputs.artifact-id }}'
-        wait-for-completion: true
-        output-artifact-directory: 'signed-output'
-
-    - name: Upload Signed Installer
-      uses: actions/upload-artifact@v4
-      with:
-        name: ${{ env.EXE_NAME }}-signed
-        path: signed-output\*.exe
 
     - name: Package FuFuPlugin
       shell: pwsh
