@@ -1,6 +1,6 @@
 #define AppName       "FufuLauncher"
-#define AppVersion    "1.7.0.3"
-#define AppVersionNum "1.7.0.3"
+#define AppVersion    "1.7.1.0"
+#define AppVersionNum "1.7.1.0"
 #define AppPublisher  "FufuLauncher"
 #define AppExe        "FufuLauncher.exe"
 #define AppId         "{{A7B2C3D4-E5F6-7890-AB12-CD34EF567890}"
@@ -38,7 +38,7 @@ Compression=lzma2/ultra64
 SolidCompression=yes
 LZMAUseSeparateProcess=yes
 
-WizardStyle=modern
+WizardStyle=modern dynamic includetitlebar
 WizardSizePercent=110
 SetupIconFile={#IconFile}
 UninstallDisplayIcon={app}\{#AppExe}
@@ -554,4 +554,10 @@ begin
     SetPreviousData(PreviousDataKey, 'desktopicon', '1')
   else
     SetPreviousData(PreviousDataKey, 'desktopicon', '0');
+end;
+
+procedure CurUninstallStepChanged(CurUninstallStep: TUninstallStep);
+begin
+  if CurUninstallStep = usUninstall then
+    RegDeleteValue(HKCU, 'Software\Microsoft\Windows\CurrentVersion\Run', '{#AppName}');
 end;
