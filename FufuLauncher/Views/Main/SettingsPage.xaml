@@ -2247,6 +2247,46 @@
                                         <ColumnDefinition Width="*" />
                                         <ColumnDefinition Width="Auto" />
                                     </Grid.ColumnDefinitions>
+                                    <FontIcon Style="{StaticResource RowIconStyle}" Glyph="&#xE946;" />
+                                    <StackPanel Grid.Column="1" Style="{StaticResource RowTextStyle}">
+                                        <TextBlock Style="{StaticResource RowTitleStyle}" Text="{helpers:Loc Key=EnableCaptchaNotice}" />
+                                        <TextBlock Style="{StaticResource RowCaptionStyle}" Text="{helpers:Loc Key=EnableCaptchaNoticeCaption}" />
+                                    </StackPanel>
+                                    <ToggleSwitch Grid.Column="2" Style="{StaticResource RowToggleStyle}"
+                                                  IsOn="{x:Bind ViewModel.IsCaptchaNoticeEnabled, Mode=TwoWay}" />
+                                </Grid>
+
+                                <Rectangle Style="{StaticResource RowDividerStyle}" />
+
+                                <Grid Style="{StaticResource SettingsRowStyle}">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <FontIcon Style="{StaticResource RowIconStyle}" Glyph="&#xE772;" />
+                                    <StackPanel Grid.Column="1" Style="{StaticResource RowTextStyle}">
+                                        <TextBlock Style="{StaticResource RowTitleStyle}" Text="{helpers:Loc Key=DeviceInfo_Title}" />
+                                        <TextBlock Style="{StaticResource RowCaptionStyle}" Text="{helpers:Loc Key=DeviceInfo_Caption}" />
+                                    </StackPanel>
+                                    <Button Grid.Column="2"
+                                            Style="{StaticResource RowButtonStyle}"
+                                            Click="OnOpenDeviceInfoWindowClick">
+                                        <StackPanel Orientation="Horizontal" Spacing="8">
+                                            <FontIcon Glyph="&#xE8A7;" FontSize="14" />
+                                            <TextBlock Text="{helpers:Loc Key=OtherPage_Open}" />
+                                        </StackPanel>
+                                    </Button>
+                                </Grid>
+
+                                <Rectangle Style="{StaticResource RowDividerStyle}" />
+
+                                <Grid Style="{StaticResource SettingsRowStyle}">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
                                     <FontIcon Style="{StaticResource RowIconStyle}" Glyph="&#xE70F;" />
                                     <StackPanel Grid.Column="1" Style="{StaticResource RowTextStyle}">
                                         <TextBlock Style="{StaticResource RowTitleStyle}" Text="{helpers:Loc Key=ConfigEditorBtn}" />
@@ -2621,6 +2661,94 @@
                                             Style="{StaticResource RowButtonStyle}"
                                             Content="{helpers:Loc Key=Settings_PluginSignature_Btn}"
                                             Click="OnVerifyPluginSignaturesClick" />
+                                </Grid>
+
+                                <Rectangle Style="{StaticResource RowDividerStyle}" />
+                                
+                                <Grid Style="{StaticResource SettingsRowStyle}">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <FontIcon Style="{StaticResource RowIconStyle}" Glyph="&#xE8D7;" />
+                                    <StackPanel Grid.Column="1" Style="{StaticResource RowTextStyle}">
+                                        <TextBlock Style="{StaticResource RowTitleStyle}" Text="{helpers:Loc Key=ModTrust_Title}" />
+                                        <TextBlock x:Name="ModTrustStatusText"
+                                                   Style="{StaticResource RowCaptionStyle}"
+                                                   TextWrapping="Wrap"
+                                                   Text="{helpers:Loc Key=ModTrust_Loading}" />
+                                        <TextBlock x:Name="ModTrustRootInfoText"
+                                                   Style="{StaticResource RowCaptionStyle}"
+                                                   TextWrapping="Wrap"
+                                                   Opacity="0.7" />
+                                    </StackPanel>
+                                    <Button Grid.Column="2"
+                                            Style="{StaticResource RowButtonStyle}"
+                                            Content="{helpers:Loc Key=ModTrust_RefreshBtn}"
+                                            Click="OnModTrustRefreshClick" />
+                                </Grid>
+
+                                <Rectangle Style="{StaticResource RowDividerStyle}" />
+                                
+                                <Grid x:Name="ModTrustInstallRow" Style="{StaticResource SettingsRowStyle}">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <FontIcon Style="{StaticResource RowIconStyle}" Glyph="&#xE723;" />
+                                    <StackPanel Grid.Column="1" Style="{StaticResource RowTextStyle}">
+                                        <TextBlock Style="{StaticResource RowTitleStyle}" Text="{helpers:Loc Key=ModTrust_InstallTitle}" />
+                                        <TextBlock Style="{StaticResource RowCaptionStyle}"
+                                                   TextWrapping="Wrap"
+                                                   Text="{helpers:Loc Key=ModTrust_InstallCaption}" />
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                                        <Button x:Name="ModTrustInstallUserButton"
+                                                Style="{StaticResource RowButtonStyle}"
+                                                Content="{helpers:Loc Key=ModTrust_InstallUserBtn}"
+                                                Click="OnModTrustInstallUserClick" />
+                                        <Button x:Name="ModTrustUninstallUserButton"
+                                                Style="{StaticResource RowButtonStyle}"
+                                                Content="{helpers:Loc Key=ModTrust_UninstallUserBtn}"
+                                                Click="OnModTrustUninstallUserClick" />
+                                        <Button x:Name="ModTrustInstallMachineButton"
+                                                Style="{StaticResource RowButtonStyle}"
+                                                Content="{helpers:Loc Key=ModTrust_InstallMachineBtn}"
+                                                Click="OnModTrustInstallMachineClick" />
+                                        <Button x:Name="ModTrustUninstallMachineButton"
+                                                Style="{StaticResource RowButtonStyle}"
+                                                Content="{helpers:Loc Key=ModTrust_UninstallMachineBtn}"
+                                                Click="OnModTrustUninstallMachineClick" />
+                                    </StackPanel>
+                                </Grid>
+
+                                <Rectangle Style="{StaticResource RowDividerStyle}" />
+                                
+                                <Grid Style="{StaticResource SettingsRowStyle}">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <FontIcon Style="{StaticResource RowIconStyle}" Glyph="&#xE895;" />
+                                    <StackPanel Grid.Column="1" Style="{StaticResource RowTextStyle}">
+                                        <TextBlock Style="{StaticResource RowTitleStyle}" Text="{helpers:Loc Key=ModTrust_SyncTitle}" />
+                                        <TextBlock Style="{StaticResource RowCaptionStyle}"
+                                                   TextWrapping="Wrap"
+                                                   Text="{helpers:Loc Key=ModTrust_SyncCaption}" />
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
+                                        <Button x:Name="ModTrustSyncButton"
+                                                Style="{StaticResource RowButtonStyle}"
+                                                Content="{helpers:Loc Key=ModTrust_SyncBtn}"
+                                                Click="OnModTrustSyncClick" />
+                                        <ToggleSwitch x:Name="ModTrustStrictToggle"
+                                                      OnContent="{helpers:Loc Key=ModTrust_StrictOn}"
+                                                      OffContent="{helpers:Loc Key=ModTrust_StrictOff}"
+                                                      Toggled="OnModTrustStrictToggled" />
+                                    </StackPanel>
                                 </Grid>
                             </StackPanel>
                         </Border>

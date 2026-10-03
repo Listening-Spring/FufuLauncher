@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <resheader name="resmimetype">
     <value>text/microsoft-resx</value>
@@ -6565,5 +6565,270 @@ Error: {0}</value>
   </data>
   <data name="PluginStoreWritingConfig" xml:space="preserve">
     <value>Writing configuration...</value>
+  </data>
+  <data name="EnableCaptchaNotice" xml:space="preserve">
+    <value>Show CAPTCHA popup notice</value>
+  </data>
+  <data name="EnableCaptchaNoticeCaption" xml:space="preserve">
+    <value>Shows a notice in the miHoYo risk-control CAPTCHA window explaining where it comes from. Turning it off only hides the text; verification still works.</value>
+  </data>
+  <data name="CaptchaNoticeWatermark" xml:space="preserve">
+    <value>MIYOUSHE NOTES · CAPTCHA</value>
+  </data>
+  <data name="CaptchaNoticeTitle" xml:space="preserve">
+    <value>This CAPTCHA belongs to Miyoushe Daily Notes</value>
+  </data>
+  <data name="CaptchaNoticeLine1" xml:space="preserve">
+    <value>This window is triggered by miHoYo risk control and is only used to verify "Daily Notes" requests. It is not the launcher's own CAPTCHA.</value>
+  </data>
+  <data name="CaptchaNoticeLine2" xml:space="preserve">
+    <value>Complete the verification to view your Daily Notes. To hide this notice, turn it off in Settings → Advanced Options.</value>
+  </data>
+  <data name="DeviceInfo_Title" xml:space="preserve">
+    <value>Miyoushe Device Info</value>
+  </data>
+  <data name="DeviceInfo_Caption" xml:space="preserve">
+    <value>View and edit the device fingerprint, identifiers and device profile of the selected account</value>
+  </data>
+  <data name="DeviceInfo_Account" xml:space="preserve">
+    <value>Account</value>
+  </data>
+  <data name="DeviceInfo_FingerprintSection" xml:space="preserve">
+    <value>Device Fingerprint</value>
+  </data>
+  <data name="DeviceInfo_FingerprintCaption" xml:space="preserve">
+    <value>Device identifiers used for Miyoushe API authentication. Changes apply to this account right after saving.</value>
+  </data>
+  <data name="DeviceInfo_ExtSection" xml:space="preserve">
+    <value>Device Profile (ext_fields)</value>
+  </data>
+  <data name="DeviceInfo_ExtCaption" xml:space="preserve">
+    <value>Device traits reported with the fingerprint. Each field can be edited individually.</value>
+  </data>
+  <data name="DeviceInfo_Randomize" xml:space="preserve">
+    <value>Randomize IDs</value>
+  </data>
+  <data name="DeviceInfo_Reload" xml:space="preserve">
+    <value>Reload</value>
+  </data>
+  <data name="DeviceInfo_RestoreDefaults" xml:space="preserve">
+    <value>Restore Defaults</value>
+  </data>
+  <data name="DeviceInfo_Save" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="DeviceInfo_FilterPlaceholder" xml:space="preserve">
+    <value>Filter fields</value>
+  </data>
+  <data name="DeviceInfo_NoAccount" xml:space="preserve">
+    <value>No account available</value>
+  </data>
+  <data name="DeviceInfo_NoFingerprint" xml:space="preserve">
+    <value>This account has no device fingerprint yet. Sign in and load data once, then you can edit it.</value>
+  </data>
+  <data name="DeviceInfo_Saved" xml:space="preserve">
+    <value>Saved</value>
+  </data>
+  <data name="DeviceInfo_SaveFailed" xml:space="preserve">
+    <value>Save failed</value>
+  </data>
+  <data name="DeviceInfo_InvalidJson" xml:space="preserve">
+    <value>ext_fields is not valid JSON</value>
+  </data>
+  <data name="DeviceInfo_Randomized" xml:space="preserve">
+    <value>Random device IDs generated. Save to apply.</value>
+  </data>
+  <data name="DeviceInfo_DefaultsRestored" xml:space="preserve">
+    <value>Default device profile restored. Save to apply.</value>
+  </data>
+  <data name="DeviceInfo_DeviceIdRequired" xml:space="preserve">
+    <value>device_id cannot be empty</value>
+  </data>
+  <data name="DeviceInfo_ResetToDefaults" xml:space="preserve">
+    <value>Reset to Defaults</value>
+  </data>
+  <data name="DeviceInfo_Resetting" xml:space="preserve">
+    <value>Resetting to default configuration...</value>
+  </data>
+  <data name="DeviceInfo_ResetDone" xml:space="preserve">
+    <value>Reset to default configuration</value>
+  </data>
+  <data name="DeviceInfo_ResetFailed" xml:space="preserve">
+    <value>Reset failed. Check your network and try again.</value>
+  </data>
+  <data name="Miyoushe_Title" xml:space="preserve"><value>Miyoushe</value></data>
+  <data name="Miyoushe_CardHint" xml:space="preserve"><value>Browse news, community posts and followed creators</value></data>
+  <data name="Miyoushe_Explore" xml:space="preserve"><value>Explore</value></data>
+  <data name="Miyoushe_Forum" xml:space="preserve"><value>Community</value></data>
+  <data name="Miyoushe_News" xml:space="preserve"><value>Official news</value></data>
+  <data name="Miyoushe_Following" xml:space="preserve"><value>Following</value></data>
+  <data name="Miyoushe_Favorites" xml:space="preserve"><value>Miyoushe favorites</value></data>
+  <data name="Miyoushe_Library" xml:space="preserve"><value>My library</value></data>
+  <data name="Miyoushe_Bookmarks" xml:space="preserve"><value>Local bookmarks</value></data>
+  <data name="Miyoushe_History" xml:space="preserve"><value>History</value></data>
+  <data name="Miyoushe_MyProfile" xml:space="preserve"><value>My profile</value></data>
+  <data name="Miyoushe_User" xml:space="preserve"><value>Author profile</value></data>
+  <data name="Miyoushe_Topic" xml:space="preserve"><value>Topic</value></data>
+  <data name="Miyoushe_Collection" xml:space="preserve"><value>Collection</value></data>
+  <data name="Miyoushe_Search" xml:space="preserve"><value>Search results</value></data>
+  <data name="Miyoushe_SearchHint" xml:space="preserve"><value>Search posts, or paste a post ID / Miyoushe link</value></data>
+  <data name="Miyoushe_Guest" xml:space="preserve"><value>Guest</value></data>
+  <data name="Miyoushe_GuestHint" xml:space="preserve"><value>Public posts are available as a guest. Select a Chinese server account for your feeds and favorites.</value></data>
+  <data name="Miyoushe_AccountHint" xml:space="preserve"><value>Switching applies only to this window</value></data>
+  <data name="Miyoushe_LoginHint" xml:space="preserve"><value>Log in to a Chinese server account in the launcher&apos;s account manager, then select it here. Sign in again if the session has expired.</value></data>
+  <data name="Miyoushe_IdentityError" xml:space="preserve"><value>The account device identity is unavailable. Switched to guest mode. Sign in again in account management and retry.</value></data>
+  <data name="Miyoushe_Refresh" xml:space="preserve"><value>Refresh</value></data>
+  <data name="Miyoushe_RefreshHint" xml:space="preserve"><value>Refresh the current page (F5)</value></data>
+  <data name="Miyoushe_Refreshed" xml:space="preserve"><value>Refreshed ({0})</value></data>
+  <data name="Miyoushe_Empty" xml:space="preserve"><value>No posts to display</value></data>
+  <data name="Miyoushe_More" xml:space="preserve"><value>Load more</value></data>
+  <data name="Miyoushe_SelectPost" xml:space="preserve"><value>Select a post to start reading</value></data>
+  <data name="Miyoushe_Save" xml:space="preserve"><value>Save locally</value></data>
+  <data name="Miyoushe_CopyLink" xml:space="preserve"><value>Copy link</value></data>
+  <data name="Miyoushe_Original" xml:space="preserve"><value>Open original</value></data>
+  <data name="Miyoushe_Article" xml:space="preserve"><value>Article</value></data>
+  <data name="Miyoushe_Comments" xml:space="preserve"><value>Comments</value></data>
+  <data name="Miyoushe_HotReplies" xml:space="preserve"><value>Top comments</value></data>
+  <data name="Miyoushe_LatestReplies" xml:space="preserve"><value>Newest comments</value></data>
+  <data name="Miyoushe_OldestReplies" xml:space="preserve"><value>Oldest comments</value></data>
+  <data name="Miyoushe_OnlyAuthor" xml:space="preserve"><value>Author only</value></data>
+  <data name="Miyoushe_Hot" xml:space="preserve"><value>Popular</value></data>
+  <data name="Miyoushe_Latest" xml:space="preserve"><value>Newest posts</value></data>
+  <data name="Miyoushe_Featured" xml:space="preserve"><value>Featured</value></data>
+  <data name="Miyoushe_Notices" xml:space="preserve"><value>Notices</value></data>
+  <data name="Miyoushe_Events" xml:space="preserve"><value>Events</value></data>
+  <data name="Miyoushe_NoComments" xml:space="preserve"><value>No comments yet</value></data>
+  <data name="Miyoushe_SubReplies" xml:space="preserve"><value>View {0} replies</value></data>
+  <data name="Miyoushe_Close" xml:space="preserve"><value>Close</value></data>
+  <data name="Miyoushe_Image" xml:space="preserve"><value>Image</value></data>
+  <data name="Miyoushe_OpenImage" xml:space="preserve"><value>Open original image</value></data>
+  <data name="Miyoushe_LinkCopied" xml:space="preserve"><value>Post link copied</value></data>
+  <data name="Miyoushe_SearchTooLong" xml:space="preserve"><value>Search text must be at most 200 characters</value></data>
+  <data name="Miyoushe_Retry" xml:space="preserve"><value>Retry</value></data>
+  <data name="Miyoushe_Timeout" xml:space="preserve"><value>Request timed out. Please try again.</value></data>
+  <data name="Miyoushe_Verify" xml:space="preserve"><value>Complete verification</value></data>
+  <data name="Miyoushe_RiskHint" xml:space="preserve"><value>Miyoushe requires verification. Requests are paused. Complete the official captcha to retry the last operation.</value></data>
+  <data name="Miyoushe_VerifyHint" xml:space="preserve"><value>Complete the official Miyoushe captcha. Close this window to cancel.</value></data>
+  <data name="Miyoushe_VerifyLoadError" xml:space="preserve"><value>Captcha failed to load. Check your connection and retry, or verify on the official Miyoushe website.</value></data>
+  <data name="Miyoushe_VerifyCancelled" xml:space="preserve"><value>Verification cancelled. Requests remain paused. Retry to verify again.</value></data>
+  <data name="Miyoushe_LibraryError" xml:space="preserve"><value>Could not read local bookmarks or history. The existing file has been preserved.</value></data>
+  <data name="Miyoushe_Back" xml:space="preserve"><value>Back</value></data>
+  <data name="Miyoushe_RightComments" xml:space="preserve"><value>Side comments</value></data>
+  <data name="Miyoushe_CommentsLayoutHint" xml:space="preserve"><value>Show comments in the right sidebar; turn off to place them below the post</value></data>
+  <data name="Miyoushe_LoadingComments" xml:space="preserve"><value>Loading comments…</value></data>
+  <data name="Miyoushe_CommentsUnavailable" xml:space="preserve"><value>Comments are unavailable. Use the message above to retry.</value></data>
+  <data name="Miyoushe_Like" xml:space="preserve"><value>Like</value></data>
+  <data name="Miyoushe_Liked" xml:space="preserve"><value>Liked</value></data>
+  <data name="Miyoushe_PublishComment" xml:space="preserve"><value>Comment</value></data>
+  <data name="Miyoushe_Reply" xml:space="preserve"><value>Reply</value></data>
+  <data name="Miyoushe_ReplyTo" xml:space="preserve"><value>Reply to @{0}</value></data>
+  <data name="Miyoushe_CommentHint" xml:space="preserve"><value>Write a comment (up to 1000 characters)</value></data>
+  <data name="Miyoushe_SendComment" xml:space="preserve"><value>Publish to Miyoushe</value></data>
+  <data name="Miyoushe_Cancel" xml:space="preserve"><value>Cancel</value></data>
+  <data name="Miyoushe_VerifyAndSend" xml:space="preserve"><value>Verify and publish</value></data>
+  <data name="Miyoushe_Resubmit" xml:space="preserve"><value>Publish again</value></data>
+  <data name="Miyoushe_CommentSent" xml:space="preserve"><value>Comment submitted; showing latest comments</value></data>
+  <data name="Miyoushe_SubmissionUncertain" xml:space="preserve"><value>Submission could not be confirmed. Your draft is kept. Check the original post before publishing again.</value></data>
+  <data name="Miyoushe_CommentRiskHint" xml:space="preserve"><value>Miyoushe requires verification. Select Verify and publish to complete the official captcha and submit this comment.</value></data>
+    <data name="ModTrust_Title" xml:space="preserve">
+    <value>Code signing trust (FufuLauncher CA)</value>
+  </data>
+    <data name="ModTrust_Loading" xml:space="preserve">
+    <value>Loading trust status...</value>
+  </data>
+    <data name="ModTrust_RefreshBtn" xml:space="preserve">
+    <value>Refresh</value>
+  </data>
+    <data name="ModTrust_PackageMissing" xml:space="preserve">
+    <value>Trust package not deployed: place the certificate and manifest files under Assets\Trust, or click "Update now" to sync from the official endpoint.</value>
+  </data>
+    <data name="ModTrust_StatusFormat" xml:space="preserve">
+    <value>Status: {0}</value>
+    <value>Sync endpoint: {1}</value>
+  </data>
+    <data name="ModTrust_InstalledUser" xml:space="preserve">
+    <value>installed (current user)</value>
+  </data>
+    <data name="ModTrust_InstalledMachine" xml:space="preserve">
+    <value>installed (machine)</value>
+  </data>
+    <data name="ModTrust_NotInstalled" xml:space="preserve">
+    <value>not installed</value>
+  </data>
+    <data name="ModTrust_InstallTitle" xml:space="preserve">
+    <value>Certificate install / uninstall</value>
+  </data>
+        <data name="ModTrust_InstallCaption" xml:space="preserve">
+    <value>After installing, code signatures we issue are recognised by Windows and this launcher. You can remove them at any time.</value>
+  </data>
+    <data name="ModTrust_InstallUserBtn" xml:space="preserve">
+    <value>Install (user)</value>
+  </data>
+    <data name="ModTrust_UninstallUserBtn" xml:space="preserve">
+    <value>Uninstall (user)</value>
+  </data>
+        <data name="ModTrust_InstallMachineBtn" xml:space="preserve">
+    <value>Install (machine, admin)</value>
+  </data>
+        <data name="ModTrust_UninstallMachineBtn" xml:space="preserve">
+    <value>Uninstall (machine, admin)</value>
+  </data>
+    <data name="ModTrust_ScopeUser" xml:space="preserve">
+    <value>current user</value>
+  </data>
+    <data name="ModTrust_ScopeMachine" xml:space="preserve">
+    <value>machine</value>
+  </data>
+        <data name="ModTrust_InstallConfirm" xml:space="preserve">
+    <value>Install the platform certificate for the {0}? Code signatures we issue will then be recognised. Continue?</value>
+  </data>
+        <data name="ModTrust_UninstallConfirm" xml:space="preserve">
+    <value>Remove the platform certificate for the {0}? Code signatures we issue will no longer be trusted. Continue?</value>
+  </data>
+        <data name="ModTrust_SyncTitle" xml:space="preserve">
+    <value>Trust information update / strict mode</value>
+  </data>
+        <data name="ModTrust_SyncCaption" xml:space="preserve">
+    <value>Update trust information from the official endpoint. Strict mode only loads files that pass signature verification.</value>
+  </data>
+    <data name="ModTrust_SyncBtn" xml:space="preserve">
+    <value>Update now</value>
+  </data>
+        <data name="ModTrust_SyncConfirm" xml:space="preserve">
+    <value>Trust information will be downloaded from the official endpoint and verified; it is not applied if verification fails. Continue?</value>
+  </data>
+    <data name="ModTrust_StrictOn" xml:space="preserve">
+    <value>Strict</value>
+  </data>
+    <data name="ModTrust_StrictOff" xml:space="preserve">
+    <value>Warn only</value>
+  </data>
+        <data name="ModTrust_StrictTitle" xml:space="preserve">
+    <value>Enable strict mode</value>
+  </data>
+        <data name="ModTrust_StrictConfirm" xml:space="preserve">
+    <value>Once enabled, files that fail signature verification will be blocked, which may affect third-party plugins you currently use. Continue?</value>
+  </data>
+    <data name="ModTrust_BlockedTitle" xml:space="preserve">
+    <value>Code signature verification failed</value>
+  </data>
+        <data name="ModTrust_BlockedMsg" xml:space="preserve">
+    <value>This file failed signature verification and was blocked:</value>
+    <value></value>
+    <value>{0}</value>
+    <value></value>
+    <value>See Settings -&gt; Security -&gt; Code signing trust for details.</value>
+  </data>
+    <data name="ModTrust_WarnTitle" xml:space="preserve">
+    <value>Code signing notice</value>
+  </data>
+    <data name="ModTrust_InstalledMachineEffective" xml:space="preserve">
+    <value>installed (machine, applies to all users)</value>
+  </data>
+    <data name="ModTrust_InstalledBoth" xml:space="preserve">
+    <value>installed (current user + machine)</value>
+  </data>
+    <data name="ModTrust_MachineHint" xml:space="preserve">
+    <value>The current-user scope is provided by the machine installation; install and uninstall from the machine scope.</value>
   </data>
 </root>

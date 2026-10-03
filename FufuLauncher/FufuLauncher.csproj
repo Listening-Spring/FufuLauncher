@@ -30,9 +30,9 @@
 
         <PublishReadyToRun>true</PublishReadyToRun>
 
-        <Version>1.7.0.3</Version>
-        <AssemblyVersion>1.7.0.3</AssemblyVersion>
-        <FileVersion>1.7.0.3</FileVersion>
+        <Version>1.7.1.0</Version>
+        <AssemblyVersion>1.7.1.0</AssemblyVersion>
+        <FileVersion>1.7.1.0</FileVersion>
         <Copyright>Copyright © FufuLauncher Development Team</Copyright>
     </PropertyGroup>
 
@@ -116,6 +116,7 @@
         <None Update="appsettings.json">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
+        <None Update="Licenses\TeyvatGuide.txt" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
         <None Remove="Plugins\Avatar\**" />
     </ItemGroup>
 
@@ -131,6 +132,10 @@
         </Content>
         <Content Include="Assets\mirrors.json">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <Content Include="Assets\Trust\**\*">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
         </Content>
     </ItemGroup>
     
