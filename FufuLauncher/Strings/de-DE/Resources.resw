@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <resheader name="resmimetype">
     <value>text/microsoft-resx</value>
@@ -511,6 +511,12 @@ Wenn du fortfährst, wird diese Warnung ignoriert und der Hash dieser Vorgabe au
   <data name="LangDefault" xml:space="preserve">
     <value>System-Standardsprache verwenden</value>
   </data>
+  <data name="EnableLaunchArgsTitle" xml:space="preserve">
+    <value>Spielstartargumente aktivieren</value>
+  </data>
+  <data name="EnableLaunchArgsCaption" xml:space="preserve">
+    <value>Wenn deaktiviert, werden keine benutzerdefinierten Startargumente wie Fenstermodus oder Auflösung übergeben</value>
+  </data>
   <data name="LaunchWindowModeTitle" xml:space="preserve">
     <value>Fenstermodus</value>
   </data>
@@ -519,6 +525,9 @@ Wenn du fortfährst, wird diese Warnung ignoriert und der Hash dieser Vorgabe au
   </data>
   <data name="WindowModePopup" xml:space="preserve">
     <value>Popup-Fenster (rahmenlos)</value>
+  </data>
+  <data name="WindowModeFullScreen" xml:space="preserve">
+    <value>Vollbildfenster</value>
   </data>
   <data name="ResolutionTitle" xml:space="preserve">
     <value>Spielauflösung</value>
@@ -2704,13 +2713,13 @@ Jetzt zur Microsoft-Website gehen und herunterladen?</value>
     <value>HDR-Helligkeitskonfiguration</value>
   </data>
   <data name="HDR_NotSupported" xml:space="preserve">
-    <value>HDR nicht unterstützt</value>
+    <value>HDRnicht unterstützt</value>
   </data>
   <data name="HDR_NotSupportedMsg" xml:space="preserve">
-    <value>Der aktuelle Monitor meldet, dass er HDR nicht unterstützt.</value>
+    <value>Der aktuelle Monitor meldet, dass er HDRnicht unterstützt.</value>
   </data>
   <data name="HDR_NotEnabled" xml:space="preserve">
-    <value>HDR nicht aktiviert</value>
+    <value>HDRnicht aktiviert</value>
   </data>
   <data name="HDR_NotEnabledMsg" xml:space="preserve">
     <value>Der Windows-HDR-Modus ist nicht aktiviert. Die automatische Anpassung könnte ungenau sein.</value>
@@ -2722,10 +2731,10 @@ Jetzt zur Microsoft-Website gehen und herunterladen?</value>
     <value>HDR-Schaltereinstellung (bei jedem Start erzwingen)</value>
   </data>
   <data name="HDR_OffContent" xml:space="preserve">
-    <value>HDR deaktivieren (Registrierungswert 0)</value>
+    <value>HDRdeaktivieren (Registrierungswert 0)</value>
   </data>
   <data name="HDR_OnContent" xml:space="preserve">
-    <value>HDR aktivieren (Registrierungswert 1)</value>
+    <value>HDRaktivieren (Registrierungswert 1)</value>
   </data>
   <data name="HDR_RegistryNote" xml:space="preserve">
     <value>Hinweis: Nach dem Speichern wird die Registrierung sofort geändert und beim nächsten Spielstart automatisch erneut angewendet.</value>

@@ -1,4 +1,4 @@
-﻿/*
+/*
 Copyright (c) FufuLauncher Dev Team. All rights reserved.
 Licensed under the MIT License.
 */
@@ -38,7 +38,8 @@ public enum NotificationPosition
 public enum WindowModeType
 {
     Normal,
-    Popup
+    Popup,
+    FullScreen
 }
 
 public enum AppProcessPriority
@@ -61,10 +62,7 @@ public partial class SettingsViewModel : ObservableRecipient
     private readonly IFilePickerService _filePickerService;
     private readonly INotificationService _notificationService;
     private readonly AccountManager _accountManager;
-    private readonly Services.AuthTicket.IAuthTicketService _authTicketService;
     private readonly DispatcherQueue _dispatcherQueue;
-
-    public record MonitorItem(string DisplayName, int Index);
 
     [ObservableProperty] private ElementTheme _elementTheme;
     [ObservableProperty] private string _versionDescription;
@@ -75,11 +73,6 @@ public partial class SettingsViewModel : ObservableRecipient
     [ObservableProperty] private AppLanguage _selectedLanguage;
     [ObservableProperty] private bool _minimizeToTray;
     [ObservableProperty] private bool _isStartupEnabled;
-    [ObservableProperty] private string _customLaunchParameters = "";
-    [ObservableProperty] private WindowModeType _launchArgsWindowMode = WindowModeType.Normal;
-    [ObservableProperty] private string _launchArgsWidth = "";
-    [ObservableProperty] private string _launchArgsHeight = "";
-    [ObservableProperty] private string _launchArgsPreview = "";
     [ObservableProperty] private string _customBackgroundPath;
     [ObservableProperty] private bool _hasCustomBackground;
 
@@ -142,11 +135,6 @@ public partial class SettingsViewModel : ObservableRecipient
     [ObservableProperty] private WindowBackdropType _currentWindowBackdrop;
     [ObservableProperty] private string _webView2CacheSize;
     [ObservableProperty] private bool _isAutoCheckinEnabled;
-    [ObservableProperty] private string _customGameExeName;
-
-    [ObservableProperty] private ObservableCollection<MonitorItem> _availableMonitors = new();
-    [ObservableProperty] private MonitorItem _selectedMonitor;
-    [ObservableProperty] private int _launchArgsMonitorIndex = 0;
 
     [ObservableProperty] private bool _isShowPresetCardEnabled;
 
@@ -168,10 +156,6 @@ public partial class SettingsViewModel : ObservableRecipient
     [ObservableProperty] private bool _isCpuUsageWarningEnabled = true;
     [ObservableProperty] private double _cpuUsageWarningThreshold = ProcessCpuUsageMonitor.DefaultCpuThreshold;
 
-    [ObservableProperty] private bool _isRedeemCodeNotificationEnabled = true;
-
-    [ObservableProperty] private bool _isUsingHoyolabAccount;
-
     [ObservableProperty] private bool _isScreenshotEnabled;
     [ObservableProperty] private string _screenshotHotkey = "F12";
     [ObservableProperty] private string _screenshotSavePath;
@@ -182,9 +166,6 @@ public partial class SettingsViewModel : ObservableRecipient
     [ObservableProperty] private bool _isPreviewUpdateAnnouncementEnabled = true;
 
     [ObservableProperty] private bool _isPluginMirrorAccelerationEnabled = true;
-
-    [ObservableProperty] private bool _isPluginConflictCheckEnabled = true;
-    [ObservableProperty] private bool _isPluginConflictMainDllOnly = true;
 
     [ObservableProperty] private bool _ignoreConstraintRestrictions;
 
@@ -207,22 +188,6 @@ public partial class SettingsViewModel : ObservableRecipient
         get;
     }
 
-    [ObservableProperty] private PostLaunchBehavior _postLaunchBehavior;
-
-    public record PostLaunchBehaviorItem(string DisplayName, PostLaunchBehavior Value);
-
-    public List<PostLaunchBehaviorItem> PostLaunchBehaviorItems
-    {
-        get;
-    } = new()
-    {
-        new("不变", Models.PostLaunchBehavior.None),
-        new("最小化到托盘", Models.PostLaunchBehavior.MinimizeToTray),
-        new("保存状态并退出", Models.PostLaunchBehavior.Exit)
-    };
-
-    [ObservableProperty] private PostLaunchBehaviorItem _selectedPostLaunchBehaviorItem = null!;
-
     public ObservableCollection<NavItemConfig> NavItems
     {
         get;
@@ -244,11 +209,6 @@ public partial class SettingsViewModel : ObservableRecipient
     private CheckinAccountItem? _selectedCheckinAccount;
     [ObservableProperty] private bool _isLoadingCheckinAccounts;
 
-    public IAsyncRelayCommand ResetGameExeNameCommand
-    {
-        get;
-    }
-
     public IAsyncRelayCommand ClearWebView2CacheCommand
     {
         get;
@@ -260,11 +220,6 @@ public partial class SettingsViewModel : ObservableRecipient
     }
 
     public ICommand SwitchLanguageCommand
-    {
-        get;
-    }
-
-    public ICommand SetResolutionPresetCommand
     {
         get;
     }
@@ -339,7 +294,7 @@ public partial class SettingsViewModel : ObservableRecipient
 
     private bool _isUpdatingDailyNote;
 
-    private bool _isLoadingLaunchParams = false;
+    public LaunchConfigurationViewModel LaunchConfiguration { get; }
 
     #endregion
 
@@ -355,7 +310,7 @@ public partial class SettingsViewModel : ObservableRecipient
         IFilePickerService filePickerService,
         INotificationService notificationService,
         AccountManager accountManager,
-        Services.AuthTicket.IAuthTicketService authTicketService)
+        LaunchConfigurationViewModel launchConfiguration)
     {
         _themeSelectorService = themeSelectorService;
         _backgroundRenderer = backgroundRenderer;
@@ -366,12 +321,10 @@ public partial class SettingsViewModel : ObservableRecipient
         _filePickerService = filePickerService;
         _notificationService = notificationService;
         _accountManager = accountManager;
-        _authTicketService = authTicketService;
+        LaunchConfiguration = launchConfiguration;
         _dispatcherQueue = App.MainWindow.DispatcherQueue;
 
         RegisterSettingSections();
-
-        InitializeDefaultResolution();
 
         SelectStartupSoundCommand = new AsyncRelayCommand(SelectStartupSoundAsync);
         ClearStartupSoundCommand = new AsyncRelayCommand(ClearStartupSound);
@@ -383,7 +336,6 @@ public partial class SettingsViewModel : ObservableRecipient
         ClearWebView2CacheCommand = new AsyncRelayCommand(ClearWebView2CacheAsync);
         UpdateWebView2CacheSizeAsync();
         ClearCustomBackgroundCommand = new AsyncRelayCommand(ClearCustomBackgroundAsync);
-        ResetGameExeNameCommand = new AsyncRelayCommand(ResetGameExeNameAsync);
         ResetBackgroundApiCommand = new AsyncRelayCommand(ResetBackgroundApiAsync);
         ResetCpuUsageWarningSettingsCommand = new AsyncRelayCommand(ResetCpuUsageWarningSettingsAsync);
 
@@ -429,16 +381,6 @@ public partial class SettingsViewModel : ObservableRecipient
             catch (Exception ex)
             {
                 Debug.WriteLine($"语言切换失败: {ex.Message}");
-            }
-        });
-
-        SetResolutionPresetCommand = new RelayCommand<string>((param) =>
-        {
-            var parts = param.Split(' ');
-            if (parts.Length == 2)
-            {
-                LaunchArgsWidth = parts[0];
-                LaunchArgsHeight = parts[1];
             }
         });
 

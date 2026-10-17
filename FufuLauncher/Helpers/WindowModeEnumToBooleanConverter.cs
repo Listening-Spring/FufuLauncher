@@ -1,9 +1,10 @@
-﻿/*
+/*
 Copyright (c) FufuLauncher Dev Team. All rights reserved.
 Licensed under the MIT License.
 */
 
 using FufuLauncher.ViewModels;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Data;
 
 namespace FufuLauncher.Helpers
@@ -14,7 +15,7 @@ namespace FufuLauncher.Helpers
         {
             if (value is WindowModeType enumValue && parameter is string parameterString)
             {
-                if (Enum.TryParse<WindowModeType>(parameterString, out var paramValue))
+                if (Enum.TryParse<WindowModeType>(parameterString, true, out var paramValue))
                 {
                     return enumValue == paramValue;
                 }
@@ -27,13 +28,13 @@ namespace FufuLauncher.Helpers
         {
             if (value is bool boolValue && boolValue && parameter is string parameterString)
             {
-                if (Enum.TryParse<WindowModeType>(parameterString, out var paramValue))
+                if (Enum.TryParse<WindowModeType>(parameterString, true, out var paramValue))
                 {
                     return paramValue;
                 }
             }
 
-            return WindowModeType.Normal;
+            return DependencyProperty.UnsetValue;
         }
     }
 }

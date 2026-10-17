@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <resheader name="resmimetype">
     <value>text/microsoft-resx</value>
@@ -511,6 +511,12 @@ Jika tetap melanjutkan, peringatan ini akan diabaikan dan Hash preset akan diper
   <data name="LangDefault" xml:space="preserve">
     <value>Gunakan Bahasa Default Sistem</value>
   </data>
+  <data name="EnableLaunchArgsTitle" xml:space="preserve">
+    <value>Aktifkan Argumen Peluncuran Game</value>
+  </data>
+  <data name="EnableLaunchArgsCaption" xml:space="preserve">
+    <value>Saat dinonaktifkan, argumen peluncuran kustom seperti mode jendela dan resolusi tidak akan diteruskan</value>
+  </data>
   <data name="LaunchWindowModeTitle" xml:space="preserve">
     <value>Mode Jendela Peluncuran</value>
   </data>
@@ -519,6 +525,9 @@ Jika tetap melanjutkan, peringatan ini akan diabaikan dan Hash preset akan diper
   </data>
   <data name="WindowModePopup" xml:space="preserve">
     <value>Jendela Popup (Tanpa Bingkai)</value>
+  </data>
+  <data name="WindowModeFullScreen" xml:space="preserve">
+    <value>Jendela Layar Penuh</value>
   </data>
   <data name="ResolutionTitle" xml:space="preserve">
     <value>Resolusi Game</value>
@@ -539,7 +548,7 @@ Jika tetap melanjutkan, peringatan ini akan diabaikan dan Hash preset akan diper
     <value>Konfigurasi Kecerahan HDR</value>
   </data>
   <data name="HdrCaption" xml:space="preserve">
-    <value>Sesuaikan kecerahan puncak HDR dan kecerahan UI dalam game</value>
+    <value>Sesuaikan kecerahan puncak HDRdan kecerahan UI dalam game</value>
   </data>
   <data name="OpenHdrSettings" xml:space="preserve">
     <value>Buka Pengaturan HDR</value>
@@ -2704,28 +2713,28 @@ Buka situs web Microsoft untuk mengunduh dan menginstalnya?</value>
     <value>Konfigurasi Kecerahan HDR</value>
   </data>
   <data name="HDR_NotSupported" xml:space="preserve">
-    <value>HDR Tidak Didukung</value>
+    <value>HDRTidak Didukung</value>
   </data>
   <data name="HDR_NotSupportedMsg" xml:space="preserve">
-    <value>Monitor saat ini melaporkan bahwa HDR tidak didukung.</value>
+    <value>Monitor saat ini melaporkan bahwa HDRtidak didukung.</value>
   </data>
   <data name="HDR_NotEnabled" xml:space="preserve">
-    <value>HDR Tidak Aktif</value>
+    <value>HDRTidak Aktif</value>
   </data>
   <data name="HDR_NotEnabledMsg" xml:space="preserve">
-    <value>Mode HDR Windows tidak aktif; penyesuaian otomatis mungkin tidak akurat.</value>
+    <value>Mode HDRWindows tidak aktif; penyesuaian otomatis mungkin tidak akurat.</value>
   </data>
   <data name="HDR_DisplayInfo" xml:space="preserve">
     <value>Informasi Tampilan</value>
   </data>
   <data name="HDR_SwitchSetting" xml:space="preserve">
-    <value>Pengaturan Saklar HDR (Paksa terapkan setiap peluncuran)</value>
+    <value>Pengaturan Saklar HDR(Paksa terapkan setiap peluncuran)</value>
   </data>
   <data name="HDR_OffContent" xml:space="preserve">
-    <value>Nonaktifkan HDR (Nilai registry 0)</value>
+    <value>Nonaktifkan HDR(Nilai registry 0)</value>
   </data>
   <data name="HDR_OnContent" xml:space="preserve">
-    <value>Aktifkan HDR (Nilai registry 1)</value>
+    <value>Aktifkan HDR(Nilai registry 1)</value>
   </data>
   <data name="HDR_RegistryNote" xml:space="preserve">
     <value>Catatan: Menyimpan akan segera mengubah registry, dan pengaturan ini akan diterapkan ulang secara otomatis saat game diluncurkan berikutnya.</value>

@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <resheader name="resmimetype">
     <value>text/microsoft-resx</value>
@@ -511,6 +511,12 @@ Si continúas, se ignorará esta advertencia y el Hash de este ajuste se actuali
   <data name="LangDefault" xml:space="preserve">
     <value>Usar idioma predeterminado del sistema</value>
   </data>
+  <data name="EnableLaunchArgsTitle" xml:space="preserve">
+    <value>Activar argumentos de inicio del juego</value>
+  </data>
+  <data name="EnableLaunchArgsCaption" xml:space="preserve">
+    <value>Cuando está desactivado, no se pasarán argumentos de inicio personalizados como modo de ventana o resolución</value>
+  </data>
   <data name="LaunchWindowModeTitle" xml:space="preserve">
     <value>Modo de ventana de inicio</value>
   </data>
@@ -519,6 +525,9 @@ Si continúas, se ignorará esta advertencia y el Hash de este ajuste se actuali
   </data>
   <data name="WindowModePopup" xml:space="preserve">
     <value>Ventana emergente (Sin bordes)</value>
+  </data>
+  <data name="WindowModeFullScreen" xml:space="preserve">
+    <value>Ventana de pantalla completa</value>
   </data>
   <data name="ResolutionTitle" xml:space="preserve">
     <value>Resolución del juego</value>
@@ -539,7 +548,7 @@ Si continúas, se ignorará esta advertencia y el Hash de este ajuste se actuali
     <value>Configuración de brillo HDR</value>
   </data>
   <data name="HdrCaption" xml:space="preserve">
-    <value>Ajusta el brillo máximo HDR y el brillo de la interfaz en el juego</value>
+    <value>Ajusta el brillo máximo HDRy el brillo de la interfaz en el juego</value>
   </data>
   <data name="OpenHdrSettings" xml:space="preserve">
     <value>Abrir ajustes HDR</value>
@@ -2704,28 +2713,28 @@ Por favor, confirma que seleccionaste el directorio de instalación que contiene
     <value>Configuración de brillo HDR</value>
   </data>
   <data name="HDR_NotSupported" xml:space="preserve">
-    <value>HDR no compatible</value>
+    <value>HDRno compatible</value>
   </data>
   <data name="HDR_NotSupportedMsg" xml:space="preserve">
-    <value>El monitor actual informa que HDR no es compatible.</value>
+    <value>El monitor actual informa que HDRno es compatible.</value>
   </data>
   <data name="HDR_NotEnabled" xml:space="preserve">
-    <value>HDR no activado</value>
+    <value>HDRno activado</value>
   </data>
   <data name="HDR_NotEnabledMsg" xml:space="preserve">
-    <value>El modo HDR de Windows no está activado; el ajuste automático puede ser inexacto.</value>
+    <value>El modo HDRde Windows no está activado; el ajuste automático puede ser inexacto.</value>
   </data>
   <data name="HDR_DisplayInfo" xml:space="preserve">
     <value>Información de pantalla</value>
   </data>
   <data name="HDR_SwitchSetting" xml:space="preserve">
-    <value>Ajuste de interruptor HDR (Forzar aplicación en cada inicio)</value>
+    <value>Ajuste de interruptor HDR(Forzar aplicación en cada inicio)</value>
   </data>
   <data name="HDR_OffContent" xml:space="preserve">
-    <value>Desactivar HDR (Valor de registro 0)</value>
+    <value>Desactivar HDR(Valor de registro 0)</value>
   </data>
   <data name="HDR_OnContent" xml:space="preserve">
-    <value>Activar HDR (Valor de registro 1)</value>
+    <value>Activar HDR(Valor de registro 1)</value>
   </data>
   <data name="HDR_RegistryNote" xml:space="preserve">
     <value>Nota: Al guardar se modificará inmediatamente el registro, y este ajuste se reaplicará automáticamente la próxima vez que se inicie el juego.</value>

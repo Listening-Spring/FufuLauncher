@@ -9,11 +9,11 @@ using FufuLauncher.Services;
 
 namespace FufuLauncher.ViewModels;
 
-public partial class SettingsViewModel
+public partial class LaunchConfigurationViewModel
 {
     #region 启动参数与分辨率
 
-    partial void OnSelectedPostLaunchBehaviorItemChanged(PostLaunchBehaviorItem value)
+    partial void OnSelectedPostLaunchBehaviorItemChanged(PostLaunchBehaviorItem? value)
     {
         if (value == null) return;
         _postLaunchBehavior = value.Value;
@@ -26,7 +26,7 @@ public partial class SettingsViewModel
         ApplyPresetsToText();
     }
 
-    partial void OnSelectedMonitorChanged(MonitorItem value)
+    partial void OnSelectedMonitorChanged(MonitorItem? value)
     {
         if (value != null && LaunchArgsMonitorIndex != value.Index)
         {
@@ -83,6 +83,12 @@ public partial class SettingsViewModel
             {
                 LaunchArgsWindowMode = WindowModeType.Popup;
             }
+            else if (Regex.IsMatch(args, @"-screen-fullscreen\s+1\b")
+                     || (Regex.IsMatch(args, @"-screen-fullscreen\b") && !Regex.IsMatch(args, @"-screen-fullscreen\s+0\b"))
+                     || Regex.IsMatch(args, @"\b-fullscreen\b"))
+            {
+                LaunchArgsWindowMode = WindowModeType.FullScreen;
+            }
             else
             {
                 LaunchArgsWindowMode = WindowModeType.Normal;
@@ -122,6 +128,9 @@ public partial class SettingsViewModel
         currentArgs = Regex.Replace(currentArgs, @"-screen-width\s+\S+", "");
         currentArgs = Regex.Replace(currentArgs, @"-screen-height\s+\S+", "");
         currentArgs = Regex.Replace(currentArgs, @"-popupwindow", "");
+        currentArgs = Regex.Replace(currentArgs, @"-screen-fullscreen\s+\S+", "");
+        currentArgs = Regex.Replace(currentArgs, @"\b-screen-fullscreen\b", "");
+        currentArgs = Regex.Replace(currentArgs, @"\b-fullscreen\b", "");
         currentArgs = Regex.Replace(currentArgs, @"-monitor\s+\d+", "");
 
         var sb = new System.Text.StringBuilder(currentArgs);
@@ -133,6 +142,10 @@ public partial class SettingsViewModel
         if (LaunchArgsWindowMode == WindowModeType.Popup)
         {
             sb.Append(" -popupwindow");
+        }
+        else if (LaunchArgsWindowMode == WindowModeType.FullScreen)
+        {
+            sb.Append(" -screen-fullscreen 1");
         }
 
         if (LaunchArgsMonitorIndex > 0)

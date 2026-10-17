@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <resheader name="resmimetype">
     <value>text/microsoft-resx</value>
@@ -2208,22 +2208,22 @@ per recuperare i record dall'API</value>
     <value>Luminosità Massima</value>
   </data>
   <data name="HDR_NotEnabled" xml:space="preserve">
-    <value>HDR Non Abilitato</value>
+    <value>HDRNon Abilitato</value>
   </data>
   <data name="HDR_NotEnabledMsg" xml:space="preserve">
-    <value>La modalità HDR di Windows non è abilitata; la regolazione automatica potrebbe essere imprecisa.</value>
+    <value>La modalità HDRdi Windows non è abilitata; la regolazione automatica potrebbe essere imprecisa.</value>
   </data>
   <data name="HDR_NotSupported" xml:space="preserve">
-    <value>HDR Non Supportato</value>
+    <value>HDRNon Supportato</value>
   </data>
   <data name="HDR_NotSupportedMsg" xml:space="preserve">
-    <value>Il monitor corrente segnala che l'HDR non è supportato.</value>
+    <value>Il monitor corrente segnala che l'HDRnon è supportato.</value>
   </data>
   <data name="HDR_OffContent" xml:space="preserve">
-    <value>Disabilita HDR (Valore registro 0)</value>
+    <value>Disabilita HDR(Valore registro 0)</value>
   </data>
   <data name="HDR_OnContent" xml:space="preserve">
-    <value>Abilita HDR (Valore registro 1)</value>
+    <value>Abilita HDR(Valore registro 1)</value>
   </data>
   <data name="HDR_RegistryNote" xml:space="preserve">
     <value>Nota: Il salvataggio modificherà immediatamente il registro e questa impostazione sarà riapplicata automaticamente al prossimo avvio del gioco.</value>
@@ -2238,7 +2238,7 @@ per recuperare i record dall'API</value>
     <value>Bianco Carta</value>
   </data>
   <data name="HDR_SwitchSetting" xml:space="preserve">
-    <value>Impostazione Interruttore HDR (Forza applicazione a ogni avvio)</value>
+    <value>Impostazione Interruttore HDR(Forza applicazione a ogni avvio)</value>
   </data>
   <data name="HDR_UILuminance" xml:space="preserve">
     <value>Bianco UI</value>
@@ -2267,7 +2267,7 @@ CaptureApp
     <value>Verifica Non Superata</value>
   </data>
   <data name="HdrCaption" xml:space="preserve">
-    <value>Regola la luminosità di picco HDR e la luminosità dell'interfaccia in gioco</value>
+    <value>Regola la luminosità di picco HDRe la luminosità dell'interfaccia in gioco</value>
   </data>
   <data name="HdrTitle" xml:space="preserve">
     <value>Configurazione Luminosità HDR</value>
@@ -2758,6 +2758,12 @@ File cercati:
   </data>
   <data name="LaunchErr_UnknownError" xml:space="preserve">
     <value>Errore sconosciuto</value>
+  </data>
+  <data name="EnableLaunchArgsTitle" xml:space="preserve">
+    <value>Abilita argomenti di avvio del gioco</value>
+  </data>
+  <data name="EnableLaunchArgsCaption" xml:space="preserve">
+    <value>Se disabilitato, non verranno passati argomenti di avvio personalizzati come modalità finestra o risoluzione</value>
   </data>
   <data name="LaunchWindowModeTitle" xml:space="preserve">
     <value>Modalità Finestra di Avvio</value>
@@ -4240,6 +4246,9 @@ Andare al sito Microsoft per scaricarla e installarla?</value>
   </data>
   <data name="WindowModePopup" xml:space="preserve">
     <value>Finestra Popup (Senza Bordi)</value>
+  </data>
+  <data name="WindowModeFullScreen" xml:space="preserve">
+    <value>Finestra a Schermo Intero</value>
   </data>
   <data name="WishBannerImage" xml:space="preserve">
     <value> Immagine Banner Desiderio</value>
