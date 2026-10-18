@@ -57,7 +57,7 @@ public sealed partial class MainWindow
         _slideshowTimer?.Stop();
         _networkMonitorService.Stop();
 
-        // 通知 ViewModel 取消后台任务
+
         try
         {
             App.GetService<MainViewModel>()?.Cleanup();
@@ -75,6 +75,8 @@ public sealed partial class MainWindow
         }
 
         DisposeGlobalBackgroundPlayer();
+        StopBackgroundImageAnimation();
+        Interlocked.Increment(ref _backgroundLoadVersion);
         GlobalBackgroundImage.Source = null;
         WeakReferenceMessenger.Default.UnregisterAll(this);
         settings.ColorValuesChanged -= Settings_ColorValuesChanged;
@@ -155,7 +157,6 @@ public sealed partial class MainWindow
         }
         catch
         {
-            // ignored
         }
     }
 
@@ -237,7 +238,6 @@ public sealed partial class MainWindow
         }
         catch
         {
-            // ignored
         }
 
         Activated -= OnWindowActivated;
@@ -259,7 +259,6 @@ public sealed partial class MainWindow
         }
         catch
         {
-            // ignored
         }
     }
 
@@ -273,7 +272,6 @@ public sealed partial class MainWindow
         }
         catch
         {
-            // ignored
         }
     }
 
@@ -302,7 +300,6 @@ public sealed partial class MainWindow
         }
         catch
         {
-            // ignored
         }
     }
 

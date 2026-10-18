@@ -50,7 +50,7 @@
         <PackageReference Include="Google.Protobuf" Version="3.35.1"/>
         <PackageReference Include="H.NotifyIcon.WinUI" Version="2.2.0"/>
         <PackageReference Include="HtmlAgilityPack" Version="1.12.4"/>
-        <PackageReference Include="Markdig" Version="1.3.2" />
+        <PackageReference Include="Markdig" Version="1.3.2"/>
         <PackageReference Include="Markdown.ColorCode" Version="3.0.1"/>
         <PackageReference Include="InputSimulatorPlus" Version="1.0.7"/>
         <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.28"/>
@@ -72,7 +72,7 @@
         <PackageReference Include="QuestPDF" Version="2026.7.1"/>
         <PackageReference Include="Sentry" Version="6.6.0"/>
         <PackageReference Include="Sentry.Profiling" Version="6.6.0"/>
-        <PackageReference Include="SixLabors.ImageSharp" Version="3.1.12"/>
+        <PackageReference Include="SixLabors.ImageSharp" Version="4.1.2"/>
         <PackageReference Include="System.Diagnostics.EventLog" Version="8.0.2"/>
         <PackageReference Include="System.Diagnostics.PerformanceCounter" Version="8.0.1"/>
         <PackageReference Include="System.Drawing.Common" Version="9.0.17"/>
@@ -146,8 +146,8 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Compile Remove="Models\GameConfig.cs"/>
-        <Compile Update="Views\Model\BrowserConfig.cs">
+        <Compile Remove="Models\Game\GameConfig.cs"/>
+        <Compile Update="Views\Windows\BrowserConfig.cs">
             <DependentUpon>BrowserWindow.xaml</DependentUpon>
         </Compile>
         <Compile Remove="Plugins\Avatar\**"/>
@@ -164,6 +164,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <EmbeddedResource Include="Assets\bg.png" LogicalName="FufuLauncher.Assets.bg.png"/>
         <EmbeddedResource Remove="Plugins\Avatar\**"/>
     </ItemGroup>
 

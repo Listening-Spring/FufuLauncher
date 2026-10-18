@@ -1,4 +1,4 @@
-﻿/*
+/*
 Copyright (c) FufuLauncher Dev Team. All rights reserved.
 Licensed under the MIT License.
 */
@@ -244,9 +244,9 @@ public sealed partial class MainWindow
         }
     }
 
-    internal async void NavigateToPage(string viewModelTag)
+    internal async void NavigateToPage(string viewModelTag, bool force = false)
     {
-        if (!IsNavItemVisible(viewModelTag))
+        if (!force && !IsNavItemVisible(viewModelTag))
         {
             ShowNotification(new NotificationMessage("HiddenFeatureTitle".GetLocalized(),
                 "HiddenFeatureMessage".GetLocalized(), NotificationType.Warning, 3000));
@@ -462,6 +462,51 @@ public sealed partial class MainWindow
             NavigateToPage("FufuLauncher.ViewModels.AccountViewModel");
     }
 
+    public void NavigateToBlankPage()
+    {
+        if (_isExit) return;
+
+        var blankItem = GetAllNavItems()
+            .FirstOrDefault(item => item.Tag?.ToString() == "FufuLauncher.ViewModels.BlankViewModel");
+
+        if (blankItem != null && IsNavItemVisible("FufuLauncher.ViewModels.BlankViewModel"))
+        {
+            if (NavigationView.SelectedItem == blankItem)
+            {
+                NavigateToPage("FufuLauncher.ViewModels.BlankViewModel");
+            }
+            else
+            {
+                NavigationView.SelectedItem = blankItem;
+            }
+        }
+        else
+        {
+            NavigationView.SelectedItem = null;
+            NavigateToPage("FufuLauncher.ViewModels.BlankViewModel", force: true);
+        }
+    }
+
+    public async Task NavigateToBlankPageAsync()
+    {
+        if (_isExit) return;
+        try
+        {
+            Activate();
+        }
+        catch (System.Runtime.InteropServices.COMException)
+        {
+            return;
+        }
+
+        for (var i = 0; i < 40 && !_isMainUiLoaded; i++)
+        {
+            await Task.Delay(100);
+        }
+
+        NavigateToBlankPage();
+    }
+
     public async Task LoadNavItemVisibilityAsync()
     {
         var settings = App.GetService<ILocalSettingsService>();
@@ -526,18 +571,12 @@ public sealed partial class MainWindow
 
             if (isMainPage && _isOverlayShown)
             {
+                PageBackgroundOverlay.Opacity = targetOpacity;
+
                 var translateAnim = new DoubleAnimation
                 {
-                    From = 0,
-                    To = screenHeight + 50,
-                    Duration = TimeSpan.FromMilliseconds(400),
-                    EasingFunction = new CubicEase { EasingMode = EasingMode.EaseIn }
-                };
-
-                var opacityAnim = new DoubleAnimation
-                {
-                    From = targetOpacity,
-                    To = 0.0,
+                    From = OverlayTranslate.Y,
+                    To = screenHeight + 100,
                     Duration = TimeSpan.FromMilliseconds(400),
                     EasingFunction = new CubicEase { EasingMode = EasingMode.EaseIn }
                 };
@@ -545,12 +584,18 @@ public sealed partial class MainWindow
                 var sb = new Storyboard();
                 Storyboard.SetTarget(translateAnim, OverlayTranslate);
                 Storyboard.SetTargetProperty(translateAnim, "Y");
-
-                Storyboard.SetTarget(opacityAnim, PageBackgroundOverlay);
-                Storyboard.SetTargetProperty(opacityAnim, "Opacity");
-
                 sb.Children.Add(translateAnim);
-                sb.Children.Add(opacityAnim);
+
+                sb.Completed += (_, _) =>
+                {
+                    if (!_isOverlayShown)
+                    {
+                        PageBackgroundOverlay.Opacity = 0.0;
+                    }
+                };
+
+                _pageOverlayStoryboard?.Stop();
+                _pageOverlayStoryboard = sb;
                 sb.Begin();
 
                 _isOverlayShown = false;
@@ -585,6 +630,9 @@ public sealed partial class MainWindow
 
                 sb.Children.Add(translateAnim);
                 sb.Children.Add(opacityAnim);
+
+                _pageOverlayStoryboard?.Stop();
+                _pageOverlayStoryboard = sb;
                 sb.Begin();
 
                 _isOverlayShown = true;

@@ -1,4 +1,4 @@
-﻿/*
+/*
 Copyright (c) FufuLauncher Dev Team. All rights reserved.
 Licensed under the MIT License.
 */
@@ -34,13 +34,15 @@ public sealed partial class MainWindow : WindowEx
     private IMediaPlaybackSource? _suspendedVideoSource;
     private TypedEventHandler<MediaPlayer, MediaPlayerFailedEventArgs>? _bgVideoFailedHandler;
     private MediaSource? _bgVideoFallbackSource;
-    private DispatcherTimer _bgFallbackTimer;
-    private RoutedEventHandler _bgImageOpenedHandler;
-    private ExceptionRoutedEventHandler _bgImageFailedHandler;
+    private Microsoft.UI.Xaml.Media.Animation.Storyboard? _bgImageFadeStoryboard;
+    private int _backgroundLoadVersion;
+    private bool _isFallbackBackground;
+    private int? _slideshowLoadingVersion;
     private double _frameBackgroundOpacity;
     private bool _minimizeToTray;
     private bool _isExit;
     private bool _isOverlayShown;
+    private Microsoft.UI.Xaml.Media.Animation.Storyboard? _pageOverlayStoryboard;
     private bool _isAcrylicOverlayEnabled;
     private bool _isPageOverlaySemiTransparent;
     private double _pageOverlayTargetOpacity = 1.0;
@@ -110,19 +112,26 @@ public sealed partial class MainWindow : WindowEx
 
     private Task RunOnUIThreadAsync(Action action)
     {
-        var tcs = new TaskCompletionSource();
-        dispatcherQueue.TryEnqueue(() =>
+        if (dispatcherQueue.HasThreadAccess)
         {
-            try
+            action();
+            return Task.CompletedTask;
+        }
+
+        var tcs = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        if (!dispatcherQueue.TryEnqueue(() =>
             {
-                action();
-                tcs.SetResult();
-            }
-            catch (Exception ex)
-            {
-                tcs.SetException(ex);
-            }
-        });
+                try
+                {
+                    action();
+                    tcs.SetResult();
+                }
+                catch (Exception ex)
+                {
+                    tcs.SetException(ex);
+                }
+            }))
+            tcs.SetException(new InvalidOperationException("主窗口的 UI 调度队列已关闭"));
         return tcs.Task;
     }
 
@@ -141,7 +150,7 @@ public sealed partial class MainWindow : WindowEx
                 Debug.WriteLine($"内部异常: {ex.InnerException.Message}");
             }
 
-            // Retry once - XAML parse can fail transiently when assemblies are still loading from single-file extraction
+
             try
             {
                 InitializeComponent();
