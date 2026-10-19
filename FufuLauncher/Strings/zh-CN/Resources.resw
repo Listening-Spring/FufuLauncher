@@ -816,6 +816,12 @@
   <data name="SecurityAuthBtn" xml:space="preserve">
     <value>进行开发者许可认证</value>
   </data>
+  <data name="Settings_TemporaryDevAuth_Title" xml:space="preserve">
+    <value>临时获得许可</value>
+  </data>
+  <data name="Settings_TemporaryDevAuth_Caption" xml:space="preserve">
+    <value>本次运行期间默认拥有开发者认证，跳过校验，重启后自动关闭</value>
+  </data>
   <data name="PluginMgmtTitle" xml:space="preserve">
     <value>插件管理</value>
   </data>
@@ -7346,6 +7352,13 @@ UIGF v4.x/3.0/2.x</value>
     <value>以下配置项未经关闭警告确认，已自动恢复为开启状态：
 {0}</value>
   </data>
+  <data name="PluginStoreArchivePasswordTitle" xml:space="preserve"><value>压缩包解压密码</value></data>
+  <data name="PluginStoreArchivePasswordPlaceholder" xml:space="preserve"><value>请输入压缩包密码</value></data>
+  <data name="PluginStoreArchivePasswordPrompt" xml:space="preserve"><value>“{0}”需要解压密码。</value></data>
+  <data name="PluginStoreArchivePasswordRetry" xml:space="preserve"><value>“{0}”的密码不正确，或压缩包已损坏。请重新输入密码后重试解压。</value></data>
+  <data name="PluginStoreArchivePasswordExtract" xml:space="preserve"><value>解压</value></data>
+  <data name="PluginStoreArchivePasswordCancel" xml:space="preserve"><value>取消</value></data>
+  <data name="PluginStoreArchivePasswordUnavailable" xml:space="preserve"><value>压缩包需要密码，但无法打开密码输入窗口。</value></data>
   <data name="SectionServiceStatus" xml:space="preserve">
     <value>服务状态</value>
   </data>
