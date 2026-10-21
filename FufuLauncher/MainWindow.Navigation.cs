@@ -259,12 +259,14 @@ public sealed partial class MainWindow
         var pageType = viewModelTag switch
         {
             "FufuLauncher.ViewModels.MainViewModel" => typeof(Views.MainPage),
-            "FufuLauncher.ViewModels.GameSettingsViewModel" or "FufuLauncher.ViewModels.BlankViewModel" => typeof(Views.GameSettingsPage),
+            "FufuLauncher.ViewModels.GameSettingsViewModel" or "FufuLauncher.ViewModels.BlankViewModel" =>
+                typeof(Views.GameSettingsPage),
             "FufuLauncher.ViewModels.SettingsViewModel" => typeof(Views.SettingsPage),
             "FufuLauncher.ViewModels.AccountViewModel" => typeof(Views.AccountPage),
             "FufuLauncher.ViewModels.OtherViewModel" => typeof(Views.OtherPage),
             "FufuLauncher.ViewModels.CalculatorViewModel" => typeof(Views.CalculatorPage),
-            "FufuLauncher.ViewModels.ControlPanelViewModel" or "FufuLauncher.ViewModels.ControlPanelModel" => typeof(Views.ControlPanelPage),
+            "FufuLauncher.ViewModels.ControlPanelViewModel" or "FufuLauncher.ViewModels.ControlPanelModel" =>
+                typeof(Views.ControlPanelPage),
             "FufuLauncher.ViewModels.PluginViewModel" => typeof(Views.PluginPage),
             "FufuLauncher.ViewModels.PluginStoreViewModel" => typeof(Views.PluginStorePage),
             "FufuLauncher.ViewModels.DataViewModel" => typeof(Views.DataPage),
@@ -467,9 +469,12 @@ public sealed partial class MainWindow
         if (_isExit) return;
 
         var item = GetAllNavItems()
-            .FirstOrDefault(i => i.Tag?.ToString() == "FufuLauncher.ViewModels.GameSettingsViewModel" || i.Tag?.ToString() == "FufuLauncher.ViewModels.BlankViewModel");
+            .FirstOrDefault(i =>
+                i.Tag?.ToString() == "FufuLauncher.ViewModels.GameSettingsViewModel" ||
+                i.Tag?.ToString() == "FufuLauncher.ViewModels.BlankViewModel");
 
-        if (item != null && (IsNavItemVisible("FufuLauncher.ViewModels.GameSettingsViewModel") || IsNavItemVisible("FufuLauncher.ViewModels.BlankViewModel")))
+        if (item != null && (IsNavItemVisible("FufuLauncher.ViewModels.GameSettingsViewModel") ||
+                             IsNavItemVisible("FufuLauncher.ViewModels.BlankViewModel")))
         {
             if (NavigationView.SelectedItem == item)
             {
