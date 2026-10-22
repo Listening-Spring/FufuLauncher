@@ -8597,4 +8597,34 @@ Bilibili समर्थित; MiYouShe लॉगिन आवश्यक न�
   <data name="Gacha_ItemType_Weapon" xml:space="preserve">
     <value>हथियार</value>
   </data>
+  <data name="Account_MenuTitle" xml:space="preserve">
+    <value>खाता</value>
+  </data>
+  <data name="Account_Flyout_CommunityUid" xml:space="preserve">
+    <value>समुदाय UID</value>
+  </data>
+  <data name="Account_Flyout_GameUid" xml:space="preserve">
+    <value>गेम UID</value>
+  </data>
+  <data name="Account_Flyout_Level" xml:space="preserve">
+    <value>स्तर</value>
+  </data>
+  <data name="Account_Flyout_SwitchAccount" xml:space="preserve">
+    <value>खाता बदलें</value>
+  </data>
+  <data name="Account_Flyout_SwitchRole" xml:space="preserve">
+    <value>पात्र बदलें</value>
+  </data>
+  <data name="BgSourceRandomBackground" xml:space="preserve">
+    <value>रैंडम BlueArchive छवि</value>
+  </data>
+  <data name="BgSourceRandomModeAll" xml:space="preserve">
+    <value>ग्लोबल रैंडम (≈70% लॉबी, 30% स्टोरी CG)</value>
+  </data>
+  <data name="BgSourceRandomModeHome" xml:space="preserve">
+    <value>मेमोरी लॉबी</value>
+  </data>
+  <data name="BgSourceRandomModeCg" xml:space="preserve">
+    <value>स्टोरी CG</value>
+  </data>
 </root>

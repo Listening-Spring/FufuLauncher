@@ -8952,4 +8952,34 @@ UIGF v4.x/3.0/2.x</value>
   <data name="Abyss_BattleStats" xml:space="preserve">
     <value>战斗统计</value>
   </data>
+  <data name="Account_MenuTitle" xml:space="preserve">
+    <value>账户</value>
+  </data>
+  <data name="Account_Flyout_CommunityUid" xml:space="preserve">
+    <value>米游社 UID</value>
+  </data>
+  <data name="Account_Flyout_GameUid" xml:space="preserve">
+    <value>游戏 UID</value>
+  </data>
+  <data name="Account_Flyout_Level" xml:space="preserve">
+    <value>等级</value>
+  </data>
+  <data name="Account_Flyout_SwitchAccount" xml:space="preserve">
+    <value>切换账户</value>
+  </data>
+  <data name="Account_Flyout_SwitchRole" xml:space="preserve">
+    <value>切换角色</value>
+  </data>
+  <data name="BgSourceRandomBackground" xml:space="preserve">
+    <value>随机 BlueArchive 图</value>
+  </data>
+  <data name="BgSourceRandomModeAll" xml:space="preserve">
+    <value>全局随机（约70%是大厅、30%是剧情CG）</value>
+  </data>
+  <data name="BgSourceRandomModeHome" xml:space="preserve">
+    <value>记忆大厅</value>
+  </data>
+  <data name="BgSourceRandomModeCg" xml:space="preserve">
+    <value>剧情CG</value>
+  </data>
 </root>

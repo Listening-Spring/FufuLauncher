@@ -8602,4 +8602,34 @@ Detail: {0}</value>
   <data name="Gacha_ItemType_Weapon" xml:space="preserve">
     <value>Senjata</value>
   </data>
+  <data name="Account_MenuTitle" xml:space="preserve">
+    <value>Akun</value>
+  </data>
+  <data name="Account_Flyout_CommunityUid" xml:space="preserve">
+    <value>UID Komunitas</value>
+  </data>
+  <data name="Account_Flyout_GameUid" xml:space="preserve">
+    <value>UID Game</value>
+  </data>
+  <data name="Account_Flyout_Level" xml:space="preserve">
+    <value>Level</value>
+  </data>
+  <data name="Account_Flyout_SwitchAccount" xml:space="preserve">
+    <value>Ganti akun</value>
+  </data>
+  <data name="Account_Flyout_SwitchRole" xml:space="preserve">
+    <value>Ganti karakter</value>
+  </data>
+  <data name="BgSourceRandomBackground" xml:space="preserve">
+    <value>Gambar BlueArchive acak</value>
+  </data>
+  <data name="BgSourceRandomModeAll" xml:space="preserve">
+    <value>Acak global (≈70% lobi, 30% CG cerita)</value>
+  </data>
+  <data name="BgSourceRandomModeHome" xml:space="preserve">
+    <value>Lobi memori</value>
+  </data>
+  <data name="BgSourceRandomModeCg" xml:space="preserve">
+    <value>CG cerita</value>
+  </data>
 </root>

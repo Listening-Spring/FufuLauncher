@@ -8612,4 +8612,34 @@ Dettagli: {0}</value>
   <data name="Gacha_ItemType_Weapon" xml:space="preserve">
     <value>Arma</value>
   </data>
+  <data name="Account_MenuTitle" xml:space="preserve">
+    <value>Account</value>
+  </data>
+  <data name="Account_Flyout_CommunityUid" xml:space="preserve">
+    <value>UID community</value>
+  </data>
+  <data name="Account_Flyout_GameUid" xml:space="preserve">
+    <value>UID di gioco</value>
+  </data>
+  <data name="Account_Flyout_Level" xml:space="preserve">
+    <value>Livello</value>
+  </data>
+  <data name="Account_Flyout_SwitchAccount" xml:space="preserve">
+    <value>Cambia account</value>
+  </data>
+  <data name="Account_Flyout_SwitchRole" xml:space="preserve">
+    <value>Cambia personaggio</value>
+  </data>
+  <data name="BgSourceRandomBackground" xml:space="preserve">
+    <value>Immagine BlueArchive casuale</value>
+  </data>
+  <data name="BgSourceRandomModeAll" xml:space="preserve">
+    <value>Casuale globale (≈70% lobby, 30% CG storia)</value>
+  </data>
+  <data name="BgSourceRandomModeHome" xml:space="preserve">
+    <value>Lobby dei ricordi</value>
+  </data>
+  <data name="BgSourceRandomModeCg" xml:space="preserve">
+    <value>CG storia</value>
+  </data>
 </root>
