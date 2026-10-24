@@ -8636,4 +8636,94 @@ Detalles: {0}</value>
   <data name="BgSourceRandomModeCg" xml:space="preserve">
     <value>CG de historia</value>
   </data>
+  <data name="NavImageSources" xml:space="preserve">
+    <value>Image Sources</value>
+  </data>
+  <data name="ImageSource_Title" xml:space="preserve">
+    <value>Image Sources</value>
+  </data>
+  <data name="ImageSource_Subtitle" xml:space="preserve">
+    <value>Choose an image source and preview it. The image shown here is also applied as the main background.</value>
+  </data>
+  <data name="ImageSource_SourceOfficial" xml:space="preserve">
+    <value>Official</value>
+  </data>
+  <data name="ImageSource_SourceRandom" xml:space="preserve">
+    <value>Random BlueArchive</value>
+  </data>
+  <data name="ImageSource_SourceBing" xml:space="preserve">
+    <value>Bing Wallpaper</value>
+  </data>
+  <data name="ImageSource_SourceCustom" xml:space="preserve">
+    <value>Custom</value>
+  </data>
+  <data name="ImageSource_SourceSlideshow" xml:space="preserve">
+    <value>Slideshow</value>
+  </data>
+  <data name="ImageSource_Previous" xml:space="preserve">
+    <value>Previous</value>
+  </data>
+  <data name="ImageSource_Next" xml:space="preserve">
+    <value>Next</value>
+  </data>
+  <data name="ImageSource_Refresh" xml:space="preserve">
+    <value>Next image</value>
+  </data>
+  <data name="ImageSource_RandomScope" xml:space="preserve">
+    <value>Random scope</value>
+  </data>
+  <data name="ImageSource_RandomHint" xml:space="preserve">
+    <value>The arrow buttons load a new random BlueArchive image and apply it to the main background.</value>
+  </data>
+  <data name="ImageSource_BingChangeOnStartup" xml:space="preserve">
+    <value>Cambiar el fondo de Bing al iniciar</value>
+  </data>
+  <data name="ImageSource_BingYear" xml:space="preserve">
+    <value>Año</value>
+  </data>
+  <data name="ImageSource_BingYearAll" xml:space="preserve">
+    <value>Todos los años</value>
+  </data>
+  <data name="ImageSource_BingOfficial" xml:space="preserve">
+    <value>Oficial</value>
+  </data>
+  <data name="ImageSource_BingHint" xml:space="preserve">
+    <value>Elige un año del archivo de Bing. Activa Oficial para usar solo los fondos oficiales más recientes.</value>
+  </data>
+  <data name="ImageSource_CustomEmpty" xml:space="preserve">
+    <value>No custom background image selected.</value>
+  </data>
+  <data name="ImageSource_SlideshowEmpty" xml:space="preserve">
+    <value>No slideshow folder selected.</value>
+  </data>
+  <data name="ImageSource_BingEmpty" xml:space="preserve">
+    <value>Failed to load Bing wallpaper. Try again later.</value>
+  </data>
+  <data name="ImageSource_InvalidApiUrl" xml:space="preserve">
+    <value>The official background API URL is invalid. Enter a complete HTTP/HTTPS address.</value>
+  </data>
+  <data name="ImageSource_ApplyApi" xml:space="preserve">
+    <value>Apply</value>
+  </data>
+  <data name="BackgroundAntialiasTitle" xml:space="preserve">
+    <value>Suavizado de imagen</value>
+  </data>
+  <data name="BackgroundAntialiasCaption" xml:space="preserve">
+    <value>Suaviza los bordes de la imagen de fondo principal. Desactivado de forma predeterminada.</value>
+  </data>
+  <data name="BackgroundAntialiasStrengthTitle" xml:space="preserve">
+    <value>Intensidad del suavizado</value>
+  </data>
+  <data name="BackgroundAntialiasStrengthCaption" xml:space="preserve">
+    <value>Los valores más altos suavizan más los bordes.</value>
+  </data>
+  <data name="ImageSource_RandomPinLocal" xml:space="preserve">
+    <value>Fijar la imagen actual en local</value>
+  </data>
+  <data name="ImageSource_RandomPinLocalHint" xml:space="preserve">
+    <value>Guarda la imagen actual localmente y solo muestra esa imagen. No se descargan imágenes nuevas.</value>
+  </data>
+  <data name="ImageSource_RandomPinFailed" xml:space="preserve">
+    <value>No hay ninguna imagen de fondo aleatoria actual para guardar.</value>
+  </data>
 </root>

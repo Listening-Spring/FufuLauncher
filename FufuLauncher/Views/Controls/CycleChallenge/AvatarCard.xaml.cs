@@ -223,6 +223,7 @@ public sealed partial class AvatarCard : UserControl
         string caption = Caption?.Trim() ?? string.Empty;
         CaptionText.Text = caption;
         CaptionText.Visibility = caption.Length > 0 ? Visibility.Visible : Visibility.Collapsed;
+        InfoPanel.Visibility = name.Length > 0 || caption.Length > 0 ? Visibility.Visible : Visibility.Collapsed;
 
         UpdateToolTip(name);
     }
@@ -291,7 +292,7 @@ public sealed partial class AvatarCard : UserControl
                     }
                     catch (Exception ex)
                     {
-                        Debug.WriteLine($"[AvatarCard] 元数据角色名解析失败: {ex.Message}");
+                        DebugLog.Info("AvatarCard", $"[AvatarCard] Failed to resolve metadata character name: {ex.Message}");
                     }
 
                     if (names.Count > 0)
@@ -329,7 +330,7 @@ public sealed partial class AvatarCard : UserControl
         }
         catch (Exception ex)
         {
-            Debug.WriteLine($"[AvatarCard] 设置圆角裁剪失败: {ex.Message}");
+            DebugLog.Info("AvatarCard", $"[AvatarCard] Failed to apply rounded clip: {ex.Message}");
         }
     }
 

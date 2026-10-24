@@ -12,6 +12,7 @@ using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Formats;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
+using FufuLauncher.Helpers;
 using FufuLauncher.Models;
 
 namespace FufuLauncher.Services.Background;
@@ -19,6 +20,35 @@ namespace FufuLauncher.Services.Background;
 internal static class BackgroundImageLoader
 {
     public static Task<ImageSource> LoadFileAsync(string path) => LoadAsync(() => File.OpenRead(path));
+
+    internal static ImageSource CreatePreviewThumbnail(ImageSource source, int maxEdge)
+    {
+        if (source is not WriteableBitmap bitmap) return source;
+
+        var width = bitmap.PixelWidth;
+        var height = bitmap.PixelHeight;
+        var longest = Math.Max(width, height);
+        if (width <= 0 || height <= 0 || longest <= maxEdge) return source;
+
+        var scale = maxEdge / (double)longest;
+        var targetWidth = Math.Max(1, (int)Math.Round(width * scale));
+        var targetHeight = Math.Max(1, (int)Math.Round(height * scale));
+
+        var pixels = new byte[checked(width * height * 4)];
+        using (var stream = bitmap.PixelBuffer.AsStream())
+            stream.ReadExactly(pixels);
+
+        using var image = Image.LoadPixelData<Bgra32>(pixels, width, height);
+        image.Mutate(context => context.Resize(targetWidth, targetHeight));
+        var thumbnailPixels = new byte[checked(targetWidth * targetHeight * 4)];
+        image.CopyPixelDataTo(thumbnailPixels);
+
+        var thumbnail = new WriteableBitmap(targetWidth, targetHeight);
+        using (var stream = thumbnail.PixelBuffer.AsStream())
+            stream.Write(thumbnailPixels, 0, thumbnailPixels.Length);
+        thumbnail.Invalidate();
+        return thumbnail;
+    }
 
     public static async Task<ImageSource> LoadFallbackAsync()
     {
@@ -28,7 +58,7 @@ internal static class BackgroundImageLoader
         }
         catch (Exception ex)
         {
-            Debug.WriteLine($"BackgroundImageLoader: 默认背景文件不可用，使用内嵌背景: {ex.Message}");
+            DebugLog.Info("BackgroundImageLoader", $"BackgroundImageLoader: Default background file unavailable, using embedded background: {ex.Message}");
         }
 
         return await LoadAsync(() => typeof(BackgroundImageLoader).Assembly.GetManifestResourceStream(
@@ -37,18 +67,22 @@ internal static class BackgroundImageLoader
 
     private static async Task<ImageSource> LoadAsync(Func<Stream> openStream)
     {
+        var started = Environment.TickCount64;
+        DebugLog.Info("BackgroundImageLoader", "Loader.Start");
         var dispatcher = App.MainWindow?.DispatcherQueue ?? DispatcherQueue.GetForCurrentThread();
         if (dispatcher == null)
-            throw new InvalidOperationException("背景图片加载需要主窗口的 UI 线程");
+            throw new InvalidOperationException("Background image loading requires the main window UI thread");
 
 
         var decoded = await Task.Run(async () =>
         {
             var quality = await BackgroundImageQualitySettings.GetEffectiveQualityAsync().ConfigureAwait(false);
+            var antialias = await BackgroundImageAntialiasSettings.GetAsync().ConfigureAwait(false);
             using var stream = openStream();
             using var image = Image.Load<Bgra32>(new DecoderOptions { MaxFrames = 1 }, stream);
             image.Mutate(context => context.AutoOrient());
             ApplyDisplayQuality(image, quality);
+            ApplyAntialias(image, antialias);
             var pixels = new byte[checked(image.Width * image.Height * 4)];
             image.CopyPixelDataTo(pixels);
 
@@ -62,6 +96,7 @@ internal static class BackgroundImageLoader
                 pixels[i + 2] = (byte)((pixels[i + 2] * alpha + 127) / 255);
             }
 
+            DebugLog.Info("BackgroundImageLoader", "Loader.Decoded", $"{image.Width}x{image.Height} in {Environment.TickCount64 - started}ms");
             return (image.Width, image.Height, Pixels: pixels);
         }).ConfigureAwait(false);
 
@@ -69,12 +104,15 @@ internal static class BackgroundImageLoader
 
         void CreateBitmap()
         {
+            var bitmapStarted = Environment.TickCount64;
             try
             {
+                DebugLog.Info("BackgroundImageLoader", "Loader.Bitmap.Start", $"{decoded.Width}x{decoded.Height}");
                 var bitmap = new WriteableBitmap(decoded.Width, decoded.Height);
                 using var buffer = bitmap.PixelBuffer.AsStream();
                 buffer.Write(decoded.Pixels, 0, decoded.Pixels.Length);
                 bitmap.Invalidate();
+                DebugLog.Info("BackgroundImageLoader", "Loader.Bitmap.Done", $"{Environment.TickCount64 - bitmapStarted}ms");
                 completion.SetResult(bitmap);
             }
             catch (Exception ex)
@@ -86,9 +124,25 @@ internal static class BackgroundImageLoader
         if (dispatcher.HasThreadAccess)
             CreateBitmap();
         else if (!dispatcher.TryEnqueue(CreateBitmap))
-            completion.SetException(new InvalidOperationException("背景图片的 UI 调度队列已关闭"));
+            completion.SetException(new InvalidOperationException("Background image UI dispatcher queue is closed"));
 
-        return await completion.Task.ConfigureAwait(false);
+        var result = await completion.Task.ConfigureAwait(false);
+        DebugLog.Info("BackgroundImageLoader", "Loader.End", $"{Environment.TickCount64 - started}ms");
+        return result;
+    }
+
+    private static void ApplyAntialias(Image<Bgra32> image, (bool Enabled, int Strength) settings)
+    {
+        if (!settings.Enabled || settings.Strength <= 0)
+            return;
+
+        var sigma = BackgroundImageAntialiasSettings.GetBlurSigma(settings.Strength);
+        if (sigma <= 0f)
+            return;
+
+        var started = Environment.TickCount64;
+        image.Mutate(context => context.GaussianBlur(sigma));
+        DebugLog.Info("BackgroundImageLoader", $"Applied antialias: strength={settings.Strength}, sigma={sigma:0.##}, {Environment.TickCount64 - started}ms");
     }
 
     private static void ApplyDisplayQuality(Image<Bgra32> image, BackgroundImageQuality quality)

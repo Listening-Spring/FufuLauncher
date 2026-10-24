@@ -30,6 +30,7 @@ public sealed partial class MainWindow : WindowEx
     private readonly IBackgroundRenderer _backgroundRenderer;
     private readonly IDevBuildDetectionService _devBuildDetectionService;
     private readonly ILocalSettingsService _localSettingsService;
+    private readonly BingWallpaperService _bingWallpaperService;
     private readonly AccountManager _accountManager;
     private MediaPlayer? _globalBackgroundPlayer;
     private IMediaPlaybackSource? _suspendedVideoSource;
@@ -145,10 +146,10 @@ public sealed partial class MainWindow : WindowEx
         catch (Exception ex) when (ex is Microsoft.UI.Xaml.Markup.XamlParseException ||
                                    ex is System.IO.FileNotFoundException)
         {
-            Debug.WriteLine($"XAML解析失败: {ex.Message}");
+            DebugLog.Info("MainWindow", $"XAML parse failed: {ex.Message}");
             if (ex.InnerException != null)
             {
-                Debug.WriteLine($"内部异常: {ex.InnerException.Message}");
+                DebugLog.Info("MainWindow", $"Inner exception: {ex.InnerException.Message}");
             }
 
 
@@ -158,16 +159,16 @@ public sealed partial class MainWindow : WindowEx
             }
             catch (Exception retryEx)
             {
-                Debug.WriteLine($"XAML解析重试仍失败: {retryEx.Message}");
+                DebugLog.Info("MainWindow", $"XAML parse retry failed: {retryEx.Message}");
                 throw;
             }
         }
         catch (Exception ex)
         {
-            Debug.WriteLine($"XAML解析失败: {ex.Message}");
+            DebugLog.Info("MainWindow", $"XAML parse failed: {ex.Message}");
             if (ex.InnerException != null)
             {
-                Debug.WriteLine($"内部异常: {ex.InnerException.Message}");
+                DebugLog.Info("MainWindow", $"Inner exception: {ex.InnerException.Message}");
             }
 
             throw;
@@ -196,6 +197,7 @@ public sealed partial class MainWindow : WindowEx
         _backgroundRenderer = App.GetService<IBackgroundRenderer>();
         _devBuildDetectionService = App.GetService<IDevBuildDetectionService>();
         _localSettingsService = App.GetService<ILocalSettingsService>();
+        _bingWallpaperService = App.GetService<BingWallpaperService>();
         _accountManager = App.GetService<AccountManager>();
         AccountFlyout.Closed += (_, _) =>
         {
@@ -222,7 +224,7 @@ public sealed partial class MainWindow : WindowEx
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine($"消息处理异常: {ex.Message}");
+                    DebugLog.Info("MainWindow", $"Message handling exception: {ex.Message}");
                 }
             });
 
@@ -235,7 +237,7 @@ public sealed partial class MainWindow : WindowEx
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine($"启动语音播放失败: {ex.Message}");
+                    DebugLog.Info("MainWindow", $"Failed to play startup sound: {ex.Message}");
                 }
             });
 
@@ -257,7 +259,7 @@ public sealed partial class MainWindow : WindowEx
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine($"[Announcement] 公告检查失败: {ex.Message}");
+                    DebugLog.Info("MainWindow", $"[Announcement] Announcement check failed: {ex.Message}");
                 }
             });
         });
@@ -408,7 +410,7 @@ public sealed partial class MainWindow : WindowEx
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine($"启动弹窗检查发生未捕获异常: {ex.Message}");
+                    DebugLog.Info("MainWindow", $"Unhandled exception in startup popup check: {ex.Message}");
                 }
             });
         }

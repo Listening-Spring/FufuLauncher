@@ -8632,4 +8632,94 @@ Bilibili 서버 지원, 미호요 커뮤니티 로그인 불필요</value>
   <data name="BgSourceRandomModeCg" xml:space="preserve">
     <value>스토리 CG</value>
   </data>
+  <data name="NavImageSources" xml:space="preserve">
+    <value>Image Sources</value>
+  </data>
+  <data name="ImageSource_Title" xml:space="preserve">
+    <value>Image Sources</value>
+  </data>
+  <data name="ImageSource_Subtitle" xml:space="preserve">
+    <value>Choose an image source and preview it. The image shown here is also applied as the main background.</value>
+  </data>
+  <data name="ImageSource_SourceOfficial" xml:space="preserve">
+    <value>Official</value>
+  </data>
+  <data name="ImageSource_SourceRandom" xml:space="preserve">
+    <value>Random BlueArchive</value>
+  </data>
+  <data name="ImageSource_SourceBing" xml:space="preserve">
+    <value>Bing Wallpaper</value>
+  </data>
+  <data name="ImageSource_SourceCustom" xml:space="preserve">
+    <value>Custom</value>
+  </data>
+  <data name="ImageSource_SourceSlideshow" xml:space="preserve">
+    <value>Slideshow</value>
+  </data>
+  <data name="ImageSource_Previous" xml:space="preserve">
+    <value>Previous</value>
+  </data>
+  <data name="ImageSource_Next" xml:space="preserve">
+    <value>Next</value>
+  </data>
+  <data name="ImageSource_Refresh" xml:space="preserve">
+    <value>Next image</value>
+  </data>
+  <data name="ImageSource_RandomScope" xml:space="preserve">
+    <value>Random scope</value>
+  </data>
+  <data name="ImageSource_RandomHint" xml:space="preserve">
+    <value>The arrow buttons load a new random BlueArchive image and apply it to the main background.</value>
+  </data>
+  <data name="ImageSource_BingChangeOnStartup" xml:space="preserve">
+    <value>시작할 때 Bing 배경 화면 변경</value>
+  </data>
+  <data name="ImageSource_BingYear" xml:space="preserve">
+    <value>연도</value>
+  </data>
+  <data name="ImageSource_BingYearAll" xml:space="preserve">
+    <value>모든 연도</value>
+  </data>
+  <data name="ImageSource_BingOfficial" xml:space="preserve">
+    <value>공식</value>
+  </data>
+  <data name="ImageSource_BingHint" xml:space="preserve">
+    <value>Bing 아카이브에서 연도를 선택하세요. 공식을 켜면 최신 공식 배경만 사용합니다.</value>
+  </data>
+  <data name="ImageSource_CustomEmpty" xml:space="preserve">
+    <value>No custom background image selected.</value>
+  </data>
+  <data name="ImageSource_SlideshowEmpty" xml:space="preserve">
+    <value>No slideshow folder selected.</value>
+  </data>
+  <data name="ImageSource_BingEmpty" xml:space="preserve">
+    <value>Failed to load Bing wallpaper. Try again later.</value>
+  </data>
+  <data name="ImageSource_InvalidApiUrl" xml:space="preserve">
+    <value>The official background API URL is invalid. Enter a complete HTTP/HTTPS address.</value>
+  </data>
+  <data name="ImageSource_ApplyApi" xml:space="preserve">
+    <value>Apply</value>
+  </data>
+  <data name="BackgroundAntialiasTitle" xml:space="preserve">
+    <value>이미지 안티 앨리어싱</value>
+  </data>
+  <data name="BackgroundAntialiasCaption" xml:space="preserve">
+    <value>기본 배경 이미지의 가장자리를 부드럽게 합니다. 기본값은 꺼짐입니다.</value>
+  </data>
+  <data name="BackgroundAntialiasStrengthTitle" xml:space="preserve">
+    <value>안티 앨리어싱 강도</value>
+  </data>
+  <data name="BackgroundAntialiasStrengthCaption" xml:space="preserve">
+    <value>값이 높을수록 가장자리가 더 부드러워집니다.</value>
+  </data>
+  <data name="ImageSource_RandomPinLocal" xml:space="preserve">
+    <value>현재 이미지를 로컬에 고정</value>
+  </data>
+  <data name="ImageSource_RandomPinLocalHint" xml:space="preserve">
+    <value>현재 이미지를 로컬에 저장하고 해당 이미지만 표시합니다. 새 이미지는 다운로드되지 않습니다.</value>
+  </data>
+  <data name="ImageSource_RandomPinFailed" xml:space="preserve">
+    <value>저장할 현재 임의 배경 이미지가 없습니다.</value>
+  </data>
 </root>

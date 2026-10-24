@@ -8636,4 +8636,94 @@ Bilibiliサーバー対応、MiYouSheログイン不要</value>
   <data name="BgSourceRandomModeCg" xml:space="preserve">
     <value>ストーリーCG</value>
   </data>
+  <data name="NavImageSources" xml:space="preserve">
+    <value>Image Sources</value>
+  </data>
+  <data name="ImageSource_Title" xml:space="preserve">
+    <value>Image Sources</value>
+  </data>
+  <data name="ImageSource_Subtitle" xml:space="preserve">
+    <value>Choose an image source and preview it. The image shown here is also applied as the main background.</value>
+  </data>
+  <data name="ImageSource_SourceOfficial" xml:space="preserve">
+    <value>Official</value>
+  </data>
+  <data name="ImageSource_SourceRandom" xml:space="preserve">
+    <value>Random BlueArchive</value>
+  </data>
+  <data name="ImageSource_SourceBing" xml:space="preserve">
+    <value>Bing Wallpaper</value>
+  </data>
+  <data name="ImageSource_SourceCustom" xml:space="preserve">
+    <value>Custom</value>
+  </data>
+  <data name="ImageSource_SourceSlideshow" xml:space="preserve">
+    <value>Slideshow</value>
+  </data>
+  <data name="ImageSource_Previous" xml:space="preserve">
+    <value>Previous</value>
+  </data>
+  <data name="ImageSource_Next" xml:space="preserve">
+    <value>Next</value>
+  </data>
+  <data name="ImageSource_Refresh" xml:space="preserve">
+    <value>Next image</value>
+  </data>
+  <data name="ImageSource_RandomScope" xml:space="preserve">
+    <value>Random scope</value>
+  </data>
+  <data name="ImageSource_RandomHint" xml:space="preserve">
+    <value>The arrow buttons load a new random BlueArchive image and apply it to the main background.</value>
+  </data>
+  <data name="ImageSource_BingChangeOnStartup" xml:space="preserve">
+    <value>起動時にBingの壁紙を変更</value>
+  </data>
+  <data name="ImageSource_BingYear" xml:space="preserve">
+    <value>年</value>
+  </data>
+  <data name="ImageSource_BingYearAll" xml:space="preserve">
+    <value>すべての年</value>
+  </data>
+  <data name="ImageSource_BingOfficial" xml:space="preserve">
+    <value>公式</value>
+  </data>
+  <data name="ImageSource_BingHint" xml:space="preserve">
+    <value>Bing アーカイブから年を選択します。「公式」をオンにすると最新の公式壁紙のみを使用します。</value>
+  </data>
+  <data name="ImageSource_CustomEmpty" xml:space="preserve">
+    <value>No custom background image selected.</value>
+  </data>
+  <data name="ImageSource_SlideshowEmpty" xml:space="preserve">
+    <value>No slideshow folder selected.</value>
+  </data>
+  <data name="ImageSource_BingEmpty" xml:space="preserve">
+    <value>Failed to load Bing wallpaper. Try again later.</value>
+  </data>
+  <data name="ImageSource_InvalidApiUrl" xml:space="preserve">
+    <value>The official background API URL is invalid. Enter a complete HTTP/HTTPS address.</value>
+  </data>
+  <data name="ImageSource_ApplyApi" xml:space="preserve">
+    <value>Apply</value>
+  </data>
+  <data name="BackgroundAntialiasTitle" xml:space="preserve">
+    <value>画像アンチエイリアス</value>
+  </data>
+  <data name="BackgroundAntialiasCaption" xml:space="preserve">
+    <value>メイン背景画像の輪郭を滑らかにします。既定ではオフです。</value>
+  </data>
+  <data name="BackgroundAntialiasStrengthTitle" xml:space="preserve">
+    <value>アンチエイリアス強度</value>
+  </data>
+  <data name="BackgroundAntialiasStrengthCaption" xml:space="preserve">
+    <value>値を大きくするほど輪郭が滑らかになります。</value>
+  </data>
+  <data name="ImageSource_RandomPinLocal" xml:space="preserve">
+    <value>現在の画像をローカルに固定</value>
+  </data>
+  <data name="ImageSource_RandomPinLocalHint" xml:space="preserve">
+    <value>現在の画像をローカルに保存し、その画像だけを表示します。新しい画像はダウンロードされません。</value>
+  </data>
+  <data name="ImageSource_RandomPinFailed" xml:space="preserve">
+    <value>保存できる現在のランダム背景画像がありません。</value>
+  </data>
 </root>

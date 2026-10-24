@@ -209,11 +209,11 @@ public partial class OfficialBackgroundViewModel : ObservableObject
             SummaryText = string.Format("OfficialBgWindow_SummaryFormat".GetLocalized(), serverName, Backgrounds.Count);
             IsCustomBackgroundInEffect = hasCustomBackground;
 
-            Debug.WriteLine($"[OfficialBgWindow] 已加载 {Backgrounds.Count} 项官方背景（{serverName}）");
+            DebugLog.Info("OfficialBackgroundViewModel", $"[OfficialBgWindow] Loaded {Backgrounds.Count} official backgrounds ({serverName})");
         }
         catch (Exception ex)
         {
-            Debug.WriteLine($"[OfficialBgWindow] 加载官方背景失败: {ex.Message}");
+            DebugLog.Info("OfficialBackgroundViewModel", $"[OfficialBgWindow] Failed to load official backgrounds: {ex.Message}");
             HasLoadError = true;
         }
         finally
@@ -342,7 +342,7 @@ public partial class OfficialBackgroundViewModel : ObservableObject
         }
         catch (Exception ex)
         {
-            Debug.WriteLine($"[OfficialBgWindow] 保存背景失败: {ex.Message}");
+            DebugLog.Info("OfficialBackgroundViewModel", $"[OfficialBgWindow] Failed to save background: {ex.Message}");
             ShowStatus(string.Format("OfficialBgWindow_SaveFailedFormat".GetLocalized(), ex.Message),
                 InfoBarSeverity.Error);
         }
@@ -364,6 +364,9 @@ public partial class OfficialBackgroundViewModel : ObservableObject
         try
         {
             await _localSettingsService.SaveSettingAsync("IsRandomBackgroundEnabled", false);
+            await _localSettingsService.SaveSettingAsync("IsBingBackgroundEnabled", false);
+            await _localSettingsService.SaveSettingAsync("IsBackgroundSlideshowEnabled", false);
+            await _localSettingsService.SaveSettingAsync(LocalSettingsService.IsBackgroundEnabledKey, false);
             RandomBackgroundService.ClearCache();
             await _localSettingsService.SaveSettingAsync("SelectedOnlineBackgroundUrl", item.Url);
             await _localSettingsService.SaveSettingAsync("SelectedOnlineBackgroundIsVideo", false);
@@ -379,7 +382,7 @@ public partial class OfficialBackgroundViewModel : ObservableObject
         }
         catch (Exception ex)
         {
-            Debug.WriteLine($"[OfficialBgWindow] 设为启动器背景失败: {ex.Message}");
+            DebugLog.Info("OfficialBackgroundViewModel", $"[OfficialBgWindow] Failed to set launcher background: {ex.Message}");
             ShowStatus(string.Format("OfficialBgWindow_SaveFailedFormat".GetLocalized(), ex.Message),
                 InfoBarSeverity.Error);
         }
@@ -467,7 +470,7 @@ public partial class OfficialBackgroundViewModel : ObservableObject
         }
         catch (Exception ex)
         {
-            Debug.WriteLine($"[OfficialBgWindow] 视频预览失败: {ex.Message}");
+            DebugLog.Info("OfficialBackgroundViewModel", $"[OfficialBgWindow] Video preview failed: {ex.Message}");
             StopVideoPreview();
             ShowStatus("OfficialBgWindow_PreviewFailed".GetLocalized(), InfoBarSeverity.Warning);
         }
@@ -542,7 +545,7 @@ public partial class OfficialBackgroundViewModel : ObservableObject
 
     private void OnPreviewMediaFailed(MediaPlayer sender, MediaPlayerFailedEventArgs args)
     {
-        Debug.WriteLine($"[OfficialBgWindow] 视频预览播放失败: {args.Error} - {args.ErrorMessage}");
+        DebugLog.Info("OfficialBackgroundViewModel", $"[OfficialBgWindow] Video preview playback failed: {args.Error} - {args.ErrorMessage}");
         _dispatcherQueue?.TryEnqueue(() =>
         {
             StopVideoPreview();
@@ -562,7 +565,7 @@ public partial class OfficialBackgroundViewModel : ObservableObject
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"[OfficialBgWindow] 停止预览失败: {ex.Message}");
+                DebugLog.Info("OfficialBackgroundViewModel", $"[OfficialBgWindow] Failed to stop preview: {ex.Message}");
             }
         }
 
@@ -603,7 +606,7 @@ public partial class OfficialBackgroundViewModel : ObservableObject
         }
         catch (Exception ex)
         {
-            Debug.WriteLine($"[OfficialBgWindow] 释放资源失败: {ex.Message}");
+            DebugLog.Info("OfficialBackgroundViewModel", $"[OfficialBgWindow] Failed to release resources: {ex.Message}");
         }
     }
 
@@ -631,7 +634,7 @@ public partial class OfficialBackgroundViewModel : ObservableObject
         }
         catch (Exception ex)
         {
-            Debug.WriteLine($"[OfficialBgWindow] 提示条计时失败: {ex.Message}");
+            DebugLog.Info("OfficialBackgroundViewModel", $"[OfficialBgWindow] Toast timer failed: {ex.Message}");
         }
     }
 

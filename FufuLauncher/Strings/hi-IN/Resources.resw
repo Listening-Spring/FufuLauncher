@@ -8627,4 +8627,94 @@ Bilibili समर्थित; MiYouShe लॉगिन आवश्यक न�
   <data name="BgSourceRandomModeCg" xml:space="preserve">
     <value>स्टोरी CG</value>
   </data>
+  <data name="NavImageSources" xml:space="preserve">
+    <value>Image Sources</value>
+  </data>
+  <data name="ImageSource_Title" xml:space="preserve">
+    <value>Image Sources</value>
+  </data>
+  <data name="ImageSource_Subtitle" xml:space="preserve">
+    <value>Choose an image source and preview it. The image shown here is also applied as the main background.</value>
+  </data>
+  <data name="ImageSource_SourceOfficial" xml:space="preserve">
+    <value>Official</value>
+  </data>
+  <data name="ImageSource_SourceRandom" xml:space="preserve">
+    <value>Random BlueArchive</value>
+  </data>
+  <data name="ImageSource_SourceBing" xml:space="preserve">
+    <value>Bing Wallpaper</value>
+  </data>
+  <data name="ImageSource_SourceCustom" xml:space="preserve">
+    <value>Custom</value>
+  </data>
+  <data name="ImageSource_SourceSlideshow" xml:space="preserve">
+    <value>Slideshow</value>
+  </data>
+  <data name="ImageSource_Previous" xml:space="preserve">
+    <value>Previous</value>
+  </data>
+  <data name="ImageSource_Next" xml:space="preserve">
+    <value>Next</value>
+  </data>
+  <data name="ImageSource_Refresh" xml:space="preserve">
+    <value>Next image</value>
+  </data>
+  <data name="ImageSource_RandomScope" xml:space="preserve">
+    <value>Random scope</value>
+  </data>
+  <data name="ImageSource_RandomHint" xml:space="preserve">
+    <value>The arrow buttons load a new random BlueArchive image and apply it to the main background.</value>
+  </data>
+  <data name="ImageSource_BingChangeOnStartup" xml:space="preserve">
+    <value>स्टार्टअप पर Bing वॉलपेपर बदलें</value>
+  </data>
+  <data name="ImageSource_BingYear" xml:space="preserve">
+    <value>वर्ष</value>
+  </data>
+  <data name="ImageSource_BingYearAll" xml:space="preserve">
+    <value>सभी वर्ष</value>
+  </data>
+  <data name="ImageSource_BingOfficial" xml:space="preserve">
+    <value>आधिकारिक</value>
+  </data>
+  <data name="ImageSource_BingHint" xml:space="preserve">
+    <value>Bing संग्रह से वर्ष चुनें। केवल नवीनतम आधिकारिक वॉलपेपर उपयोग करने के लिए आधिकारिक चालू करें।</value>
+  </data>
+  <data name="ImageSource_CustomEmpty" xml:space="preserve">
+    <value>No custom background image selected.</value>
+  </data>
+  <data name="ImageSource_SlideshowEmpty" xml:space="preserve">
+    <value>No slideshow folder selected.</value>
+  </data>
+  <data name="ImageSource_BingEmpty" xml:space="preserve">
+    <value>Failed to load Bing wallpaper. Try again later.</value>
+  </data>
+  <data name="ImageSource_InvalidApiUrl" xml:space="preserve">
+    <value>The official background API URL is invalid. Enter a complete HTTP/HTTPS address.</value>
+  </data>
+  <data name="ImageSource_ApplyApi" xml:space="preserve">
+    <value>Apply</value>
+  </data>
+  <data name="BackgroundAntialiasTitle" xml:space="preserve">
+    <value>छवि एंटी-एलियासिंग</value>
+  </data>
+  <data name="BackgroundAntialiasCaption" xml:space="preserve">
+    <value>मुख्य पृष्ठभूमि छवि के किनारों को चिकना करता है। डिफ़ॉल्ट रूप से बंद।</value>
+  </data>
+  <data name="BackgroundAntialiasStrengthTitle" xml:space="preserve">
+    <value>एंटी-एलियासिंग तीव्रता</value>
+  </data>
+  <data name="BackgroundAntialiasStrengthCaption" xml:space="preserve">
+    <value>अधिक मान किनारों को अधिक चिकना करते हैं।</value>
+  </data>
+  <data name="ImageSource_RandomPinLocal" xml:space="preserve">
+    <value>वर्तमान छवि को स्थानीय रूप से पिन करें</value>
+  </data>
+  <data name="ImageSource_RandomPinLocalHint" xml:space="preserve">
+    <value>वर्तमान छवि को स्थानीय रूप से सहेजता है और केवल वही छवि दिखाता है। नई छवियाँ डाउनलोड नहीं होंगी।</value>
+  </data>
+  <data name="ImageSource_RandomPinFailed" xml:space="preserve">
+    <value>सहेजने के लिए कोई वर्तमान रैंडम पृष्ठभूमि छवि उपलब्ध नहीं है।</value>
+  </data>
 </root>

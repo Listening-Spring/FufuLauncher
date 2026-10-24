@@ -1,10 +1,11 @@
-﻿/*
+/*
 Copyright (c) FufuLauncher Dev Team. All rights reserved.
 Licensed under the MIT License.
 */
 
 using System.Diagnostics;
 using Microsoft.UI.Dispatching;
+using FufuLauncher.Helpers;
 
 namespace FufuLauncher.ViewModels;
 
@@ -16,6 +17,7 @@ public static class SettingsSectionIds
     public const string Widgets = "WidgetsItem";
     public const string Notes = "NotesItem";
     public const string HomeText = "HomeTextItem";
+    public const string ImageSource = "ImageSourceItem";
     public const string Background = "BackgroundItem";
     public const string WindowEffects = "WindowEffectsItem";
     public const string LaunchConfig = "LaunchConfigItem";
@@ -60,6 +62,7 @@ public partial class SettingsViewModel
         RegisterSection(SettingsSectionIds.Widgets, LoadWidgetsSectionAsync);
         RegisterSection(SettingsSectionIds.Notes, LoadNotesSectionAsync);
         RegisterSection(SettingsSectionIds.HomeText, LoadHomeTextSectionAsync);
+        RegisterSection(SettingsSectionIds.ImageSource, () => Task.CompletedTask);
         RegisterSection(SettingsSectionIds.Background, LoadBackgroundSectionAsync);
         RegisterSection(SettingsSectionIds.WindowEffects, LoadWindowEffectsSectionAsync);
         RegisterSection(SettingsSectionIds.LaunchConfig, LoadLaunchConfigSectionAsync);
@@ -164,7 +167,7 @@ public partial class SettingsViewModel
         }
         catch (Exception ex)
         {
-            Debug.WriteLine($"SettingsViewModel: 分区 {sectionId} 加载异常 - {ex.Message}");
+            DebugLog.Info("SettingsViewModel.Sections", $"SettingsViewModel: section {sectionId} load exception - {ex.Message}");
         }
         finally
         {
@@ -192,7 +195,7 @@ public partial class SettingsViewModel
         }
         catch (Exception ex)
         {
-            Debug.WriteLine($"SettingsViewModel: 分区 {sectionId} 加载失败 - {ex.Message}");
+            DebugLog.Info("SettingsViewModel.Sections", $"SettingsViewModel: section {sectionId} load failed - {ex.Message}");
         }
         finally
         {
@@ -216,7 +219,7 @@ public partial class SettingsViewModel
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"SettingsViewModel: 分区 {sectionId} 界面刷新异常 - {ex.Message}");
+                DebugLog.Info("SettingsViewModel.Sections", $"SettingsViewModel: section {sectionId} UI refresh exception - {ex.Message}");
             }
         }
     }
