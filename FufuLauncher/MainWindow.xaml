@@ -122,13 +122,12 @@
                     </ResourceDictionary.ThemeDictionaries>
 
                     <FontFamily x:Key="ActionIconFont">Segoe Fluent Icons, Segoe MDL2 Assets, Segoe UI Symbol</FontFamily>
-
-                    <CornerRadius x:Key="OverlayCornerRadius">0</CornerRadius>
+                    
                     <CornerRadius x:Key="NavigationViewContentGridCornerRadius">0</CornerRadius>
                     <CornerRadius x:Key="NavigationViewItemCornerRadius">0</CornerRadius>
                     <Thickness x:Key="NavigationViewContentGridBorderThickness">0</Thickness>
                     <Thickness x:Key="NavigationViewBorderThickness">0</Thickness>
-
+                    
                     <Style TargetType="NavigationViewItem">
                         <Setter Property="MinHeight" Value="48" />
                         <Setter Property="Margin" Value="0,1,0,1" />
@@ -208,13 +207,6 @@
                 <NavigationViewItem Content="{helpers:Loc Key=NavHelpDocs}" Tag="FufuLauncher.ViewModels.HelpViewModel">
                     <NavigationViewItem.Icon>
                         <FontIcon Glyph="&#xE82D;" FontFamily="{StaticResource ActionIconFont}" FontSize="24" />
-                    </NavigationViewItem.Icon>
-                </NavigationViewItem>
-
-                <NavigationViewItem Content="{helpers:Loc Key=NavCalculator}"
-                                    Tag="FufuLauncher.ViewModels.CalculatorViewModel">
-                    <NavigationViewItem.Icon>
-                        <FontIcon Glyph="&#xE1D0;" FontFamily="{StaticResource ActionIconFont}" FontSize="24" />
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
             </NavigationView.MenuItems>

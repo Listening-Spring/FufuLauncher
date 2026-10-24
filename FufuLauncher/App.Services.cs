@@ -108,6 +108,7 @@ public partial class App
                 services.AddTransient<AgreementPage>();
                 services.AddSingleton<IDevBuildDetectionService, DevBuildDetectionService>();
                 services.AddSingleton<IUpdateService, UpdateService>();
+                services.AddSingleton<GamePlayTimeStore>();
                 services.AddSingleton<ControlPanelViewModel>();
                 services.AddTransient<ControlPanelPage>();
                 services.AddSingleton<IUserInfoService, UserInfoService>();
@@ -140,8 +141,6 @@ public partial class App
                 services.AddTransient<GenshinDataWindow>();
                 services.AddSingleton<IFilePickerService, FilePickerService>();
                 services.AddSingleton<INotificationService, NotificationService>();
-                services.AddTransient<CalculatorViewModel>();
-                services.AddTransient<CalculatorPage>();
                 services.AddTransient<PluginViewModel>();
                 services.AddTransient<PluginPage>();
                 services.AddTransient<GachaViewModel>();
@@ -156,6 +155,10 @@ public partial class App
                 services.AddSingleton<LightweightPluginService>();
                 services.AddSingleton<ConstraintService>();
                 services.AddSingleton<LuaPluginInstaller>();
+                services.AddSingleton<GameSessionService>();
+                services.AddSingleton<Services.Mcp.McpInstallJobService>();
+                services.AddSingleton<Services.Mcp.McpToolInvoker>();
+                services.AddSingleton<Services.Mcp.McpHostService>();
                 services.AddSingleton<Services.PluginMirror.MirrorSiteProvider>();
                 services.AddSingleton<Services.PluginMirror.PluginMirrorDownloadService>();
                 services.AddSingleton<PluginStoreViewModel>();
