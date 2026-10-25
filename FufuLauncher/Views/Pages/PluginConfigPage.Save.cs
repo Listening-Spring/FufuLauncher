@@ -130,6 +130,22 @@ public sealed partial class PluginConfigPage
         ConfigMessageBar.IsOpen = true;
     }
 
+    private void ShowLoadError(string title, string message, Func<Task> retryAction)
+    {
+        _retryAction = retryAction;
+        _hasSaveError = false;
+        ConfigLoadErrorBar.Title = title;
+        ConfigLoadErrorBar.Message = message;
+        ConfigLoadErrorBar.IsOpen = true;
+
+        var lockProcesses = FileLockHelper.DescribeFileUsers(_pluginItem?.ConfigFilePath);
+        ConfigLockInfoBar.Message = lockProcesses ?? string.Empty;
+        ConfigLockInfoBar.IsOpen = lockProcesses != null;
+
+        ConfigLoadErrorOverlay.Visibility = Visibility.Visible;
+        ConfigMessageBar.IsOpen = false;
+    }
+
     private async Task RetrySaveAsync()
     {
         await SavePendingChangesAsync();

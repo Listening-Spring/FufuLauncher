@@ -44,6 +44,10 @@ public partial class PluginSettingsViewModel
 
     [ObservableProperty] private bool hasConfigurationLoadError;
 
+    [ObservableProperty] private string configurationFileLockProcesses = string.Empty;
+
+    [ObservableProperty] private bool hasConfigurationFileLockProcesses;
+
     public ObservableCollection<PluginSettingsGroup> SettingGroups
     {
         get;
@@ -67,9 +71,34 @@ public partial class PluginSettingsViewModel
         }
 
         _presentationActive = true;
-        CheckPluginStates();
-        UpdatePaths();
-        LoadConfiguration();
+        try
+        {
+            CheckPluginStates();
+            UpdatePaths();
+            LoadConfiguration();
+        }
+        catch (Exception ex)
+        {
+            DebugLog.Info("PluginSettingsViewModel.Loading",
+                $"[PluginSettings] Failed to activate configuration loading: {ex}");
+            ReportConfigurationLoadError(ex);
+        }
+    }
+
+    public void RetryConfigurationLoad()
+    {
+        if (!_deferConfigurationLoading)
+        {
+            LoadConfigurationSynchronously();
+            return;
+        }
+
+        if (!_presentationActive)
+        {
+            return;
+        }
+
+        ReloadConfigurationForCurrentTarget("retrying configuration load");
     }
 
     public void SuspendConfigurationLoading()
@@ -118,6 +147,8 @@ public partial class PluginSettingsViewModel
         TotalSettingCount = 0;
         ConfigurationLoadError = string.Empty;
         HasConfigurationLoadError = false;
+        ConfigurationFileLockProcesses = string.Empty;
+        HasConfigurationFileLockProcesses = false;
         Settings.Clear();
         PinnedSettings.Clear();
         _settingOrder.Clear();
@@ -285,23 +316,8 @@ public partial class PluginSettingsViewModel
             DebugLog.Info("PluginSettingsViewModel.Loading", $"[PluginSettings] Progressive configuration load failed: {ex}");
             if (IsCurrentConfiguration(cancellation, token))
             {
-                Settings.Clear();
-                PinnedSettings.Clear();
-                AvailablePresets.Clear();
-                CurrentPreset = null;
-                IsConfigurationReady = false;
-                LoadedSettingCount = 0;
-                TotalSettingCount = 0;
-                _settingOrder.Clear();
-                _settingOrderIndexes.Clear();
                 _configurationPreferences = _preferencesApplied ? _configurationPreferences : null;
-                ConfigurationLoadError = ex.Message;
-                HasConfigurationLoadError = true;
-                WeakReferenceMessenger.Default.Send(new NotificationMessage(
-                    "PluginSettings_ConfigReadFailedTitle".GetLocalized(),
-                    string.Format("PluginSettings_ReadConfigFailedDetail_Format".GetLocalized(), ex.Message),
-                    NotificationType.Error,
-                    6000));
+                ReportConfigurationLoadError(ex);
             }
         }
         finally
@@ -352,11 +368,56 @@ public partial class PluginSettingsViewModel
         await Task.Delay(16, token);
     }
 
+    private void ReportConfigurationLoadError(Exception exception)
+    {
+        var details = string.IsNullOrWhiteSpace(exception.Message)
+            ? exception.GetType().Name
+            : exception.Message;
+        var message = string.Format("PluginSettings_ReadConfigFailedDetail_Format".GetLocalized(), details);
+
+        Settings.Clear();
+        PinnedSettings.Clear();
+        AvailablePresets.Clear();
+        CurrentPreset = null;
+        IsConfigurationReady = false;
+        LoadedSettingCount = 0;
+        TotalSettingCount = 0;
+        _settingOrder.Clear();
+        _settingOrderIndexes.Clear();
+        NotifySelectionChanged();
+
+        var lockProcesses = FileLockHelper.DescribeFileUsers(_iniPath);
+        ConfigurationFileLockProcesses = lockProcesses ?? string.Empty;
+        HasConfigurationFileLockProcesses = lockProcesses != null;
+
+        ConfigurationLoadError = message;
+        HasConfigurationLoadError = true;
+        WeakReferenceMessenger.Default.Send(new NotificationMessage(
+            "PluginSettings_ConfigReadFailedTitle".GetLocalized(), message, NotificationType.Error, 6000));
+    }
+
+    private static bool ConfigurationFileExists(string path)
+    {
+        try
+        {
+            File.GetAttributes(path);
+            return true;
+        }
+        catch (FileNotFoundException)
+        {
+            return false;
+        }
+        catch (DirectoryNotFoundException)
+        {
+            return false;
+        }
+    }
+
     private static ConfigurationLoadSnapshot ReadConfigurationSnapshot(ConfigurationLoadRequest request,
         CancellationToken token)
     {
         token.ThrowIfCancellationRequested();
-        if (!File.Exists(request.IniPath))
+        if (!ConfigurationFileExists(request.IniPath))
         {
             return new ConfigurationLoadSnapshot(false, string.Empty, string.Empty, string.Empty, string.Empty,
                 Array.Empty<ConfigurationSetting>(), null);
