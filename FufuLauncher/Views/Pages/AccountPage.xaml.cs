@@ -107,6 +107,13 @@ public sealed partial class AccountPage : Page
         }
     }
 
+    internal async Task RefreshForSidebarSwitchAsync(bool accountChanged)
+    {
+        if (accountChanged)
+            await ViewModel.RefreshDataAsync();
+        await ViewModel.LoadUserInfoAsync();
+    }
+
     private void OnViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
     {
         if (e.PropertyName == nameof(AccountViewModel.IsLoggedIn))
@@ -117,9 +124,9 @@ public sealed partial class AccountPage : Page
                 DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Normal, async () =>
                 {
                     var avatarUrl = ViewModel.CurrentAccount?.AvatarUrl;
-                    if (!string.IsNullOrEmpty(avatarUrl) && AvatarPicture.Fill is ImageBrush brush)
+                    if (!string.IsNullOrEmpty(avatarUrl))
                     {
-                        brush.ImageSource = new Microsoft.UI.Xaml.Media.Imaging.BitmapImage(new Uri(avatarUrl));
+                        AvatarPicture.Source = new Microsoft.UI.Xaml.Media.Imaging.BitmapImage(new Uri(avatarUrl));
                     }
 
                     await Task.Delay(150);

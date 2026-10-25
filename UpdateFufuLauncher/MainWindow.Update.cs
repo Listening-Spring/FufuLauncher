@@ -4,7 +4,9 @@ Licensed under the MIT License.
 */
 
 using System.IO;
+using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Windows;
 using Newtonsoft.Json.Linq;
 
@@ -19,19 +21,17 @@ public partial class MainWindow
         try
         {
             string localJsonPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Update.json");
-            SubtitleText.Text = "请求API更新配置...";
-            string apiUrl = "https://philia093.cyou/Update.json";
-            string fallbackUrl = "https://fu1.fun/Update.json";
+            SetLocalizedText(SubtitleText, "RequestingUpdateConfig");
             string updateContent;
             try
             {
-                updateContent = await _httpClient.GetStringAsync(apiUrl);
+                updateContent = await _httpClient.GetStringAsync(ApiEndpoints.UpdateJsonUrl);
             }
             catch (HttpRequestException)
             {
                 try
                 {
-                    updateContent = await _httpClient.GetStringAsync(fallbackUrl);
+                    updateContent = await _httpClient.GetStringAsync(ApiEndpoints.UpdateJsonFallbackUrl);
                 }
                 catch (HttpRequestException)
                 {
@@ -40,7 +40,7 @@ public partial class MainWindow
                         throw;
                     }
 
-                    SubtitleText.Text = "API请求失败，读取本地更新配置...";
+                    SetLocalizedText(SubtitleText, "ReadingLocalUpdateConfig");
                     updateContent = await File.ReadAllTextAsync(localJsonPath);
                 }
             }
@@ -63,60 +63,202 @@ public partial class MainWindow
             if (!TryParseVersion(_installedVersion, out Version currentVersion) ||
                 !TryParseVersion(_officialVersion, out Version remoteVersion))
             {
-                MessageBox.Show("版本号无法识别，请前往官网下载\n此处不提供更新", "版本异常", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(Strings.Get("InvalidVersionMessage"), Strings.Get("InvalidVersionTitle"), MessageBoxButton.OK, MessageBoxImage.Error);
                 Environment.Exit(0);
                 return;
             }
 
             if (currentVersion >= remoteVersion)
             {
-                ShowNoUpdate("当前已是最新版本，无需更新", _isInstalledPreviewBuild);
-                return;
+                if (!_isTestForceUpdate)
+                {
+                    ShowNoUpdate("NoUpdateMessage", _isInstalledPreviewBuild);
+                    return;
+                }
+
+                SetLocalizedText(SubtitleText, "TestModeContinuing");
             }
 
             PrepareOfficialReleaseDownload();
-            await PrepareDownloadAsync("请选择下载线路", "直连GitHub下载...");
+            await PrepareDownloadAsync("SelectDownloadRoute", "DirectGitHubDownload");
         }
         catch (Exception ex)
         {
-            MessageBox.Show($"更新初始化失败，请检查网络，或者去下面下载\nhttps://wwaoi.lanzn.com/b00wnb99ef\n密码:6hnh\n错误详情: {ex.Message}", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+            MessageBox.Show(
+                Strings.Format("UpdateInitFailed", ApiEndpoints.DownloadPageUrl, ApiEndpoints.DownloadPagePassword, ex.Message),
+                Strings.Get("ErrorTitle"),
+                MessageBoxButton.OK,
+                MessageBoxImage.Error);
             Environment.Exit(1);
         }
     }
 
-    private void ShowNoUpdate(string message, bool showRollback = false)
+    private void ShowNoUpdate(string messageKey, bool showRollback = false)
     {
         LoadingPanel.Visibility = Visibility.Collapsed;
         NoUpdatePanel.Visibility = Visibility.Visible;
-        NoUpdateText.Text = message;
+        SetLocalizedText(NoUpdateText, messageKey);
         RollbackBtn.Visibility = showRollback ? Visibility.Visible : Visibility.Collapsed;
-        SubtitleText.Text = "检查完毕";
+        SetLocalizedText(SubtitleText, "CheckComplete");
     }
 
     private void PrepareOfficialReleaseDownload()
     {
         string version = _officialVersion.Trim();
-        _fileName = $"FufuLauncher_Setup_v{version}.exe";
-        _targetExeUrl = $"https://github.com/FufuLauncher/FufuLauncher/releases/latest/download/{_fileName}";
+        string fileName = ApiEndpoints.GetInstallerFileName(version);
+        _fileName = fileName;
+        _targetExeUrl = ApiEndpoints.GetLatestReleaseDownloadUrl(fileName);
+        _r2ExeUrl = ApiEndpoints.GetR2InstallerUrl(version);
     }
 
-    private async Task PrepareDownloadAsync(string selectionSubtitle, string directSubtitle)
+    private async Task PrepareDownloadAsync(string selectionSubtitleKey, string directSubtitleKey)
     {
-        if (_useThirdPartyCDN)
+        if (_useThirdPartyCDN && !_isPreviewMode)
         {
+            SetLocalizedText(SubtitleText, "DetectingPriorityNode");
             if (await TryStartNodeDownloadAsync())
             {
                 return;
             }
+        }
 
-            await ShowMirrorSelectionAsync(selectionSubtitle);
+        if (await TryStartR2DownloadAsync())
+        {
+            return;
+        }
+
+        await PrepareGitHubDownloadAsync(selectionSubtitleKey, directSubtitleKey);
+    }
+
+    private async Task PrepareGitHubDownloadAsync(string selectionSubtitleKey, string directSubtitleKey)
+    {
+        if (_useThirdPartyCDN)
+        {
+            await ShowMirrorSelectionAsync(selectionSubtitleKey);
         }
         else
         {
-
-            SubtitleText.Text = directSubtitle;
-            StartMultiThreadDownload(_targetExeUrl);
+            SetLocalizedText(SubtitleText, directSubtitleKey);
+            StartMultiThreadDownload(_targetExeUrl!, "DownloadingFromGitHub");
         }
+    }
+
+    private async Task<bool> TryStartR2DownloadAsync()
+    {
+        string? r2Url = _r2ExeUrl;
+        if (_isPreviewMode || string.IsNullOrWhiteSpace(r2Url))
+        {
+            return false;
+        }
+
+        DownloadProgressPanel.Visibility = Visibility.Collapsed;
+        LoadingPanel.Visibility = Visibility.Visible;
+        SetLocalizedText(SubtitleText, "DetectingR2");
+        string? resolvedR2Url = await ResolveR2InstallerUrlAsync(r2Url);
+        if (resolvedR2Url == null)
+        {
+            return false;
+        }
+
+        _isR2Download = true;
+        SetLocalizedText(SubtitleText, "R2Available");
+        StartMultiThreadDownload(resolvedR2Url, "DownloadingFromR2");
+        return true;
+    }
+
+    private async Task<string?> ResolveR2InstallerUrlAsync(string url)
+    {
+        if (!Uri.TryCreate(url, UriKind.Absolute, out Uri? parsedUri) ||
+            parsedUri is null ||
+            !string.Equals(parsedUri.Scheme, Uri.UriSchemeHttps, StringComparison.OrdinalIgnoreCase))
+        {
+            return null;
+        }
+
+        Uri currentUri = parsedUri;
+
+        try
+        {
+            using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(6));
+
+            for (int redirectCount = 0; redirectCount <= 3; redirectCount++)
+            {
+                using var request = new HttpRequestMessage(HttpMethod.Get, currentUri);
+                request.Headers.Range = new RangeHeaderValue(0, 1);
+
+                using var response = await _r2HttpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cts.Token);
+
+                if ((int)response.StatusCode is >= 300 and <= 399)
+                {
+                    Uri? redirectUri = response.Headers.Location;
+                    if (redirectUri == null)
+                    {
+                        return null;
+                    }
+
+                    if (!redirectUri.IsAbsoluteUri)
+                    {
+                        redirectUri = new Uri(currentUri, redirectUri);
+                    }
+
+                    if (!string.Equals(redirectUri.Scheme, Uri.UriSchemeHttps, StringComparison.OrdinalIgnoreCase))
+                    {
+                        return null;
+                    }
+
+                    currentUri = redirectUri;
+                    continue;
+                }
+
+                if (response.StatusCode != HttpStatusCode.OK && response.StatusCode != HttpStatusCode.PartialContent)
+                {
+                    return null;
+                }
+
+                string? mediaType = response.Content.Headers.ContentType?.MediaType;
+                if (mediaType != null &&
+                    (mediaType.Contains("html", StringComparison.OrdinalIgnoreCase) ||
+                     mediaType.Contains("json", StringComparison.OrdinalIgnoreCase)))
+                {
+                    return null;
+                }
+
+                await using var stream = await response.Content.ReadAsStreamAsync(cts.Token);
+                byte[] signature = new byte[2];
+                int read = await stream.ReadAtLeastAsync(signature, signature.Length, throwOnEndOfStream: false, cancellationToken: cts.Token);
+                return read == 2 && signature[0] == (byte)'M' && signature[1] == (byte)'Z'
+                    ? currentUri.AbsoluteUri
+                    : null;
+            }
+
+            return null;
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    private async Task FallbackToGitHubPathsAsync(string directFallbackKey)
+    {
+        if (_useThirdPartyCDN)
+        {
+            await FallbackToMirrorSelectionAsync();
+            return;
+        }
+
+        ResetToSelectionUI();
+        SetLocalizedText(SubtitleText, directFallbackKey);
+    }
+
+    private async Task FallbackFromNodeAsync()
+    {
+        if (await TryStartR2DownloadAsync())
+        {
+            return;
+        }
+
+        await FallbackToGitHubPathsAsync("NodeAndR2Unavailable");
     }
 
     private async Task<bool> TryStartNodeDownloadAsync()
@@ -129,7 +271,7 @@ public partial class MainWindow
         try
         {
             using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(5));
-            var statusResponse = await _httpClient.GetStringAsync(NodeStatusUrl, cts.Token);
+            var statusResponse = await _httpClient.GetStringAsync(ApiEndpoints.NodeStatusUrl, cts.Token);
             var status = JObject.Parse(statusResponse);
 
             if (status["download_available"]?.Value<bool>() != true)
@@ -148,23 +290,16 @@ public partial class MainWindow
                 return false;
             }
 
-            if (Random.Shared.Next(100) != 0)
-            {
-                return false;
-            }
-
             string downloadPath = status["download_url"]?.ToString()?.Trim() ?? string.Empty;
             if (downloadPath.Length == 0)
             {
                 return false;
             }
 
-            string nodeDownloadUrl = downloadPath.StartsWith("http", StringComparison.OrdinalIgnoreCase)
-                ? downloadPath
-                : $"{NodeBaseUrl}/{(downloadPath.StartsWith('/') ? downloadPath.Substring(1) : downloadPath)}";
+            string nodeDownloadUrl = ApiEndpoints.GetNodeDownloadUrl(downloadPath);
 
             _isNodeDownload = true;
-            StartMultiThreadDownload(nodeDownloadUrl);
+            StartMultiThreadDownload(nodeDownloadUrl, "DownloadingFromNode");
             return true;
         }
         catch
@@ -173,9 +308,11 @@ public partial class MainWindow
         }
     }
 
-    private async Task ShowMirrorSelectionAsync(string selectionSubtitle)
+    private async Task ShowMirrorSelectionAsync(string selectionSubtitleKey)
     {
-        SubtitleText.Text = "节点联通性校验...";
+        DownloadProgressPanel.Visibility = Visibility.Collapsed;
+        LoadingPanel.Visibility = Visibility.Visible;
+        SetLocalizedText(SubtitleText, "MirrorChecking");
         await TestMirrorsAsync();
 
         LoadingPanel.Visibility = Visibility.Collapsed;
@@ -186,12 +323,12 @@ public partial class MainWindow
         if (_mirrors.Count > 0)
         {
             MirrorListView.SelectedIndex = 0;
-            SubtitleText.Text = selectionSubtitle;
+            SetLocalizedText(SubtitleText, selectionSubtitleKey);
         }
         else
         {
-            SubtitleText.Text = "所有节点均未通过校验";
-            MessageBox.Show("所有镜像节点均未通过文件完整性校验或网络超时\n\n请更换网络环境，或尝试使用直连官方源下载", "网络不佳", MessageBoxButton.OK, MessageBoxImage.Warning);
+            SetLocalizedText(SubtitleText, "AllMirrorsFailed");
+            MessageBox.Show(Strings.Get("AllMirrorsFailedMessage"), Strings.Get("NetworkPoorTitle"), MessageBoxButton.OK, MessageBoxImage.Warning);
         }
     }
 
@@ -199,22 +336,22 @@ public partial class MainWindow
     {
         try
         {
-            await ShowMirrorSelectionAsync("请选择下载线路");
+            await ShowMirrorSelectionAsync("SelectDownloadRoute");
         }
         catch (Exception ex)
         {
-            MessageBox.Show($"下载线路获取失败，请关闭更新器后重试\n错误详情: {ex.Message}", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+            MessageBox.Show(Strings.Format("MirrorRouteFetchFailed", ex.Message), Strings.Get("ErrorTitle"), MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
 
     private async Task CheckRollbackAsync()
     {
-        SubtitleText.Text = "准备回退正式版...";
+        SetLocalizedText(SubtitleText, "PreparingRollback");
 
         string versionLabel = string.IsNullOrEmpty(_officialVersion) ? string.Empty : $" v{_officialVersion}";
         var confirm = MessageBox.Show(
-            $"确定要回退到正式版{versionLabel}吗？\n\n回退将下载并安装最新正式版，覆盖当前预览版。",
-            "回退正式版", MessageBoxButton.YesNo, MessageBoxImage.Question);
+            Strings.Format("RollbackConfirm", versionLabel),
+            Strings.Get("RollbackToStable"), MessageBoxButton.YesNo, MessageBoxImage.Question);
 
         if (confirm != MessageBoxResult.Yes)
         {
@@ -223,7 +360,7 @@ public partial class MainWindow
         }
 
         PrepareOfficialReleaseDownload();
-        await PrepareDownloadAsync("请选择下载线路（回退正式版）", "直连GitHub下载正式版...");
+        await PrepareDownloadAsync("SelectDownloadRouteRollback", "DirectGitHubDownloadStable");
     }
 
     private async void RollbackToStable_Click(object sender, RoutedEventArgs e)
@@ -234,7 +371,7 @@ public partial class MainWindow
         }
         catch (Exception ex)
         {
-            MessageBox.Show($"回退正式版失败，请检查网络\n错误详情: {ex.Message}", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+            MessageBox.Show(Strings.Format("RollbackFailed", ex.Message), Strings.Get("ErrorTitle"), MessageBoxButton.OK, MessageBoxImage.Error);
             Environment.Exit(1);
         }
     }
@@ -245,13 +382,13 @@ public partial class MainWindow
 
         if (string.IsNullOrEmpty(previewVersionStr))
         {
-            ShowNoUpdate("服务端暂未发布预览版更新", _isInstalledPreviewBuild);
+            ShowNoUpdate("NoPreviewAvailable", _isInstalledPreviewBuild);
             return;
         }
 
         if (!TryParseVersion(previewVersionStr, out Version previewVersion))
         {
-            MessageBox.Show("预览版版本号无法识别，请前往官网下载\n此处不提供更新", "版本异常", MessageBoxButton.OK, MessageBoxImage.Error);
+            MessageBox.Show(Strings.Get("InvalidPreviewVersion"), Strings.Get("InvalidVersionTitle"), MessageBoxButton.OK, MessageBoxImage.Error);
             Environment.Exit(0);
             return;
         }
@@ -259,20 +396,19 @@ public partial class MainWindow
         string officialVersionStr = updateJson.GetValue("version", StringComparison.OrdinalIgnoreCase)?.ToString();
         if (!TryParseVersion(officialVersionStr, out Version officialVersion))
         {
-            MessageBox.Show("正式版版本号无法识别，请前往官网下载\n此处不提供更新", "版本异常", MessageBoxButton.OK, MessageBoxImage.Error);
+            MessageBox.Show(Strings.Get("InvalidOfficialVersion"), Strings.Get("InvalidVersionTitle"), MessageBoxButton.OK, MessageBoxImage.Error);
             Environment.Exit(0);
             return;
         }
 
         if (previewVersion <= officialVersion)
         {
-            ShowNoUpdate("预览版版本号未高于最新正式版，不允许更新预览版", _isInstalledPreviewBuild);
+            ShowNoUpdate("PreviewNotNewerMessage", _isInstalledPreviewBuild);
             return;
         }
 
-        SubtitleText.Text = "获取GitHub标签列表...";
-        string tagsUrl = "https://api.github.com/repos/FufuLauncher/FufuLauncher/tags?per_page=100";
-        var tagsResponse = await _httpClient.GetStringAsync(tagsUrl);
+        SetLocalizedText(SubtitleText, "FetchingGitHubTags");
+        var tagsResponse = await _httpClient.GetStringAsync(ApiEndpoints.GithubTagsUrl);
         JArray tags = JArray.Parse(tagsResponse);
 
 
@@ -281,14 +417,14 @@ public partial class MainWindow
 
         if (matchedTag == null)
         {
-            MessageBox.Show($"未在GitHub找到预览版发布包（标签: {previewTagName}）\n\n更新流程已终止，请稍后再试", "未找到预览版", MessageBoxButton.OK, MessageBoxImage.Information);
+            MessageBox.Show(Strings.Format("PreviewPackageNotFound", previewTagName), Strings.Get("PreviewPackageNotFoundTitle"), MessageBoxButton.OK, MessageBoxImage.Information);
             Environment.Exit(0);
             return;
         }
 
-        SubtitleText.Text = "获取预览版Release信息...";
+        SetLocalizedText(SubtitleText, "FetchingPreviewRelease");
         string tagName = matchedTag["name"]!.ToString();
-        string releaseUrl = $"https://api.github.com/repos/FufuLauncher/FufuLauncher/releases/tags/{Uri.EscapeDataString(tagName)}";
+        string releaseUrl = ApiEndpoints.GetReleaseByTagUrl(tagName);
         var releaseResponse = await _httpClient.GetStringAsync(releaseUrl);
         JObject releaseJson = JObject.Parse(releaseResponse);
 
@@ -296,11 +432,12 @@ public partial class MainWindow
 
         if (targetAsset == null)
         {
-            throw new Exception("预览版Release中不存在文件");
+            throw new Exception(Strings.Get("PreviewReleaseAssetMissing"));
         }
 
         _targetExeUrl = targetAsset["browser_download_url"]!.ToString();
         _fileName = targetAsset["name"]!.ToString();
+        _r2ExeUrl = null;
 
 
         string digest = targetAsset["digest"]?.ToString();
@@ -309,7 +446,7 @@ public partial class MainWindow
             _expectedSha256 = digest.Substring("sha256:".Length);
         }
 
-        await PrepareDownloadAsync("请选择下载线路（预览版）", "直连GitHub下载预览版...");
+        await PrepareDownloadAsync("SelectDownloadRoutePreview", "DirectGitHubDownloadPreview");
     }
 
     #endregion
