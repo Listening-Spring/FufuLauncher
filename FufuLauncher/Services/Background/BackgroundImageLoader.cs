@@ -58,7 +58,8 @@ internal static class BackgroundImageLoader
         }
         catch (Exception ex)
         {
-            DebugLog.Info("BackgroundImageLoader", $"BackgroundImageLoader: Default background file unavailable, using embedded background: {ex.Message}");
+            DebugLog.Info("BackgroundImageLoader",
+                $"BackgroundImageLoader: Default background file unavailable, using embedded background: {ex.Message}");
         }
 
         return await LoadAsync(() => typeof(BackgroundImageLoader).Assembly.GetManifestResourceStream(
@@ -96,8 +97,10 @@ internal static class BackgroundImageLoader
                 pixels[i + 2] = (byte)((pixels[i + 2] * alpha + 127) / 255);
             }
 
-            DebugLog.Info("BackgroundImageLoader", "Loader.Decoded", $"{image.Width}x{image.Height} in {Environment.TickCount64 - started}ms");
-            return (image.Width, image.Height, Pixels: pixels);
+            var palette = BackgroundColorAnalyzer.Analyze(pixels, image.Width, image.Height);
+            DebugLog.Info("BackgroundImageLoader", "Loader.Decoded",
+                $"{image.Width}x{image.Height} in {Environment.TickCount64 - started}ms");
+            return (image.Width, image.Height, Pixels: pixels, Palette: palette);
         }).ConfigureAwait(false);
 
         var completion = new TaskCompletionSource<ImageSource>(TaskCreationOptions.RunContinuationsAsynchronously);
@@ -112,7 +115,9 @@ internal static class BackgroundImageLoader
                 using var buffer = bitmap.PixelBuffer.AsStream();
                 buffer.Write(decoded.Pixels, 0, decoded.Pixels.Length);
                 bitmap.Invalidate();
-                DebugLog.Info("BackgroundImageLoader", "Loader.Bitmap.Done", $"{Environment.TickCount64 - bitmapStarted}ms");
+                BackgroundColorPaletteCache.Set(bitmap, decoded.Palette);
+                DebugLog.Info("BackgroundImageLoader", "Loader.Bitmap.Done",
+                    $"{Environment.TickCount64 - bitmapStarted}ms");
                 completion.SetResult(bitmap);
             }
             catch (Exception ex)
@@ -142,7 +147,8 @@ internal static class BackgroundImageLoader
 
         var started = Environment.TickCount64;
         image.Mutate(context => context.GaussianBlur(sigma));
-        DebugLog.Info("BackgroundImageLoader", $"Applied antialias: strength={settings.Strength}, sigma={sigma:0.##}, {Environment.TickCount64 - started}ms");
+        DebugLog.Info("BackgroundImageLoader",
+            $"Applied antialias: strength={settings.Strength}, sigma={sigma:0.##}, {Environment.TickCount64 - started}ms");
     }
 
     private static void ApplyDisplayQuality(Image<Bgra32> image, BackgroundImageQuality quality)

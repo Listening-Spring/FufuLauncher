@@ -103,7 +103,8 @@ public partial class MainViewModel
             }
 
             PanelBackgroundBrush = new SolidColorBrush(baseColor) { Opacity = _panelOpacityValue };
-            DebugLog.Info("MainViewModel.Ui", $"[MainViewModel] Background updated - theme: {currentTheme}, opacity: {_panelOpacityValue}");
+            DebugLog.Info("MainViewModel.Ui",
+                $"[MainViewModel] Background updated - theme: {currentTheme}, opacity: {_panelOpacityValue}");
         }
         catch (Exception ex)
         {
@@ -246,6 +247,9 @@ public partial class MainViewModel
 
         var launchOverlayColor = await _localSettingsService.ReadSettingAsync("LaunchButtonOverlayColor") as string ??
                                  "#0078D7";
+        var autoThemeColor = App.GetService<IAutoThemeColorService>().ThemeColorHex;
+        if (!string.IsNullOrWhiteSpace(autoThemeColor))
+            launchOverlayColor = autoThemeColor;
         LaunchButtonOverlayBrush = CreateBrush(launchOverlayColor, 0.4);
     }
 
