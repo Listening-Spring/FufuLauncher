@@ -213,7 +213,7 @@ jobs:
     - name: Set Release Tag
       shell: pwsh
       run: |
-        $timeTag = Get-Date -Format "yyyy.MM.dd-HHmmss"
+        $timeTag = [DateTime]::UtcNow.AddHours(8).ToString("yyyy.MM.dd-HHmmss")
         Write-Output "RELEASE_TAG=v$timeTag" >> $env:GITHUB_ENV
         Write-Output "RELEASE_NAME=Release $timeTag" >> $env:GITHUB_ENV
 
