@@ -5766,6 +5766,12 @@ Puedes reintentar con otro nodo o usar la fuente oficial directa.</value>
   <data name="PluginPage_GetPluginsTitle" xml:space="preserve">
     <value>Get Plugins</value>
   </data>
+  <data name="PluginPage_ListViewTooltip" xml:space="preserve">
+    <value>Vista de lista</value>
+  </data>
+  <data name="PluginPage_GridViewTooltip" xml:space="preserve">
+    <value>Vista de cuadrícula</value>
+  </data>
   <data name="PluginPage_DownloadLatestOption" xml:space="preserve">
     <value>Download / Update Plugin</value>
   </data>
@@ -9049,5 +9055,20 @@ Detalles: {0}</value>
   </data>
   <data name="McpTool_CancelInstallCaption" xml:space="preserve">
     <value>Cancelar una instalación en curso o en espera y cerrar la ventana de verificación.</value>
+  </data>
+  <data name="PluginGameVersion_Blocked_Format" xml:space="preserve">
+    <value>La versión del juego {0} no está cubierta por el requisito del plugin: {1}</value>
+  </data>
+  <data name="PluginGameVersion_Malformed_Format" xml:space="preserve">
+    <value>No se puede analizar el requisito de versión del juego en el config.ini del plugin: {0} (no reconocido: {1})</value>
+  </data>
+  <data name="PluginGameVersion_BlockedTitle" xml:space="preserve">
+    <value>El plugin no es compatible con la versión actual del juego</value>
+  </data>
+  <data name="Settings_IgnoreGameVersion_Title" xml:space="preserve">
+    <value>Ignorar restricciones de versión de plugins</value>
+  </data>
+  <data name="Settings_IgnoreGameVersion_Caption" xml:space="preserve">
+    <value>Al activarlo, los plugins ya no se desactivan automáticamente ni se bloquea su activación según la versión del juego declarada. Un plugin incompatible puede provocar el cierre del juego; actúe con precaución.</value>
   </data>
 </root>

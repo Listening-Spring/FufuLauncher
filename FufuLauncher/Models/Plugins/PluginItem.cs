@@ -5,7 +5,6 @@ Licensed under the MIT License.
 
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using FufuLauncher.Helpers;
 using Microsoft.UI.Xaml;
 
 namespace FufuLauncher.Models;
@@ -20,6 +19,8 @@ public class PluginItem : INotifyPropertyChanged
     private string _directoryPath;
     private string? _configFilePath;
     private bool _isEnabled;
+    private bool _isVersionBlocked;
+    private string _versionBlockMessage = string.Empty;
     private long _fileSize;
     private DateTime _dateModified;
 
@@ -115,11 +116,35 @@ public class PluginItem : INotifyPropertyChanged
             {
                 _isEnabled = value;
                 OnPropertyChanged();
-                OnPropertyChanged(nameof(StatusText));
-                OnPropertyChanged(nameof(StatusColor));
             }
         }
     }
+
+    public bool IsVersionBlocked
+    {
+        get => _isVersionBlocked;
+        set
+        {
+            if (_isVersionBlocked == value) return;
+            _isVersionBlocked = value;
+            OnPropertyChanged();
+            OnPropertyChanged(nameof(VersionBlockVisibility));
+        }
+    }
+
+    public string VersionBlockMessage
+    {
+        get => _versionBlockMessage;
+        set
+        {
+            if (_versionBlockMessage == value) return;
+            _versionBlockMessage = value;
+            OnPropertyChanged();
+        }
+    }
+
+    public Visibility VersionBlockVisibility =>
+        IsVersionBlocked ? Visibility.Visible : Visibility.Collapsed;
 
     public long FileSize
     {
@@ -143,14 +168,10 @@ public class PluginItem : INotifyPropertyChanged
     }
 
     public string FileSizeDisplay => $"{(FileSize / 1024.0):F2} KB";
-    public string StatusText => IsEnabled ? "Enabled".GetLocalized() : "Disabled".GetLocalized();
-    public string StatusColor => IsEnabled ? "#00CC6A" : "#999999";
 
     public void RefreshState()
     {
         OnPropertyChanged(nameof(IsEnabled));
-        OnPropertyChanged(nameof(StatusText));
-        OnPropertyChanged(nameof(StatusColor));
     }
 
     public event PropertyChangedEventHandler? PropertyChanged;
