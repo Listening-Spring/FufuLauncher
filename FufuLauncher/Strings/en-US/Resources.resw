@@ -2443,6 +2443,12 @@ Go to the Microsoft website to download and install it?</value>
   <data name="GameUpdate_PredownloadDone" xml:space="preserve">
     <value>Pre-download completed. Waiting for the official update.</value>
   </data>
+  <data name="GameUpdate_ScanChunks" xml:space="preserve">
+    <value>Verifying cached chunks...</value>
+  </data>
+  <data name="GameUpdate_ReuseCachedChunks" xml:space="preserve">
+    <value>Reused {0} verified chunks ({1}); {2} chunk(s) left to download ({3}).</value>
+  </data>
   <data name="GameUpdate_NoPredownloadNeeded" xml:space="preserve">
     <value>No pre-download content available for the current version.</value>
   </data>
@@ -9565,5 +9571,11 @@ Details: {0}</value>
   </data>
   <data name="PluginConfigGuard_RepairedMessage" xml:space="preserve">
     <value>Added {0} option(s), removed {1} option(s)</value>
+  </data>
+  <data name="Settings_Telemetry_Title" xml:space="preserve">
+    <value>Usage telemetry</value>
+  </data>
+  <data name="Settings_Telemetry_Caption" xml:space="preserve">
+    <value>Send usage information for statistics and troubleshooting</value>
   </data>
 </root>

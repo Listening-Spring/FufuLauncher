@@ -2557,6 +2557,12 @@
   <data name="GameUpdate_PredownloadDone" xml:space="preserve">
     <value>预下载完成，等待正式更新。</value>
   </data>
+  <data name="GameUpdate_ScanChunks" xml:space="preserve">
+    <value>正在校验已下载的分片…</value>
+  </data>
+  <data name="GameUpdate_ReuseCachedChunks" xml:space="preserve">
+    <value>已复用 {0} 个校验通过的分片（{1}），还需下载 {2} 个（{3}）。</value>
+  </data>
   <data name="GameUpdate_NoPredownloadNeeded" xml:space="preserve">
     <value>当前版本没有可预下载的内容。</value>
   </data>
@@ -9560,5 +9566,11 @@ UIGF v4.x/3.0/2.x</value>
   </data>
   <data name="PluginConfigGuard_RepairedMessage" xml:space="preserve">
     <value>新增 {0} 个配置项，移除 {1} 个配置项</value>
+  </data>
+  <data name="Settings_Telemetry_Title" xml:space="preserve">
+    <value>使用遥测</value>
+  </data>
+  <data name="Settings_Telemetry_Caption" xml:space="preserve">
+    <value>发送使用情况，用于统计与问题排查</value>
   </data>
 </root>
