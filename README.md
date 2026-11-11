@@ -12,11 +12,13 @@
 
 **If you find this project helpful, please consider giving it a Star to support the development.**
 
-#### [Official Website](https://fu1.fun/)
+- [Website](https://fu1.fun/) - [Status](https://status.fu1.fun/)
 
-#### [Injection Module Open Source Repository](https://github.com/CodeCubist/FufuLauncher.UnlockerIsland)
+- [Injection Module Open Source Repository](https://github.com/CodeCubist/FufuLauncher.UnlockerIsland)
 
-#### [中文](./README-CN.md)
+- [简体中文](./README-CN.md)
+
+---
 
 ### Before asking a question, please check if you have updated to the latest version. And please add tags to your questions!
 
