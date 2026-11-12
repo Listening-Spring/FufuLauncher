@@ -31,11 +31,17 @@ public sealed class PluginAuditReporter
 
     private const string AddMethodLauncherBundled = "launcher_bundled";
 
+    private const string AccountUid = "100000000";
+
     private const string UnknownValue = "unknown";
 
     private const int MaxFieldLength = 256;
 
     private const string MetaSectionName = "_meta";
+
+    private const string GeneralSectionName = "General";
+
+    private const string SectionNameKey = "Name";
 
     private static readonly TimeSpan SolveTimeout = TimeSpan.FromSeconds(60);
 
@@ -53,13 +59,9 @@ public sealed class PluginAuditReporter
 
     private string _gameVersion = string.Empty;
 
-    private string _accountUid = string.Empty;
-
     private bool _hwidResolved;
 
     private bool _gameVersionResolved;
-
-    private bool _accountUidResolved;
 
     public PluginAuditReporter(ILocalSettingsService settings, PluginProvenanceStore provenance)
     {
@@ -109,6 +111,8 @@ public sealed class PluginAuditReporter
             cancellationToken.ThrowIfCancellationRequested();
 
             if (string.IsNullOrWhiteSpace(entry.FolderName) || !visited.Add(entry.FolderName)) continue;
+
+            if (IsTelemetryExcluded(entry)) continue;
 
             var sha256 = await Task.Run(() => TryComputeSha256(entry.FullPath), cancellationToken)
                 .ConfigureAwait(false);
@@ -214,7 +218,7 @@ public sealed class PluginAuditReporter
             ["hwid"] = Safe(await GetHwidAsync(cancellationToken).ConfigureAwait(false)),
             ["app_version"] = Safe(AppVersionHelper.FullVersion),
             ["game_version"] = Safe(await GetGameVersionAsync(cancellationToken).ConfigureAwait(false)),
-            ["account_uid"] = Safe(GetAccountUid()),
+            ["account_uid"] = AccountUid,
             ["plugin_name"] = Safe(report.Name),
             ["plugin_sha256"] = report.Sha256.ToLowerInvariant(),
             ["plugin_add_method"] = Safe(ResolveAddMethod(entry)),
@@ -229,7 +233,9 @@ public sealed class PluginAuditReporter
 
         foreach (var section in ReadAllSections(entry.ConfigFilePath))
         {
-            snapshot[section.Key] = section.Value;
+            snapshot[section.Key] = IsGeneralSection(section.Key)
+                ? section.Value
+                : BuildSectionNameSnapshot(section.Value);
         }
 
         var fileInfo = new Dictionary<string, object?>
@@ -255,6 +261,21 @@ public sealed class PluginAuditReporter
         }
 
         snapshot[MetaSectionName] = fileInfo;
+
+        return snapshot;
+    }
+
+    private static bool IsGeneralSection(string sectionName) =>
+        string.Equals(sectionName, GeneralSectionName, StringComparison.OrdinalIgnoreCase);
+
+    private static Dictionary<string, string> BuildSectionNameSnapshot(Dictionary<string, string> section)
+    {
+        var snapshot = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+
+        if (section.TryGetValue(SectionNameKey, out var name) && !string.IsNullOrWhiteSpace(name))
+        {
+            snapshot[SectionNameKey] = Safe(name);
+        }
 
         return snapshot;
     }
@@ -300,6 +321,15 @@ public sealed class PluginAuditReporter
         return PluginProvenanceStore.SourceExternalCopy;
     }
 
+    private bool IsTelemetryExcluded(PluginAuditEntry entry)
+    {
+        var addMethod = ResolveAddMethod(entry);
+
+        return string.Equals(addMethod, AddMethodMainPlugin, StringComparison.OrdinalIgnoreCase) ||
+               string.Equals(addMethod, PluginProvenanceStore.SourcePluginStore,
+                   StringComparison.OrdinalIgnoreCase);
+    }
+
     private static bool IsMainPlugin(PluginAuditEntry entry) =>
         LightweightPluginService.IsMainPluginPackage(entry.FolderName, entry.FileName);
 
@@ -320,7 +350,7 @@ public sealed class PluginAuditReporter
     private static string ResolvePluginName(PluginAuditEntry entry)
     {
         var general = ReadGeneralSection(entry.ConfigFilePath);
-        if (general.TryGetValue("Name", out var name) && !string.IsNullOrWhiteSpace(name))
+        if (general.TryGetValue(SectionNameKey, out var name) && !string.IsNullOrWhiteSpace(name))
         {
             return name.Trim();
         }
@@ -332,7 +362,7 @@ public sealed class PluginAuditReporter
     {
         var sections = ReadAllSections(configPath);
 
-        return sections.TryGetValue("General", out var general)
+        return sections.TryGetValue(GeneralSectionName, out var general)
             ? general
             : new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
     }
@@ -398,31 +428,6 @@ public sealed class PluginAuditReporter
         }
     }
 
-    private string GetAccountUid()
-    {
-        lock (_cacheLock)
-        {
-            if (_accountUidResolved) return _accountUid;
-        }
-
-        var uid = string.Empty;
-        try
-        {
-            uid = App.GetService<AccountManager>().GetActiveAccountEntry()?.GameUid ?? string.Empty;
-        }
-        catch (Exception ex)
-        {
-            DebugLog.Info("PluginAuditReporter", $"[PluginAudit] Failed to resolve account: {ex.Message}");
-        }
-
-        lock (_cacheLock)
-        {
-            _accountUid = uid;
-            _accountUidResolved = true;
-            return _accountUid;
-        }
-    }
-
     private static string? TryComputeSha256(string filePath)
     {
         try
@@ -452,13 +457,13 @@ public sealed class PluginAuditReporter
             var raw = await _settings.ReadSettingAsync(LocalSettingsService.IsTelemetryEnabledKey)
                 .ConfigureAwait(false);
 
-            return raw == null || Convert.ToBoolean(raw);
+            return raw != null && Convert.ToBoolean(raw);
         }
         catch (Exception ex)
         {
             DebugLog.Info("PluginAuditReporter",
                 $"[PluginAudit] Failed to read telemetry setting: {ex.Message}");
-            return true;
+            return false;
         }
     }
 
