@@ -10,8 +10,8 @@ internal sealed record MiyousheShopSession(AccountContext Context, string Uid);
 internal sealed partial class MiyousheShopClient : IDisposable
 {
     internal const int PageSize = 20;
-    private const string Api = ApiEndpoints.MiyousheBbsApiBase + "/common/homushop/v1/web/goods/";
-    private const string OfficialPage = ApiEndpoints.WebstaticRefererUrl + "/app/community-shop/index.html#/myb/";
+    private const string Api = ApiEndpoints.MiyousheShopApiBase;
+    private const string OfficialPage = ApiEndpoints.MiyousheShopOfficialPageBase;
     private readonly HttpClient _http;
 
     public MiyousheShopClient() : this(new HttpClientHandler { UseCookies = false, AllowAutoRedirect = false })
@@ -22,14 +22,21 @@ internal sealed partial class MiyousheShopClient : IDisposable
         _http = new(handler) { Timeout = TimeSpan.FromSeconds(10) };
 
     internal static Uri OfficialUri(string? goodsId = null) => new(OfficialPage +
-        (string.IsNullOrEmpty(goodsId) ? "redeem" : "goodsDetail/" + Uri.EscapeDataString(goodsId)));
+                                                                   (string.IsNullOrEmpty(goodsId)
+                                                                       ? "redeem"
+                                                                       : "goodsDetail/" +
+                                                                         Uri.EscapeDataString(goodsId)));
 
-    internal static Uri OfficialHistoryUri { get; } = new(OfficialPage + "miyobHistory/exchange");
+    internal static Uri OfficialHistoryUri
+    {
+        get;
+    } = new(OfficialPage + "miyobHistory/exchange");
 
     internal async Task<MiyousheShopPage> GetPageAsync(string game, int page, MiyousheShopSession? session,
         CancellationToken ct)
     {
-        var data = await GetAsync($"list?page={page}&page_size={PageSize}&game={Uri.EscapeDataString(game)}",
+        var data = await GetAsync(
+            $"{ApiEndpoints.MiyousheShopListEndpoint}?page={page}&page_size={PageSize}&game={Uri.EscapeDataString(game)}",
             session, ct).ConfigureAwait(false);
         if (data.Get("list").ValueKind != JsonValueKind.Array)
             throw new InvalidDataException("Invalid shop list.");
@@ -44,7 +51,8 @@ internal sealed partial class MiyousheShopClient : IDisposable
 
     internal async Task<MiyousheShopGoods> GetGoodsAsync(string id, MiyousheShopSession? session, CancellationToken ct)
     {
-        var data = await GetAsync("detail?goods_id=" + Uri.EscapeDataString(id), session, ct).ConfigureAwait(false);
+        var data = await GetAsync(ApiEndpoints.MiyousheShopDetailEndpoint + "?goods_id=" + Uri.EscapeDataString(id),
+            session, ct).ConfigureAwait(false);
         var goods = MiyousheShopGoods.Parse(data, session != null);
         return goods.Id == id && goods.Name.Length > 0 ? goods : throw new InvalidDataException("Invalid shop goods.");
     }

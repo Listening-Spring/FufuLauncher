@@ -16,7 +16,6 @@ using FufuLauncher.Services.MiHoYo.Transport;
 
 namespace FufuLauncher.Services.CycleChallenge;
 
-
 public sealed record RawChallengeResponse(
     bool Success,
     ChallengeErrorKind Kind,
@@ -25,17 +24,11 @@ public sealed record RawChallengeResponse(
     string? DataJson,
     string RawJson);
 
-
-
-
-
-
-
 public sealed class GameRecordApiClient
 {
-    private const string CnGameRecordBase = "https://api-takumi-record.mihoyo.com/game_record/app/genshin/api";
-    private const string OsGameRecordBase = "https://bbs-api-os.hoyolab.com/game_record/app/genshin/api";
-    private const string OsEventBase = "https://sg-public-api.hoyoverse.com/event/game_record/genshin/api";
+    private const string CnGameRecordBase = ApiEndpoints.CnGameRecordApiBase;
+    private const string OsGameRecordBase = ApiEndpoints.OverseaGameRecordApiBase;
+    private const string OsEventBase = ApiEndpoints.OverseaEventGameRecordApiBase;
 
     private const string ToolVersionCn = "v6.6.1-gr-cn";
     private const string PageCn = "v6.6.1-gr-cn_#/ys";
@@ -60,19 +53,23 @@ public sealed class GameRecordApiClient
         _accountManager = accountManager;
     }
 
-    public Task<RawChallengeResponse> GetSpiralAbyssAsync(SelectedGameRole role, int scheduleType, CancellationToken token) =>
-        GetAsync(role, "spiralAbyss", $"{RoleQuery(role)}&schedule_type={scheduleType}", ChallengePath("spiralAbyss"), token);
+    public Task<RawChallengeResponse> GetSpiralAbyssAsync(SelectedGameRole role, int scheduleType,
+        CancellationToken token) =>
+        GetAsync(role, ApiEndpoints.GameRecordSpiralAbyssEndpoint, $"{RoleQuery(role)}&schedule_type={scheduleType}",
+            ChallengePath(ApiEndpoints.GameRecordSpiralAbyssEndpoint), token);
 
     public Task<RawChallengeResponse> GetRoleCombatAsync(SelectedGameRole role, CancellationToken token) =>
-        GetAsync(role, "role_combat", $"{RoleQuery(role)}&need_detail=true&active=1", ChallengePath("role_combat"), token);
+        GetAsync(role, ApiEndpoints.GameRecordRoleCombatEndpoint, $"{RoleQuery(role)}&need_detail=true&active=1",
+            ChallengePath(ApiEndpoints.GameRecordRoleCombatEndpoint), token);
 
     public Task<RawChallengeResponse> GetHardChallengeAsync(SelectedGameRole role, CancellationToken token) =>
-        GetAsync(role, "hard_challenge", $"{RoleQuery(role)}&need_detail=true", ChallengePath("hard_challenge"), token);
+        GetAsync(role, ApiEndpoints.GameRecordHardChallengeEndpoint, $"{RoleQuery(role)}&need_detail=true",
+            ChallengePath(ApiEndpoints.GameRecordHardChallengeEndpoint), token);
 
     private static string RoleQuery(SelectedGameRole role) =>
         $"role_id={Uri.EscapeDataString(role.Role.game_uid)}&server={Uri.EscapeDataString(role.Role.region)}";
 
-    private static string ChallengePath(string apiName) => $"/game_record/app/genshin/api/{apiName}";
+    private static string ChallengePath(string apiName) => ApiEndpoints.GetGameRecordChallengePath(apiName);
 
     private static bool IsOversea(SelectedGameRole role) =>
         string.Equals(role.ServerType, "os", StringComparison.OrdinalIgnoreCase);
@@ -103,7 +100,7 @@ public sealed class GameRecordApiClient
         var response = await SendWithFallbackAsync(context, isOversea, apiName, rawQuery, challenge: null, token)
             .ConfigureAwait(false);
 
-        
+
         if (response.Kind == ChallengeErrorKind.RiskControlRequired && !isOversea)
         {
             try
@@ -122,11 +119,10 @@ public sealed class GameRecordApiClient
             }
             catch
             {
-                
             }
         }
 
-        
+
         if (response.Kind == ChallengeErrorKind.LoginExpired && !isOversea)
         {
             if (await TryRefreshCookiesAsync(role.AccountId, token).ConfigureAwait(false))
@@ -136,7 +132,8 @@ public sealed class GameRecordApiClient
                     context = await _identityService.BuildAsync(role.AccountId, token).ConfigureAwait(false);
                     if (context.Cookies.Count > 0)
                     {
-                        response = await SendWithFallbackAsync(context, isOversea, apiName, rawQuery, challenge: null, token)
+                        response = await SendWithFallbackAsync(context, isOversea, apiName, rawQuery, challenge: null,
+                                token)
                             .ConfigureAwait(false);
                     }
                 }
@@ -146,7 +143,6 @@ public sealed class GameRecordApiClient
                 }
                 catch
                 {
-                    
                 }
             }
         }
@@ -154,9 +150,10 @@ public sealed class GameRecordApiClient
         return response;
     }
 
-    
+
     private async Task<RawChallengeResponse> SendWithFallbackAsync(
-        AccountContext context, bool isOversea, string apiName, string rawQuery, string? challenge, CancellationToken token)
+        AccountContext context, bool isOversea, string apiName, string rawQuery, string? challenge,
+        CancellationToken token)
     {
         var bases = GetCandidateBases(isOversea, apiName);
         RawChallengeResponse? last = null;
@@ -182,8 +179,8 @@ public sealed class GameRecordApiClient
                 LogDebug($"{apiName} host={new Uri(url).Host} status={(int)httpResponse.StatusCode} " +
                          $"retcode={last.Retcode} kind={last.Kind} dataLen={last.DataJson?.Length ?? 0} msg={last.Message}");
                 if (last.Success || last.Kind is ChallengeErrorKind.LoginExpired
-                    or ChallengeErrorKind.RiskControlRequired or ChallengeErrorKind.RateLimited
-                    or ChallengeErrorKind.NotParticipated or ChallengeErrorKind.NotUnlocked)
+                        or ChallengeErrorKind.RiskControlRequired or ChallengeErrorKind.RateLimited
+                        or ChallengeErrorKind.NotParticipated or ChallengeErrorKind.NotUnlocked)
                 {
                     return last;
                 }
@@ -217,7 +214,8 @@ public sealed class GameRecordApiClient
         string.Join("&", rawQuery.Split('&', StringSplitOptions.RemoveEmptyEntries)
             .OrderBy(part => part, StringComparer.Ordinal));
 
-    private void ApplyChineseHeaders(HttpRequestMessage request, AccountContext context, string rawQuery, string? challenge)
+    private void ApplyChineseHeaders(HttpRequestMessage request, AccountContext context, string rawQuery,
+        string? challenge)
     {
         string cookie = BbsRequestBuilder.BuildCookieString(context.Cookies, BbsRequestBuilder.CookieMode.Cookie);
         MiHoYoHeaderFactory.ApplyGameRecordHeaders(request, new GameRecordHeaderOptions(
@@ -236,7 +234,8 @@ public sealed class GameRecordApiClient
         request.Headers.TryAddWithoutValidation("Accept-Language", "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7");
     }
 
-    private void ApplyOverseaHeaders(HttpRequestMessage request, AccountContext context, string rawQuery, string? challenge)
+    private void ApplyOverseaHeaders(HttpRequestMessage request, AccountContext context, string rawQuery,
+        string? challenge)
     {
         string cookie = BbsRequestBuilder.BuildCookieString(context.Cookies, BbsRequestBuilder.CookieMode.Cookie);
         request.Headers.TryAddWithoutValidation(HeaderNames.UserAgent, UserAgents.WindowsBbsOversea254);
@@ -320,7 +319,6 @@ public sealed class GameRecordApiClient
         }
         catch (JsonException)
         {
-            
             string snippet = json.Length > 60 ? json[..60] : json;
             snippet = snippet.Replace('\r', ' ').Replace('\n', ' ').Trim();
             return Failure(ChallengeErrorKind.ServerError, -1, $"HTTP {statusCode} 非 JSON 响应：{snippet}");
@@ -330,7 +328,7 @@ public sealed class GameRecordApiClient
     private static RawChallengeResponse Failure(ChallengeErrorKind kind, int retcode, string message) =>
         new(false, kind, retcode, message, null, string.Empty);
 
-    
+
     private static void LogDebug(string line)
     {
 #if DEBUG
@@ -341,7 +339,6 @@ public sealed class GameRecordApiClient
         }
         catch
         {
-            
         }
 #endif
     }

@@ -20,13 +20,14 @@ public sealed class DailyNoteService
 {
     private const string RecordApiBase = ApiEndpoints.DailyNoteRecordApiBase;
 
-    private const string IndexPath = "/api/index";
-    private const string DailyNotePath = "/api/dailyNote";
-    private const string WidgetPath = "/aapi/widget/v2?game_id=2";
+    private const string IndexPath = ApiEndpoints.DailyNoteIndexPath;
+    private const string DailyNotePath = ApiEndpoints.DailyNotePath;
+    private const string WidgetPath = ApiEndpoints.DailyNoteWidgetPath;
 
     private const string Page = "v6.6.1-gr-cn_#/ys";
 
     private static readonly SemaphoreSlim _semaphore = new(1, 1);
+
     private static readonly HttpClient SharedHttpClient = new(new HttpClientHandler { UseCookies = false })
         { Timeout = TimeSpan.FromSeconds(15) };
 
@@ -68,6 +69,7 @@ public sealed class DailyNoteService
             string playerQuery = $"role_id={Uri.EscapeDataString(roleId)}&server={Uri.EscapeDataString(server)}";
 
             bool refreshAttempted = false;
+
             async Task<string> RequestWithRefreshAsync(Func<AccountContext, Task<string>> send)
             {
                 string response = await send(ctx);
@@ -151,7 +153,7 @@ public sealed class DailyNoteService
         }
 
         using var refreshService = _createTokenRefreshService();
-        // A business request already rejected these credentials; do not gate the retry on another API.
+
         var refreshed = await refreshService.RefreshCookieAsync(currentCookies, forceRefresh: true);
         if (refreshed is null || refreshed.Count == 0)
         {

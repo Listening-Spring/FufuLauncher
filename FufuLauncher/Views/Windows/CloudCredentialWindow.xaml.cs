@@ -52,7 +52,7 @@ public sealed partial class CloudCredentialWindow : Window
             CloudWebView.CoreWebView2.ContextMenuRequested += CoreWebView2_ContextMenuRequested;
 
             CloudWebView.CoreWebView2.AddWebResourceRequestedFilter(
-                "*://api-cloudgame.mihoyo.com/hk4e_cg_cn/wallet/wallet/get*",
+                ApiEndpoints.CloudGameWalletWebViewFilter,
                 CoreWebView2WebResourceContext.All);
             CloudWebView.CoreWebView2.WebResourceRequested += CoreWebView2_WebResourceRequested;
 
@@ -87,9 +87,11 @@ public sealed partial class CloudCredentialWindow : Window
                     ShowCredentialError("CloudCredential_IdentityUnavailable".GetLocalized());
                     return;
                 }
+
                 if (!string.Equals(accountUid, _uid, StringComparison.Ordinal))
                 {
-                    ShowCredentialError(string.Format("CloudCredential_AccountMismatch".GetLocalized(), accountUid, _uid));
+                    ShowCredentialError(string.Format("CloudCredential_AccountMismatch".GetLocalized(), accountUid,
+                        _uid));
                     return;
                 }
 
@@ -98,6 +100,7 @@ public sealed partial class CloudCredentialWindow : Window
                     ShowCredentialError("CloudCredential_SaveFailed".GetLocalized());
                     return;
                 }
+
                 _captured = true;
                 if (_isClosed) return;
                 TitleText.Text = $"添加云游戏凭证 - {_uid} (已获取)";

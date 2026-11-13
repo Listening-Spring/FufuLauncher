@@ -258,8 +258,10 @@ public sealed partial class MiyousheWindow : WindowEx
                 _shopGameKey = game.Key;
                 await ShopPane.SetGameAsync(game.Key);
             }
+
             return;
         }
+
         if (_initializing || GameSelector.SelectedItem is not CommunityGame selected) return;
         _communityGame = selected;
         _changingSelectors = true;
@@ -483,7 +485,7 @@ public sealed partial class MiyousheWindow : WindowEx
         MoreRepliesButton.Visibility = Visibility.Collapsed;
         _replies.Clear();
         _hasMoreReplies = false;
-        _commentActionRoot = "https://miyoushe-native.invalid/" + Guid.NewGuid().ToString("N") + "/";
+        _commentActionRoot = ApiEndpoints.MiyousheNativeVirtualBaseUrl + Guid.NewGuid().ToString("N") + "/";
         ReaderGrid.Visibility = Visibility.Collapsed;
         ReaderPlaceholder.Visibility = Visibility.Visible;
         SetPageMode(true);
@@ -667,9 +669,9 @@ public sealed partial class MiyousheWindow : WindowEx
         }, _readerCancellation.Token);
     }
 
-    private Uri OriginalUri => new(ApiEndpoints.MiyousheWebBase + "/" +
-                                   (_communityGames.FirstOrDefault(g => g.Id == _post?.GameId)?.Slug ?? "ys") + "/article/" +
-                                   _post!.Id);
+    private Uri OriginalUri => new(ApiEndpoints.GetMiyousheArticleWebUrl(
+        _communityGames.FirstOrDefault(g => g.Id == _post?.GameId)?.Slug ?? "ys",
+        _post!.Id));
 
     private void OnCopyLink(object sender, RoutedEventArgs args)
     {
