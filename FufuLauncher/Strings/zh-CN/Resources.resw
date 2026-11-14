@@ -596,7 +596,7 @@
     <value>已开启</value>
   </data>
   <data name="HoyolabAccount_Enabled_Message" xml:space="preserve">
-    <value>下次启动游戏时将直接以米游社/HoyoLAB 账户身份进入游戏，无需再次输入账号密码。</value>
+    <value>下次启动游戏时将直接以米游社/HoyoLAB账户身份进入游戏，无需再次输入账号密码。</value>
   </data>
   <data name="HoyolabAccount_EnableFailed_Title" xml:space="preserve">
     <value>无法开启</value>
@@ -671,7 +671,7 @@
     <value>国际服</value>
   </data>
   <data name="OfficialBgApiCaption" xml:space="preserve">
-    <value>留空使用当前服务器的默认 API。自定义 API 需要返回与官方 getAllGameBasicInfo 一致的数据结构。</value>
+    <value>留空使用当前服务器的默认API。自定义API需要返回与官方getAllGameBasicInfo一致的数据结构。</value>
   </data>
   <data name="OfficialBgApiPlaceholder" xml:space="preserve">
     <value>输入自定义官方背景 API 地址</value>
@@ -851,10 +851,10 @@
     <value>CPU 占用异常警告</value>
   </data>
   <data name="CpuWarningCaption" xml:space="preserve">
-    <value>当启动器 CPU 占用持续超过阈值 5 分钟，且未检测到 OBS 时弹出置顶提示。默认开启。</value>
+    <value>当启动器CPU占用持续超过阈值5分钟，且未检测到OBS时弹出置顶提示。</value>
   </data>
   <data name="EnableCpuWarning" xml:space="preserve">
-    <value>启用 CPU 占用异常警告</value>
+    <value>启用CPU占用异常警告</value>
   </data>
   <data name="MemoryReleaseTitle" xml:space="preserve">
     <value>启用定时内存释放</value>
@@ -4821,6 +4821,9 @@ UIGF v4.x/3.0/2.x</value>
   <data name="DailyNote_FetchFailed" xml:space="preserve">
     <value>获取便签失败: {0} (retcode={1})</value>
   </data>
+  <data name="DailyNote_ReloginRequired" xml:space="preserve">
+    <value>请重新登录</value>
+  </data>
   <data name="Geetest_NoFingerprintService" xml:space="preserve">
     <value>无法获取设备指纹服务</value>
   </data>
@@ -7509,7 +7512,7 @@ UIGF v4.x/3.0/2.x</value>
     <value>启动时校验插件签名</value>
   </data>
   <data name="ModTrust_LaunchVerificationCaption" xml:space="preserve">
-    <value>默认关闭；开启后按下方策略校验插件签名，关闭时跳过校验。</value>
+    <value>开启后按下方策略校验插件签名，关闭时跳过校验。</value>
   </data>
   <data name="Plugin_ResinRewardDisable_Title" xml:space="preserve">
     <value>关闭奖励领取方式</value>
@@ -9208,7 +9211,7 @@ UIGF v4.x/3.0/2.x</value>
     <value>图像抗锯齿</value>
   </data>
   <data name="BackgroundAntialiasCaption" xml:space="preserve">
-    <value>平滑主背景图像边缘；默认关闭。</value>
+    <value>平滑主背景图像边缘</value>
   </data>
   <data name="BackgroundAntialiasStrengthTitle" xml:space="preserve">
     <value>抗锯齿强度</value>
@@ -9232,7 +9235,7 @@ UIGF v4.x/3.0/2.x</value>
     <value>MCP 开放接口</value>
   </data>
   <data name="Mcp_RowCaption" xml:space="preserve">
-    <value>局域网自动化接口，默认关闭。</value>
+    <value>局域网自动化接口</value>
   </data>
   <data name="Mcp_OpenButton" xml:space="preserve">
     <value>配置</value>
@@ -10527,6 +10530,12 @@ UIGF v4.x/3.0/2.x</value>
   <data name="CloudSync_OtpPlaceholder" xml:space="preserve">
     <value>请输入验证码</value>
   </data>
+  <data name="CloudSync_OtpSendingBtn" xml:space="preserve">
+    <value>发送中…</value>
+  </data>
+  <data name="CloudSync_OtpResendIn" xml:space="preserve">
+    <value>{0} 秒后重发</value>
+  </data>
   <data name="CloudSync_OtpSentTitle" xml:space="preserve">
     <value>验证码已发送</value>
   </data>
@@ -10547,6 +10556,12 @@ UIGF v4.x/3.0/2.x</value>
   </data>
   <data name="CloudSync_PasswordPlaceholder" xml:space="preserve">
     <value>请输入密码</value>
+  </data>
+  <data name="CloudSync_ShowPassword" xml:space="preserve">
+    <value>显示密码</value>
+  </data>
+  <data name="CloudSync_HidePassword" xml:space="preserve">
+    <value>隐藏密码</value>
   </data>
   <data name="CloudSync_PasswordRequired" xml:space="preserve">
     <value>请输入登录密码。</value>
