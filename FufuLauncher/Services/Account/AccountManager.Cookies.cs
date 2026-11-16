@@ -45,7 +45,7 @@ public partial class AccountManager
     {
         string? directory = Path.GetDirectoryName(path);
         if (string.IsNullOrEmpty(directory))
-            throw new InvalidOperationException("Cookie 文件路径无效");
+            throw new InvalidOperationException("Account_CookiePathInvalid".GetLocalized());
 
         Directory.CreateDirectory(directory);
         string temporaryPath = path + "." + Guid.NewGuid().ToString("N") + ".tmp";
@@ -107,7 +107,7 @@ public partial class AccountManager
                 try
                 {
                     var file = JsonSerializer.Deserialize<AccountCookieFile>(plaintext, CookieJsonOptions)
-                               ?? throw new JsonException("Cookie 文件内容无效");
+                               ?? throw new JsonException("Account_CookieContentInvalid".GetLocalized());
                     return new CookieReadResult(file.Cookies ?? new Dictionary<string, string>(),
                         CookieVault.IsLegacyJsonEnvelope(bytes)
                         || CookieVault.IsLegacyBinaryEnvelope(bytes));
@@ -261,19 +261,27 @@ public partial class AccountManager
         }
     }
 
-    public async Task UpdateCookiesAsync(string accountId, Dictionary<string, string> newCookies)
+    public async Task<bool> UpdateCookiesAsync(string accountId, IReadOnlyDictionary<string, string> expectedCookies,
+        Dictionary<string, string> newCookies)
     {
         await _lock.WaitAsync();
         try
         {
             var entry = _accountList.Accounts.FirstOrDefault(a => a.Id == accountId);
-            if (entry == null) return;
+            if (entry == null) return false;
 
             string cookiePath = ResolveCookiePath(entry.CookieFilePath);
+            if (!File.Exists(cookiePath)) return false;
+            var current = await ReadCookieFileAsync(cookiePath);
+            if (current == null || current.Cookies.Count != expectedCookies.Count ||
+                !expectedCookies.All(pair => current.Cookies.TryGetValue(pair.Key, out var value) && value == pair.Value))
+                return false;
+
             await WriteCookieFileAsync(cookiePath, newCookies);
             entry.CookieVersion = CookieFileVersion;
             entry.UpdatedAt = DateTime.Now;
             await SaveAccountListAsync();
+            return true;
         }
         finally
         {

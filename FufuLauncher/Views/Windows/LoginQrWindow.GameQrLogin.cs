@@ -27,12 +27,12 @@ public sealed partial class LoginQrWindow
             if (!IsSessionActive(session)) return;
 
             if (refreshCount == 0)
-                UpdateStatus("正在创建游戏扫码二维码...", true);
+                UpdateStatus("LoginQR_CreatingGameQr".GetLocalized(), true);
 
             var qrResult = await CreateGameQrCodeAsync(session);
             if (!qrResult.Success)
             {
-                UpdateStatus($"创建失败: {qrResult.Message}", false);
+                UpdateStatus(string.Format("LoginQR_CreateFailed_Format".GetLocalized(), qrResult.Message), false);
                 return;
             }
 
@@ -40,7 +40,7 @@ public sealed partial class LoginQrWindow
 
             session.QrCreatedAt = DateTimeOffset.UtcNow;
             RenderQrCode(qrResult.Url);
-            UpdateStatus("请使用米游社或对应游戏内扫描二维码", false, true);
+            UpdateStatus("LoginQR_ScanWithMiyousheOrGame".GetLocalized(), false, true);
             SetQrHint(refreshCount == 0 ? "LoginQR_AutoRefreshHint" : "LoginQR_AutoRefreshed");
 
             var outcome = await PollGameLoginStatusAsync(session);
@@ -50,7 +50,7 @@ public sealed partial class LoginQrWindow
             {
                 DebugLog.Info("LoginQrWindow.GameQrLogin", "二维码自动刷新次数已达上限");
                 SetQrHint("LoginQR_AutoRefreshPaused");
-                UpdateStatus("二维码已过期且自动刷新次数已达上限，请点击刷新二维码", false);
+                UpdateStatus("LoginQR_QrExpiredMaxRefresh".GetLocalized(), false);
                 return;
             }
 
@@ -143,18 +143,18 @@ public sealed partial class LoginQrWindow
                     if (stat == "Confirmed")
                     {
                         _isLoginCompleting = true;
-                        UpdateStatus("扫码成功，正在换取SToken...", true);
+                        UpdateStatus("LoginQR_GameScanSuccessExchanging".GetLocalized(), true);
                         string raw = result["data"]["payload"]?["raw"]?.GetValue<string>();
                         if (string.IsNullOrEmpty(raw))
                         {
-                            UpdateStatus("扫码响应缺少凭证，请点击刷新二维码后重试", false);
+                            UpdateStatus("LoginQR_ScanMissingCredential".GetLocalized(), false);
                             return QrPollOutcome.Stopped;
                         }
 
                         var rawNode = JsonNode.Parse(raw);
                         string uid = rawNode["uid"]?.GetValue<string>();
                         string token = rawNode["token"]?.GetValue<string>();
-                        return await GetSTokenByGameTokenAsync(uid, token)
+                        return await GetSTokenByGameTokenAsync(uid, token, session)
                             ? QrPollOutcome.Confirmed
                             : QrPollOutcome.Stopped;
                     }
@@ -162,7 +162,7 @@ public sealed partial class LoginQrWindow
                     if (stat == "Scanned")
                     {
                         scanned = true;
-                        UpdateStatus("已扫码，请在手机端确认登录...", true);
+                        UpdateStatus("LoginQR_ScannedConfirmPhone".GetLocalized(), true);
                     }
 
                     consecutiveErrors = 0;
@@ -190,7 +190,7 @@ public sealed partial class LoginQrWindow
 
             if (consecutiveErrors >= MaxConsecutiveErrors)
             {
-                UpdateStatus("网络异常次数过多，请检查网络后重试", false);
+                UpdateStatus("LoginQR_TooManyNetworkErrors".GetLocalized(), false);
                 return QrPollOutcome.Stopped;
             }
 
@@ -207,7 +207,7 @@ public sealed partial class LoginQrWindow
         return timeoutCts.IsCancellationRequested ? QrPollOutcome.Refresh : QrPollOutcome.Stopped;
     }
 
-    private async Task<bool> GetSTokenByGameTokenAsync(string accountId, string gameToken)
+    private async Task<bool> GetSTokenByGameTokenAsync(string accountId, string gameToken, LoginSession session)
     {
         string url = ApiEndpoints.GetTokenByGameTokenUrl;
         var requestBody = new JsonObject
@@ -223,7 +223,7 @@ public sealed partial class LoginQrWindow
         request.Headers.TryAddWithoutValidation("x-rpc-app_version", "2.71.1");
         request.Headers.TryAddWithoutValidation("x-rpc-game_biz", "bbs_cn");
         request.Headers.TryAddWithoutValidation("x-rpc-sys_version", "12");
-        request.Headers.TryAddWithoutValidation("x-rpc-device_id", _deviceId);
+        request.Headers.TryAddWithoutValidation("x-rpc-device_id", _gameDeviceId);
         request.Headers.TryAddWithoutValidation("x-rpc-device_name", "Xiaomi MI 6");
         request.Headers.TryAddWithoutValidation("x-rpc-device_model", "MI 6");
         request.Headers.TryAddWithoutValidation("x-rpc-app_id", "bll8iq97cem8");
@@ -244,19 +244,19 @@ public sealed partial class LoginQrWindow
 
                 if (!string.IsNullOrEmpty(stoken) && !string.IsNullOrEmpty(mid))
                 {
-                    var cookies = await ExchangeV2TokensAsync(stoken, mid, accountId);
-                    if (cookies == null) return false;
+                    var cookies = await ExchangeV2TokensAsync(stoken, mid, accountId, token: session.Cts.Token);
+                    if (cookies == null || !IsSessionActive(session)) return false;
 
                     OnLoginSuccess(cookies, "cn");
                     return true;
                 }
             }
 
-            UpdateStatus($"SToken换取失败: {result["message"]?.GetValue<string>()}", false);
+            UpdateStatus(string.Format("LoginQR_StokenExchangeFailed_Format".GetLocalized(), result["message"]?.GetValue<string>()), false);
         }
         catch (Exception ex)
         {
-            UpdateStatus($"SToken换取异常: {ex.Message}", false);
+            UpdateStatus(string.Format("LoginQR_StokenExchangeException_Format".GetLocalized(), ex.Message), false);
         }
 
         return false;
@@ -269,7 +269,7 @@ public sealed partial class LoginQrWindow
         request.Headers.TryAddWithoutValidation("Accept", "application/json");
         request.Headers.TryAddWithoutValidation("x-rpc-game_biz", "bbs_cn");
         request.Headers.TryAddWithoutValidation("x-rpc-sys_version", "12");
-        request.Headers.TryAddWithoutValidation("x-rpc-device_id", _deviceId);
+        request.Headers.TryAddWithoutValidation("x-rpc-device_id", _gameDeviceId);
         request.Headers.TryAddWithoutValidation("x-rpc-device_name", "Xiaomi MI 6");
         request.Headers.TryAddWithoutValidation("x-rpc-device_model", "MI 6");
         request.Headers.TryAddWithoutValidation("x-rpc-client_type", "3");
